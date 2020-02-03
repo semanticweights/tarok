@@ -1,0 +1,3 @@
+[submodule "tarok/libs/open_spiel"]
+	path = tarok/libs/open_spiel
+	url = https://github.com/deepmind/open_spiel
