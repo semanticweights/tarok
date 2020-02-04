@@ -4,10 +4,10 @@ For rules see https://www.pagat.com/tarot/sltarok.html.
 ### Installation
 1. Clone this repository and cd into it
 2. Ensure you have the following installed:
-    - C++ 17 compiler
-    - cmake
-    - make
-    - python3.6
+    - **c++ 17 compiler**
+    - **cmake**
+    - **make**
+    - **python3.6**
 3. Create a new virtual environment and activate it
 4. Run `pip install -r tarok/libs/open_spiel/requirements.txt`
 6. Run `./tarok/install.sh`
