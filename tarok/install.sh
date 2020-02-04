@@ -1,16 +1,16 @@
 #!/bin/bash
 set -e
 
-WORKING_DIR=$(pwd)
+BUILD_DIR = "$(pwd)/../build"
 
 # delete the build directory if it already exists
-if [ -d "${WORKING_DIR}/build" ]; then
-    rm -rf "${WORKING_DIR}/build"
+if [ -d ${BUILD_DIR} ]; then
+    rm -rf ${BUILD_DIR}
 fi
 
 # build the project with cmake
-mkdir "${WORKING_DIR}/build"
-cd "${WORKING_DIR}/build"
+mkdir ${BUILD_DIR}
+cd ${BUILD_DIR}
 cmake ../
 make
 
