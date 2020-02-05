@@ -1,5 +1,5 @@
-import pyspiel
 import open_tarok
+import pyspiel
 
 
 if __name__ == '__main__':
