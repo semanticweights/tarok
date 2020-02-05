@@ -22,7 +22,7 @@ cd ${BUILD_DIR}
 cmake ../tarok
 make
 
-# remind to add pyspiel to python path
+# remind to add modules to python path
 cd ..
 ROOT_DIR=$(pwd)
 echo "To add pyspiel and open_tarok to the python path add the following two commands to your .bashrc file:"
