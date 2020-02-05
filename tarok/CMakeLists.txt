@@ -1,33 +1,34 @@
 cmake_minimum_required(VERSION 3.12)
-project(tarok)
+project(open_tarok)
 
 # require c++ 17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED)
+set(PYBIND11_CPP_STANDARD -std=c++1z)
+
+if(APPLE)
+  set(CMAKE_CXX_FLAGS "-w -undefined dynamic_lookup")
+endif()
 
 # look for the interpreter component so that the linker uses the correct
 # libpython when a virtual environment is loaded
 find_package(Python3 COMPONENTS Interpreter Development)
 
-# files
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "src/*.cpp" "src/*.h")
 
-# target
-# add_executable(tarok ${SOURCES})
-add_library(tarok MODULE ${SOURCES})
+# pybind target
+add_subdirectory(libs/open_spiel/pybind11)
+pybind11_add_module(open_tarok ${SOURCES})
+# remove the 'lib' prefix from the binary
+set_target_properties(open_tarok PROPERTIES PREFIX "")
 
-# without this the binary is called libtarok.so
-set_target_properties(tarok PROPERTIES PREFIX "")
-
-# include
-target_include_directories(tarok PRIVATE libs/open_spiel libs/open_spiel/pybind11/include)
+set(INCLUDE_DIRS libs/open_spiel libs/open_spiel/pybind11/include)
+target_include_directories(open_tarok PRIVATE ${INCLUDE_DIRS})
 include_directories(SYSTEM ${Python3_INCLUDE_DIRS})
 
-# external libs
 add_subdirectory(libs/open_spiel/open_spiel)
-add_subdirectory(libs/open_spiel/pybind11)
 
-target_link_libraries(tarok
+target_link_libraries(open_tarok PRIVATE
     open_spiel_core
     games
     game_transforms
@@ -45,6 +46,4 @@ target_link_libraries(tarok
     absl::time
     pybind11
     pybind11::pybind11
-    pybind11::module
-    pybind11::embed
 )

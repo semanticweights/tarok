@@ -3,18 +3,16 @@
 #include "open_spiel/spiel.h"
 #include "pybind11/pybind11.h"
 
-void printRegisteredGamesLikeTarok() {
-    std::cout << "Registered games:" << std::endl;
-    std::vector<std::string> names = open_spiel::RegisteredGames();
-    for (const std::string& name : names) {
-        std::cout << name << std::endl;
-    }
+namespace py = pybind11;
+
+std::string openSpielGame() {
+    return open_spiel::RegisteredGames()[0];
 }
 
 PYBIND11_MODULE(open_tarok, m) {
     m.def(
-        "printRegisteredGamesLikeTarok",
-        &printRegisteredGamesLikeTarok,
-        "Prints registered open spiel games"
+        "open_spiel_game",
+        &openSpielGame,
+        "Returns the first registered open spiel game"
     );
 }

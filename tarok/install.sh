@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" >/dev/null 2>&1; pwd -P)"
 BUILD_DIR="${SCRIPT_DIR}/../build"
 
 # install open spiel dependencies
+echo "Installing open spiel dependencies"
 cd ${SCRIPT_DIR}/libs/open_spiel
 ./install.sh
 cd ${SCRIPT_DIR}
@@ -14,6 +15,7 @@ if [ -d ${BUILD_DIR} ]; then
     rm -rf ${BUILD_DIR}
 fi
 
+echo "Building the tarok project"
 # build the project
 mkdir ${BUILD_DIR}
 cd ${BUILD_DIR}

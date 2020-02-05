@@ -1,7 +1,7 @@
 import pyspiel
-import tarok
+import open_tarok
 
 
 if __name__ == '__main__':
-    print(pyspiel)
-    print(tarok.printRegisteredGamesLikeTarok())
+    print(pyspiel.registered_names())
+    print(open_tarok.open_spiel_game())
