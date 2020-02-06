@@ -25,12 +25,20 @@ public:
 
     open_spiel::Player CurrentPlayer() const override;
     std::vector<open_spiel::Action> LegalActions() const override;
-    std::string ActionToString(open_spiel::Player player, open_spiel::Action action_id) const override;
-    open_spiel::Action StringToAction(open_spiel::Player player, const std::string& action_str) const override;
+    std::string ActionToString(
+        open_spiel::Player player,
+        open_spiel::Action action_id
+    ) const override;
+    open_spiel::Action StringToAction(
+        open_spiel::Player player,
+        const std::string& action_str
+    ) const override;
     virtual std::string ToString() const override;
     virtual bool IsTerminal() const override;
     std::vector<double> Returns() const override;
-    std::string InformationStateString(open_spiel::Player player) const override;
+    std::string InformationStateString(
+        open_spiel::Player player
+    ) const override;
     // std::string ObservationString(open_spiel::Player player) const override;
     std::unique_ptr<State> Clone() const override;
     open_spiel::ActionsAndProbs ChanceOutcomes() const override;
