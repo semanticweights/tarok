@@ -1,3 +1,5 @@
+#pragma once
+
 #include "open_spiel/spiel.h"
 
 namespace tarok {
