@@ -14,7 +14,7 @@ endif()
 # libpython when a virtual environment is loaded
 find_package(Python3 COMPONENTS Interpreter Development)
 
-file(GLOB SOURCES "src/*.cpp" "src/*.h")
+file(GLOB SOURCES "src/*.cpp")
 
 # pybind target
 add_subdirectory(libs/open_spiel/pybind11)
