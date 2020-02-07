@@ -6,10 +6,10 @@ namespace tarok {
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(open_tarok, m) {
-    py::class_<TarokGame>(m, "TarokGame")
-        .def(py::init())
-        .def("get_name", &TarokGame::GetName);
-}
+// PYBIND11_MODULE(open_tarok, m) {
+//     py::class_<TarokGame>(m, "TarokGame")
+//         .def(py::init())
+//         .def("get_name", &TarokGame::GetName);
+// }
 
 } // namespace tarok
