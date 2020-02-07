@@ -40,7 +40,6 @@ int TarokGame::NumDistinctActions() const {
     return 0;
 }
 
-
 std::unique_ptr<open_spiel::State> TarokGame::NewInitialState() const {
     return nullptr;
 }
