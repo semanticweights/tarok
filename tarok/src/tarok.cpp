@@ -1,4 +1,4 @@
-#include "tarok/tarok.h"
+#include "tarok.h"
 #include "open_spiel/spiel.h"
 
 namespace tarok {

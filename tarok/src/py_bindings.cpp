@@ -1,4 +1,4 @@
-#include "tarok/tarok.h"
+#include "tarok.h"
 #include "pybind11/pybind11.h"
 
 namespace tarok {
