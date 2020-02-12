@@ -4,6 +4,8 @@
 
 namespace tarok {
 
+std::shared_ptr<const open_spiel::Game> NewTarokGame();
+
 // game declaration
 class TarokGame : public open_spiel::Game {
 public:

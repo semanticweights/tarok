@@ -1,3 +1,6 @@
 [submodule "tarok/libs/open_spiel"]
 	path = tarok/libs/open_spiel
 	url = https://github.com/deepmind/open_spiel
+[submodule "tarok/libs/googletest"]
+	path = tarok/libs/googletest
+	url = https://github.com/google/googletest.git

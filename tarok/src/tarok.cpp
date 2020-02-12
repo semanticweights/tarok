@@ -1,8 +1,15 @@
-#include "tarok.h"
-
+#include "tarok/tarok.h"
 #include "open_spiel/spiel.h"
 
 namespace tarok {
+
+// instantiate the game instance via a shared_ptr
+// (see Game declaration comments in open_spiel/spiel.h)
+std::shared_ptr<const open_spiel::Game> NewTarokGame(
+    const open_spiel::GameParameters& params
+) {
+  return std::shared_ptr<const open_spiel::Game>(new TarokGame(params));
+}
 
 // game facts
 const open_spiel::GameType kGameType{
@@ -21,16 +28,6 @@ const open_spiel::GameType kGameType{
     false, // provides_observation_tensor
     {} // parameter_specification
 };
-
-// instantiate the game instance via a shared_ptr
-// (see Game declaration comments in open_spiel/spiel.h)
-std::shared_ptr<const open_spiel::Game> Factory(
-    const open_spiel::GameParameters& params
-) {
-  return std::shared_ptr<const open_spiel::Game>(new TarokGame(params));
-}
-
-open_spiel::REGISTER_SPIEL_GAME(kGameType, Factory);
 
 // game definition
 TarokGame::TarokGame(const open_spiel::GameParameters& params)
