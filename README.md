@@ -15,7 +15,8 @@ For rules see https://www.pagat.com/tarot/sltarok.html.
 7. Add python modules to the python path (see output from the previous step)
 
 ### Usage
-- Run the python script with `python tarok/python/main.py`
+- Run the example python script with `python tarok/python/main.py`
+- Run the tests with `./build/test/tarok_tests`
 
 ### Resources
 - https://github.com/deepmind/open_spiel
