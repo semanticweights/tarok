@@ -2,9 +2,8 @@ name: continuous-integration
 on: [push, pull_request]
 
 jobs:
-  build_and_test:
+  initialize-environment:
     runs-on: ubuntu-latest
-    container: docker.pkg.github.com/semanticweights/tarok/tarok-build:13022020
     steps:
       - name: docker login
         uses: azure/docker-login@v1
@@ -14,5 +13,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: checkout
         uses: actions/checkout@v2
+  build-and-test:
+    runs-on: ubuntu-latest
+    container: docker.pkg.github.com/semanticweights/tarok/tarok-build:13022020
+    steps:
       - name: build
         run: echo "building tarok"
