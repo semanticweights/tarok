@@ -1,0 +1,8 @@
+version: 2.1
+jobs:
+  build:
+    docker: 
+      - image: inejc/semanticweights:tarok-build-13022020
+    steps:
+      - checkout
+      - run: ls
