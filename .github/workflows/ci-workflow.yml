@@ -1,0 +1,11 @@
+name: continuous-integration
+on: [push, pull_request]
+
+jobs:
+  build_and_test:
+    container: docker.pkg.github.com/semanticweights/tarok/tarok-build:13022020
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build
+        run: echo "building tarok"

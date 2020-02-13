@@ -12,7 +12,7 @@ cd ${SCRIPT_DIR}
 
 # delete the build directory if it already exists
 if [ -d ${BUILD_DIR} ]; then
-    rm -rf ${BUILD_DIR}
+  rm -rf ${BUILD_DIR}
 fi
 
 echo "Building the tarok project"
