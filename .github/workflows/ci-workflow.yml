@@ -8,5 +8,8 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+      - name: install-dependencies
+        run: pip install --upgrade pip setuptools
+        run: pip install -r /tarok/tarok/libs/open_spiel/requirements.txt
       - name: build
-        run: echo "building tarok"
+        run: ls
