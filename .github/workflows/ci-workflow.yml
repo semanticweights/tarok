@@ -3,6 +3,7 @@ on: [push, pull_request]
 
 jobs:
   build_and_test:
+    runs-on: ubuntu-latest
     container: docker.pkg.github.com/semanticweights/tarok/tarok-build:13022020
     steps:
       - name: checkout
