@@ -1,7 +1,6 @@
 version: 2.1
-
 jobs:
-  build-and-test:
+  build:
     docker:
       # image built with https://github.com/semanticweights/tarok/tree/master/.docker/.build.Dockerfile
       - image: inejc/semanticweights:tarok-build-13022020
