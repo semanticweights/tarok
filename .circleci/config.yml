@@ -9,11 +9,11 @@ jobs:
       # checkout submodules
       - run: git submodule sync
       - run: git submodule update --init
-      # we cache python dependencies and the build directory
+      # we cache the build directory and python dependencies
       - restore_cache:
-          keys:
-            - py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
-            - build-cache-{{ .Branch }}
+          key: build-cache-{{ .Branch }}
+      - restore_cache:
+          key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
       # install dependencies
       - run: pip3 install --upgrade pip setuptools
       - run: pip3 install -r tarok/libs/open_spiel/requirements.txt
