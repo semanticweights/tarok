@@ -9,7 +9,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       # install dependencies
-      - run: pip install --upgrade pip setuptools
-      - run: pip install -r /tarok/tarok/libs/open_spiel/requirements.txt
+      - run: pip3 install --upgrade pip setuptools
+      - run: pip3 install -r /tarok/tarok/libs/open_spiel/requirements.txt
       - name: build
         run: ls
