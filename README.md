@@ -3,7 +3,7 @@
 
 For rules see https://www.pagat.com/tarot/sltarok.html.
 
-### Installation
+### Local Development
 1. Clone this repository and cd into it
 2. Ensure you have the following installed:
     - **c++ 17 compiler**
