@@ -30,4 +30,3 @@ jobs:
           key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
           paths:
             - /usr/local/lib/python3.7/dist-packages
-git
