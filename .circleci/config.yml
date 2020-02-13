@@ -1,8 +1,33 @@
 version: 2.1
+
 jobs:
-  build:
-    docker: 
+  build-and-test:
+    docker:
+      # image built with https://github.com/semanticweights/tarok/tree/master/.docker/.build.Dockerfile
       - image: inejc/semanticweights:tarok-build-13022020
     steps:
       - checkout
-      - run: ls
+      # checkout submodules
+      - run: git submodule sync
+      - run: git submodule update --init
+      # we cache python dependencies and the build directory
+      - restore_cache:
+          keys:
+            - py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
+            - build-cache
+      # install dependencies
+      - run: pip3 install --upgrade pip setuptools
+      - run: pip3 install -r tarok/libs/open_spiel/requirements.txt
+      # build the project
+      - run: ./tarok/install.sh
+      # run the tests
+      - run: ./build/test/tarok_tests
+      # persist cache
+      - save_cache:
+          key: build-cache
+          paths:
+            - build
+      - save_cache:
+          key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
+          paths:
+            - /usr/local/lib/python3.7/dist-packages
