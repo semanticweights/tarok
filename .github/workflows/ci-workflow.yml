@@ -2,20 +2,11 @@ name: continuous-integration
 on: [push, pull_request]
 
 jobs:
-  initialize-environment:
+  build_and_test:
     runs-on: ubuntu-latest
+    container: inejc/semanticweights:tarok-build-13022020
     steps:
-      - name: docker login
-        uses: azure/docker-login@v1
-        with:
-          login-server: docker.pkg.github.com
-          username: $GITHUB_ACTOR
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: checkout
         uses: actions/checkout@v2
-  build-and-test:
-    runs-on: ubuntu-latest
-    container: docker.pkg.github.com/semanticweights/tarok/tarok-build:13022020
-    steps:
       - name: build
         run: echo "building tarok"
