@@ -1,11 +1,10 @@
-# import open_tarok
-import pyspiel
+import pyspiel as sp
+import pytarok as tr
 
 
 def main():
-    print(pyspiel.registered_names())
-    # tarok = open_tarok.TarokGame()
-    # print(tarok.get_name())
+    tarok_game = tr.new_tarok_game({})
+    print(tarok_game.num_distinct_actions())
 
 
 if __name__ == '__main__':

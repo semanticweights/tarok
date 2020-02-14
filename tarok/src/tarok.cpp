@@ -1,8 +1,13 @@
 #include "tarok.h"
-
 #include "open_spiel/spiel.h"
 
 namespace tarok {
+
+std::shared_ptr<const open_spiel::Game> NewTarokGame(
+    const open_spiel::GameParameters& params
+) {
+  return std::shared_ptr<const open_spiel::Game>(new TarokGame(params));
+}
 
 // game facts
 const open_spiel::GameType kGameType{
@@ -22,98 +27,88 @@ const open_spiel::GameType kGameType{
     {} // parameter_specification
 };
 
-// instantiate the game instance via a shared_ptr
-// (see Game declaration comments in open_spiel/spiel.h)
-std::shared_ptr<const open_spiel::Game> Factory(
-    const open_spiel::GameParameters& params
-) {
-  return std::shared_ptr<const open_spiel::Game>(new TarokGame(params));
-}
-
-open_spiel::REGISTER_SPIEL_GAME(kGameType, Factory);
-
 // game definition
 TarokGame::TarokGame(const open_spiel::GameParameters& params)
-    : Game(kGameType, params) {}
+  : Game(kGameType, params) {}
 
 int TarokGame::NumDistinctActions() const {
-    return 0;
+  return 0;
 }
 
 std::unique_ptr<open_spiel::State> TarokGame::NewInitialState() const {
-    return nullptr;
+  return nullptr;
 }
 
 int TarokGame::NumPlayers() const {
-    return 3;
+  return 3;
 }
 
 double TarokGame::MinUtility() const {
-    return 0.0;
+  return 0.0;
 }
 
 double TarokGame::MaxUtility() const {
-    return 0.0;
+  return 0.0;
 }
 
 std::shared_ptr<const open_spiel::Game> TarokGame::Clone() const {
-    return nullptr;
+  return nullptr;
 }
 
 int TarokGame::MaxGameLength() const {
-    return 0;
+  return 0;
 }
 
 // state definition
 TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
-    : open_spiel::State(game) {}
+  : open_spiel::State(game) {}
 
 open_spiel::Player TarokState::CurrentPlayer() const {
-    return -1;
+  return -1;
 }
 
 std::vector<open_spiel::Action> TarokState::LegalActions() const {
-    return std::vector<open_spiel::Action> {};
+  return std::vector<open_spiel::Action> {};
 }
 
 std::string TarokState::ActionToString(
     open_spiel::Player player,
     open_spiel::Action action_id
 ) const {
-    return "";
+  return "";
 }
 
 open_spiel::Action TarokState::StringToAction(
     open_spiel::Player player,
     const std::string& action_str
 ) const {
-    return open_spiel::Action();
+  return open_spiel::Action();
 }
 
 std::string TarokState::ToString() const {
-    return "";
+  return "";
 }
 
 bool TarokState::IsTerminal() const {
-    return true;
+  return true;
 }
 
 std::vector<double> TarokState::Returns() const {
-    return std::vector<double> {};
+  return std::vector<double> {};
 }
 
 std::string TarokState::InformationStateString(
     open_spiel::Player player
 ) const {
-    return "";
+  return "";
 }
 
 std::unique_ptr<open_spiel::State> TarokState::Clone() const {
-    return nullptr;
+  return nullptr;
 }
 
 open_spiel::ActionsAndProbs TarokState::ChanceOutcomes() const {
-    return open_spiel::ActionsAndProbs();
+  return open_spiel::ActionsAndProbs();
 }
 
 void TarokState::DoApplyAction(open_spiel::Action action_id) {}
