@@ -1,32 +1,82 @@
 version: 2.1
-jobs:
-  build:
+
+references:
+  container: &container
     docker:
       # image built with https://github.com/semanticweights/tarok/tree/master/.docker/.build.Dockerfile
       - image: inejc/semanticweights:tarok-build-13022020
+
+  checkout_submodules: &checkout_submodules
+    run:
+      name: Checkout git submodules
+      command: |
+        git submodule sync
+        git submodule update --init
+
+  restore_cache: &restore_cache
+    restore_cache:
+      name: Restore python cache
+      key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
+
+  install_dependencies: &install_dependencies
+    run:
+      name: Install dependencies
+      command: |
+        pip3 install --upgrade pip setuptools
+        pip3 install -r tarok/libs/open_spiel/requirements.txt
+
+  build_project: &build_project
+    run:
+      name: Build the project
+      command: ./tarok/install.sh
+
+  run_tests: &run_tests
+    run:
+      name: Run the tests
+      command: ./build/test/tarok_tests
+
+  save_cache: &save_cache
+    save_cache:
+      name: Save python cache
+      key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
+      paths:
+        - /usr/local/lib/python3.7/dist-packages
+
+jobs:
+  test-and-build-module:
+    <<: *container
     steps:
       - checkout
-      # checkout submodules
-      - run: git submodule sync
-      - run: git submodule update --init
-      # we cache the build directory and python dependencies
-      - restore_cache:
-          key: build-cache-{{ .Branch }}
-      - restore_cache:
-          key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
-      # install dependencies
-      - run: pip3 install --upgrade pip setuptools
-      - run: pip3 install -r tarok/libs/open_spiel/requirements.txt
-      # build the project
-      - run: ./tarok/install.sh
-      # run the tests
-      - run: ./build/test/tarok_tests
-      # persist cache
-      - save_cache:
-          key: build-cache-{{ .Branch }}
+      - *checkout_submodules
+      - *restore_cache
+      - *install_dependencies
+      - *build_project
+      - *run_tests
+      - *save_cache
+      - persist_to_workspace:
+          root: ~/repo
           paths:
-            - /build
-      - save_cache:
-          key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
-          paths:
-            - /usr/local/lib/python3.7/dist-packages
+            - build/src/
+            - build/libs/open_spiel/open_spiel/python
+
+  build-image-and-push:
+    <<: *container
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: ls build/src
+
+workflows:
+  version: 2.1
+  test-build-push:
+    jobs:
+      - test-and-build-module
+      - build-image-and-push:
+          requires:
+            - test-and-build-module
+          filters:
+            branches:
+              only:
+                - release
