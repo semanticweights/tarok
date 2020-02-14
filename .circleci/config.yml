@@ -57,8 +57,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - build/src/
-            - build/libs/open_spiel/open_spiel/python
+            - build/src/pytarok.cpython-37m-x86_64-linux-gnu.so
+            - build/libs/open_spiel/open_spiel/python/pyspiel.so
 
   build-image-and-push:
     <<: *container
