@@ -54,7 +54,7 @@ jobs:
       - *run_tests
       - *save_cache
       - persist_to_workspace:
-          root: ~/repo
+          root: .
           paths:
             - build/src/
             - build/libs/open_spiel/open_spiel/python
@@ -63,7 +63,7 @@ jobs:
     <<: *container
     steps:
       - attach_workspace:
-          at: ~/repo
+          at: .
       - setup_remote_docker:
           docker_layer_caching: true
       - run: ls build/src
