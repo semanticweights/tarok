@@ -3,8 +3,9 @@ version: 2.1
 references:
   container: &container
     docker:
-      # image built with https://github.com/semanticweights/tarok/tree/master/.docker/.build.Dockerfile
-      - image: inejc/semanticweights:tarok-build-13022020
+      # docker file .docker/build.Dockerfile
+      # image pushed to inejc/semanticweights
+      - image: inejc/semanticweights:tarok-build-14022020
 
   checkout_submodules: &checkout_submodules
     run:
@@ -79,4 +80,4 @@ workflows:
           filters:
             branches:
               only:
-                - release
+                - production
