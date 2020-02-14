@@ -1,5 +1,7 @@
 ## Slovenian Tarok Card Game
-![CircleCI](https://img.shields.io/circleci/build/github/semanticweights/tarok?style=flat-square)
+<a href="https://circleci.com/gh/semanticweights/tarok">
+  <img src="https://img.shields.io/circleci/build/github/semanticweights/tarok?style=flat-square" alt="build info"/>
+</a>
 
 For rules see https://www.pagat.com/tarot/sltarok.html.
 
