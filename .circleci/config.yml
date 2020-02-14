@@ -43,6 +43,27 @@ references:
       paths:
         - /usr/local/lib/python3.7/dist-packages
 
+  docker_auth: &docker_auth
+    run:
+      name: Authenticate docker
+      command: echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+
+  build_docker_image: &build_docker_image
+    run:
+      name: Build docker image
+      command: |
+        mkdir /opt
+        mv build/src/pytarok.cpython-37m-x86_64-linux-gnu.so /opt
+        mv build/libs/open_spiel/open_spiel/python/pyspiel.so /opt
+        docker build -t tarok-run -f .docker/run.Dockerfile .
+
+  push_docker_image: &push_docker_image
+    run:
+      name: Push docker image
+      command: |
+        docker tag tarok-run inejc/semanticweights:tarok-run-${CIRCLE_SHA1:0:7}
+        docker push inejc/semanticweights:tarok-run-${CIRCLE_SHA1:0:7}
+
 jobs:
   test-and-build-module:
     <<: *container
@@ -67,9 +88,9 @@ jobs:
           at: .
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: docker images
-      - run: ls build/src
-      - run: ls build/libs/open_spiel/open_spiel/python
+      - *docker_auth
+      - *build_docker_image
+      - *push_docker_image
 
 workflows:
   version: 2.1
