@@ -78,6 +78,7 @@ jobs:
           paths:
             - build/src/pytarok.cpython-37m-x86_64-linux-gnu.so
             - build/libs/open_spiel/open_spiel/python/pyspiel.so
+            - .docker/run.Dockerfile
 
   build-image-and-push:
     <<: *container
