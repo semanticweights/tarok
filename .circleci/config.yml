@@ -51,7 +51,6 @@ references:
     run:
       name: Build docker image
       command: |
-        mkdir /opt
         mv build/src/pytarok.cpython-37m-x86_64-linux-gnu.so /opt
         mv build/libs/open_spiel/open_spiel/python/pyspiel.so /opt
         docker build -t tarok-run -f .docker/run.Dockerfile .
