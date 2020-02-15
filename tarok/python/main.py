@@ -1,9 +1,9 @@
 import pyspiel as sp
-import pytarok as tr
+import pytarok as ta
 
 
 def main():
-    tarok_game = tr.new_tarok_game({})
+    tarok_game = ta.new_tarok_game({})
     print(tarok_game.num_distinct_actions())
 
 
