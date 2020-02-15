@@ -2,12 +2,12 @@
 <a href="https://circleci.com/gh/semanticweights/tarok">
   <img src="https://img.shields.io/circleci/build/github/semanticweights/tarok?style=flat-square" alt="build info"/>
 </a>
-
+---
 For rules see https://www.pagat.com/tarot/sltarok.html.
 
 ### Running in Docker
 1. Clone this repository and cd into it
-2. todo
+2. Run `docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-5dd69a1 python3 /src/main.py`
 
 ### Local Development
 1. Clone this repository and cd into it
@@ -22,9 +22,9 @@ For rules see https://www.pagat.com/tarot/sltarok.html.
 6. Run `./tarok/install.sh`
 7. Add python modules to the python path (see output from the previous step)
 
-#### Running Examples and Tests 
-- Run the [example python script](tarok/python/main.py) with `python tarok/python/main.py`
+#### Running Tests and Examples
 - Run the tests with `./build/test/tarok_tests`
+- Run the [example python script](tarok/python/main.py) with `python tarok/python/main.py`
 
 ### Resources
 - https://github.com/deepmind/open_spiel
