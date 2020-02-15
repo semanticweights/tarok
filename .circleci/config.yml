@@ -3,9 +3,8 @@ version: 2.1
 references:
   container: &container
     docker:
-      # docker file .docker/build.Dockerfile
-      # image pushed to inejc/semanticweights
-      - image: inejc/semanticweights:tarok-build-14022020
+      # built from .docker/build.Dockerfile
+      - image: semanticweights/tarok:build-15022020
 
   checkout_submodules: &checkout_submodules
     run:
@@ -61,8 +60,8 @@ references:
     run:
       name: Push docker image
       command: |
-        docker tag tarok-run inejc/semanticweights:tarok-run-${CIRCLE_SHA1:0:7}
-        docker push inejc/semanticweights:tarok-run-${CIRCLE_SHA1:0:7}
+        docker tag tarok-run semanticweights/tarok:run-${CIRCLE_SHA1:0:7}
+        docker push semanticweights/tarok:run-${CIRCLE_SHA1:0:7}
 
 jobs:
   test-and-build-module:
