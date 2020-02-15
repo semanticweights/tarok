@@ -5,6 +5,10 @@
 
 For rules see https://www.pagat.com/tarot/sltarok.html.
 
+### Running in Docker
+1. Clone this repository and cd into it
+2. todo
+
 ### Local Development
 1. Clone this repository and cd into it
 2. Ensure you have the following installed:
@@ -18,7 +22,7 @@ For rules see https://www.pagat.com/tarot/sltarok.html.
 6. Run `./tarok/install.sh`
 7. Add python modules to the python path (see output from the previous step)
 
-### Usage
+#### Running Examples and Tests 
 - Run the [example python script](tarok/python/main.py) with `python tarok/python/main.py`
 - Run the tests with `./build/test/tarok_tests`
 
