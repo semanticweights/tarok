@@ -2,6 +2,12 @@
 <a href="https://circleci.com/gh/semanticweights/tarok">
   <img src="https://img.shields.io/circleci/build/github/semanticweights/tarok?style=flat-square" alt="build info"/>
 </a>
+<a href="https://hub.docker.com/repository/docker/semanticweights/tarok/tags">
+  <img src="https://img.shields.io/docker/pulls/semanticweights/tarok?color=ff69b4&style=flat-square" alt="docker hub"/>
+</a>
+<a href="https://github.com/semanticweights/tarok/blob/master/LICENSE">
+  <img src="https://img.shields.io/github/license/semanticweights/tarok?color=blue&style=flat-square" alt="license"/>
+</a>
 
 ---
 
