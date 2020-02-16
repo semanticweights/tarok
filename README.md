@@ -11,7 +11,7 @@
 
 ---
 
-For rules see https://www.pagat.com/tarot/sltarok.html.
+Slovenian Tarok card game environment for the [OpenSpiel framework](https://github.com/deepmind/open_spiel). For detailed game rules visit https://www.pagat.com/tarot/sltarok.html.
 
 ### Running in Docker
 1. Clone this repository and cd into it
@@ -36,6 +36,3 @@ docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-5dd69a1
 #### Running Tests and Examples
 - Run the tests with `./build/test/tarok_tests`
 - Run the [example python script](tarok/python/main.py) with `python tarok/python/main.py`
-
-### Resources
-- https://github.com/deepmind/open_spiel
