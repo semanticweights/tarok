@@ -3,9 +3,8 @@ version: 2.1
 references:
   container: &container
     docker:
-      # docker file .docker/build.Dockerfile
-      # image pushed to inejc/semanticweights
-      - image: inejc/semanticweights:tarok-build-14022020
+      # built from .docker/build.Dockerfile
+      - image: semanticweights/tarok:build-15022020
 
   checkout_submodules: &checkout_submodules
     run:
@@ -43,6 +42,26 @@ references:
       paths:
         - /usr/local/lib/python3.7/dist-packages
 
+  docker_auth: &docker_auth
+    run:
+      name: Authenticate docker
+      command: echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+
+  build_docker_image: &build_docker_image
+    run:
+      name: Build docker image
+      command: |
+        cp build/src/pytarok.cpython-37m-x86_64-linux-gnu.so .
+        cp build/libs/open_spiel/open_spiel/python/pyspiel.so .
+        docker build -t tarok-run -f .docker/run.Dockerfile .
+
+  push_docker_image: &push_docker_image
+    run:
+      name: Push docker image
+      command: |
+        docker tag tarok-run semanticweights/tarok:run-${CIRCLE_SHA1:0:7}
+        docker push semanticweights/tarok:run-${CIRCLE_SHA1:0:7}
+
 jobs:
   test-and-build-module:
     <<: *container
@@ -59,6 +78,7 @@ jobs:
           paths:
             - build/src/pytarok.cpython-37m-x86_64-linux-gnu.so
             - build/libs/open_spiel/open_spiel/python/pyspiel.so
+            - .docker/run.Dockerfile
 
   build-image-and-push:
     <<: *container
@@ -67,7 +87,9 @@ jobs:
           at: .
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: ls build/src
+      - *docker_auth
+      - *build_docker_image
+      - *push_docker_image
 
 workflows:
   version: 2.1
@@ -80,4 +102,4 @@ workflows:
           filters:
             branches:
               only:
-                - production
+                - stable
