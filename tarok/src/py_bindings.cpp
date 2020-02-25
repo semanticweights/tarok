@@ -1,4 +1,6 @@
-#include "tarok.h"
+/* Copyright 2020 Semantic Weights. All rights reserved. */
+
+#include "src/tarok.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 
@@ -10,4 +12,4 @@ PYBIND11_MODULE(pytarok, m) {
   m.def("new_tarok_game", &NewTarokGame);
 }
 
-} // namespace tarok
+}  // namespace tarok

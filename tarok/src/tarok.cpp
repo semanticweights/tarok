@@ -1,4 +1,10 @@
-#include "tarok.h"
+/* Copyright 2020 Semantic Weights. All rights reserved. */
+
+#include <memory>
+#include <string>
+#include <vector>
+
+#include "src/tarok.h"
 #include "open_spiel/spiel.h"
 
 namespace tarok {
@@ -11,20 +17,20 @@ std::shared_ptr<const open_spiel::Game> NewTarokGame(
 
 // game facts
 const open_spiel::GameType kGameType{
-    "tarok", // short_name
-    "Slovenian Tarok", // long_name
+    "tarok",  // short_name
+    "Slovenian Tarok",  // long_name
     open_spiel::GameType::Dynamics::kSequential,
     open_spiel::GameType::ChanceMode::kExplicitStochastic,
     open_spiel::GameType::Information::kImperfectInformation,
     open_spiel::GameType::Utility::kGeneralSum,
     open_spiel::GameType::RewardModel::kTerminal,
-    3, // max_num_players
-    3, // min_num_players
-    true, // provides_information_state_string
-    false, // provides_information_state_tensor
-    false, // provides_observation_string
-    false, // provides_observation_tensor
-    {} // parameter_specification
+    3,  // max_num_players
+    3,  // min_num_players
+    true,  // provides_information_state_string
+    false,  // provides_information_state_tensor
+    false,  // provides_observation_string
+    false,  // provides_observation_tensor
+    {}  // parameter_specification
 };
 
 // game definition
@@ -113,4 +119,4 @@ open_spiel::ActionsAndProbs TarokState::ChanceOutcomes() const {
 
 void TarokState::DoApplyAction(open_spiel::Action action_id) {}
 
-} // namespace tarok
+}  // namespace tarok
