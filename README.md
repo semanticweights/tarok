@@ -23,17 +23,17 @@ docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-5dd69a1
 ### Local Development
 1. Clone this repository and cd into it
 2. Ensure you have the following installed:
-    - **c++ 17 compiler**
-    - **cmake**
+    - **a compiler that supports the C++17 standard**
+    - **cmake** (version **3.13.4** and above)
     - **make**
     - **python3** (tested with **3.7.4**)
 3. Create a new virtual environment and activate it
-4. Run `pip install --upgrade pip setuptools`
-5. Run `pip install -r tarok/python/requirements.txt`
+4. Run `pip3 install --upgrade pip setuptools`
+5. Run `pip3 install -r tarok/python/requirements.txt`
 6. Run `./tarok/install.sh`
 7. Add python modules to the python path (see output from the previous step)
 
-#### Running Tests and Examples
+#### Running the Tests and Examples
 - Run the tests with `./build/test/tarok_tests`
 - Run the [example python script](tarok/python/main.py) with `python tarok/python/main.py`
 

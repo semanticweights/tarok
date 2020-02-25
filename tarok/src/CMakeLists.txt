@@ -29,7 +29,7 @@ target_link_libraries(pytarok PRIVATE
   pybind11
 )
 
-# build the c++ library
+# build the C++ library
 add_library(tarok_lib tarok.cpp)
 target_link_libraries(tarok_lib PUBLIC
   open_spiel_core
