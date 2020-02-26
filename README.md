@@ -17,8 +17,9 @@ Slovenian Tarok card game environment for the [OpenSpiel framework](https://gith
 1. Clone this repository and cd into it
 2. Run
 ```bash
-docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-5dd69a1 python3 /src/main.py
+docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-629bad5 /src/main.py
 ```
+Note that hash values after the *run-* part correspond to commits in the **stable** branch.
 
 ### Local Development
 1. Clone this repository and cd into it
