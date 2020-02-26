@@ -1,13 +1,13 @@
 /* Copyright 2020 Semantic Weights. All rights reserved. */
 
-#include "src/tarok.h"
 #include "gtest/gtest.h"
+#include "src/tarok.h"
 
 namespace tarok {
 
 TEST(TarokGameTests, TestNumDistinctActions) {
-  std::shared_ptr<const open_spiel::Game> game = tarok::NewTarokGame(
-      open_spiel::GameParameters());
+  std::shared_ptr<const open_spiel::Game> game =
+      tarok::NewTarokGame(open_spiel::GameParameters());
   EXPECT_EQ(game->NumDistinctActions(), 0);
 }
 
