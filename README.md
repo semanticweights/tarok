@@ -17,22 +17,26 @@ Slovenian Tarok card game environment for the [OpenSpiel framework](https://gith
 1. Clone this repository and cd into it
 2. Run
 ```bash
-docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-5dd69a1 python3 /src/main.py
+docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-629bad5 /src/main.py
 ```
+Note that hash values after the *run-* part correspond to commits in the **stable** branch.
 
 ### Local Development
 1. Clone this repository and cd into it
 2. Ensure you have the following installed:
-    - **c++ 17 compiler**
-    - **cmake**
+    - **a compiler that supports the C++17 standard**
+    - **cmake** (version **3.13.4** and above)
     - **make**
     - **python3** (tested with **3.7.4**)
 3. Create a new virtual environment and activate it
-4. Run `pip install --upgrade pip setuptools`
-5. Run `pip install -r tarok/libs/open_spiel/requirements.txt`
+4. Run `pip3 install --upgrade pip setuptools`
+5. Run `pip3 install -r tarok/python/requirements.txt`
 6. Run `./tarok/install.sh`
 7. Add python modules to the python path (see output from the previous step)
 
-#### Running Tests and Examples
+#### Running the Tests and Examples
 - Run the tests with `./build/test/tarok_tests`
 - Run the [example python script](tarok/python/main.py) with `python tarok/python/main.py`
+
+#### Running the Linter
+- Run the linter with `cpplint tarok/src/* tarok/test/*`

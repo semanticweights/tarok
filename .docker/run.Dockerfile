@@ -10,4 +10,4 @@ USER 12345
 COPY pytarok.cpython-37m-x86_64-linux-gnu.so pyspiel.so /opt/
 ENV PYTHONPATH $PYTHONPATH:/opt
 
-CMD ["python3"]
+ENTRYPOINT ["python3"]

@@ -20,7 +20,7 @@ make
 # remind to add modules to python path
 cd ..
 ROOT_DIR=$(pwd)
-echo "To add pyspiel and open_tarok to the python path add the following two commands to your .bashrc file:"
+echo "To add pyspiel and pytarok to the python path add the following two commands to your .zshrc / .bashrc file:"
 echo "export PYTHONPATH=\$PYTHONPATH:${ROOT_DIR}/build/libs/open_spiel"
 echo "export PYTHONPATH=\$PYTHONPATH:${ROOT_DIR}/build/libs/open_spiel/open_spiel/python"
 echo "export PYTHONPATH=\$PYTHONPATH:${ROOT_DIR}/build/src"

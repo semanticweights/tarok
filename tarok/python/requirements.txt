@@ -1,0 +1,2 @@
+cpplint == 1.4.5
+-r ../libs/open_spiel/requirements.txt
