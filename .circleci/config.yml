@@ -28,7 +28,7 @@ references:
   run_linter: &run_linter
     run:
       name: Run the linter
-      command: cpplint tarok/src/* tarok/test/*
+      command: python3 /usr/local/lib/python3.7/dist-packages/cpplint.py tarok/src/* tarok/test/*
 
   build_project: &build_project
     run:
