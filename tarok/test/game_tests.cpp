@@ -1,7 +1,7 @@
 /* Copyright 2020 Semantic Weights. All rights reserved. */
 
 #include "gtest/gtest.h"
-#include "src/tarok.h"
+#include "src/game.h"
 
 namespace tarok {
 
