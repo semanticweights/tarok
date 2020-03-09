@@ -20,7 +20,7 @@ find_package(Python3 COMPONENTS Interpreter Development)
 include_directories(SYSTEM ${Python3_INCLUDE_DIRS})
 
 # build the python module
-pybind11_add_module(pytarok game.cpp state.cpp py_bindings.cpp)
+pybind11_add_module(pytarok game.cpp state.cpp cards.cpp py_bindings.cpp)
 # remove the 'lib' prefix from the binary
 set_target_properties(pytarok PROPERTIES PREFIX "")
 target_link_libraries(pytarok PRIVATE
@@ -30,7 +30,7 @@ target_link_libraries(pytarok PRIVATE
 )
 
 # build the C++ library
-add_library(tarok_lib game.cpp state.cpp)
+add_library(tarok_lib game.cpp state.cpp cards.cpp)
 target_link_libraries(tarok_lib PUBLIC
   open_spiel_core
   ${ABSL_LIB}

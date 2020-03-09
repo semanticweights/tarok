@@ -7,11 +7,6 @@
 
 namespace tarok {
 
-std::shared_ptr<const open_spiel::Game> NewTarokGame(
-    const open_spiel::GameParameters& params) {
-  return std::shared_ptr<const open_spiel::Game>(new TarokGame(params));
-}
-
 // game facts
 const open_spiel::GameType kGameType{
     "tarok",            // short_name
@@ -51,5 +46,10 @@ std::shared_ptr<const open_spiel::Game> TarokGame::Clone() const {
 }
 
 int TarokGame::MaxGameLength() const { return 0; }
+
+std::shared_ptr<const TarokGame> NewTarokGame(
+    const open_spiel::GameParameters& params) {
+  return std::shared_ptr<const TarokGame>(new TarokGame(params));
+}
 
 }  // namespace tarok

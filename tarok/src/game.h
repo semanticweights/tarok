@@ -5,13 +5,9 @@
 #include <memory>
 
 #include "open_spiel/spiel.h"
+#include "src/cards.h"
 
 namespace tarok {
-
-// instantiate the game instance via a shared_ptr
-// (see Game declaration comments in open_spiel/spiel.h)
-std::shared_ptr<const open_spiel::Game> NewTarokGame(
-    const open_spiel::GameParameters& params);
 
 class TarokGame : public open_spiel::Game {
  public:
@@ -26,6 +22,13 @@ class TarokGame : public open_spiel::Game {
   std::shared_ptr<const Game> Clone() const override;
   // double UtilitySum() const override;
   int MaxGameLength() const override;
+
+  const std::array<Card, 54> kDeck = BuildDeck();
 };
+
+// instantiate the game instance via a shared_ptr
+// (see Game declaration comments in open_spiel/spiel.h)
+std::shared_ptr<const TarokGame> NewTarokGame(
+    const open_spiel::GameParameters& params);
 
 }  // namespace tarok
