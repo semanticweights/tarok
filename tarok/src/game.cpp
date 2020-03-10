@@ -12,7 +12,7 @@ const open_spiel::GameType kGameType{
     "tarok",            // short_name
     "Slovenian Tarok",  // long_name
     open_spiel::GameType::Dynamics::kSequential,
-    open_spiel::GameType::ChanceMode::kExplicitStochastic,
+    open_spiel::GameType::ChanceMode::kSampledStochastic,
     open_spiel::GameType::Information::kImperfectInformation,
     open_spiel::GameType::Utility::kGeneralSum,
     open_spiel::GameType::RewardModel::kTerminal,
