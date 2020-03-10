@@ -10,6 +10,5 @@ add_subdirectory(libs/open_spiel/open_spiel)
 add_subdirectory(libs/open_spiel/pybind11)
 add_subdirectory(libs/googletest)
 
-set(CMAKE_BUILD_TYPE Debug)
 add_subdirectory(src)
 add_subdirectory(test)
