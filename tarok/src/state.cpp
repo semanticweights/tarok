@@ -5,13 +5,20 @@
 #include <vector>
 
 #include "open_spiel/spiel.h"
+#include "src/game.h"
 #include "src/state.h"
 
 namespace tarok {
 
 // state definition
 TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
-    : open_spiel::State(game) {}
+    : open_spiel::State(game) {
+  // generate random seed
+  unsigned seed = std::chrono::steady_clock::now().time_since_epoch().count();
+  auto splits = DealCards(seed);
+  talon_ = std::get<0>(splits);
+  private_cards_ = std::get<1>(splits);
+}
 
 open_spiel::Player TarokState::CurrentPlayer() const { return -1; }
 

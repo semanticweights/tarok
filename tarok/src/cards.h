@@ -4,6 +4,8 @@
 
 #include <array>
 #include <string>
+#include <tuple>
+#include <vector>
 
 namespace tarok {
 
@@ -24,5 +26,8 @@ class Card {
 };
 
 std::array<Card, 54> BuildDeck();
+
+std::tuple<std::vector<int>, std::array<std::vector<int>, 3>> DealCards(
+    int seed);
 
 }  // namespace tarok

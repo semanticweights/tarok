@@ -1,7 +1,12 @@
 /* Copyright 2020 Semantic Weights. All rights reserved. */
 
+#include <algorithm>
 #include <array>
+#include <iterator>
+#include <random>
 #include <string>
+#include <tuple>
+#include <vector>
 
 #include "src/cards.h"
 
@@ -82,6 +87,33 @@ std::array<Card, 54> BuildDeck() {
       Card(Suit::kClubs, 7, 5, "CKI", "King of Clubs")};
 
   return deck;
+}
+
+std::tuple<std::vector<int>, std::array<std::vector<int>, 3>> DealCards(
+    int seed = 42) {
+  // create vector of card indices
+  std::vector<int> cards(54);
+  std::iota(std::begin(cards), std::end(cards), 0);
+
+  // shuffle indices
+  auto rng = std::default_random_engine(seed);
+  std::shuffle(std::begin(cards), std::end(cards), rng);
+
+  // first six cards are talon
+  std::vector<int>::iterator start(cards.begin());
+  std::vector<int>::iterator end(cards.begin() + 6);
+  std::vector<int> talon(start, end);
+
+  std::array<std::vector<int>, 3> private_cards{};
+  // every player gets next 16 cards
+  std::advance(start, 6);
+  for (int i = 0; i < 3; i++) {
+    std::advance(end, 16);
+    private_cards[i] = std::vector<int>(start, end);
+    std::advance(start, 16);
+  }
+
+  return {talon, private_cards};
 }
 
 }  // namespace tarok

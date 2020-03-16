@@ -4,6 +4,7 @@
 
 #include "open_spiel/spiel.h"
 #include "src/game.h"
+#include "src/state.h"
 
 namespace tarok {
 
@@ -32,7 +33,7 @@ TarokGame::TarokGame(const open_spiel::GameParameters& params)
 int TarokGame::NumDistinctActions() const { return 0; }
 
 std::unique_ptr<open_spiel::State> TarokGame::NewInitialState() const {
-  return nullptr;
+  return std::unique_ptr<open_spiel::State>(new TarokState(shared_from_this()));
 }
 
 int TarokGame::NumPlayers() const { return 3; }
