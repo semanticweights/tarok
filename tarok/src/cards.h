@@ -15,13 +15,12 @@ struct TarokCard {
             std::string long_name);
 
   bool IsTrula() const;
-  std::string ToString() const;
 
-  const CardSuit suit_;
-  const int rank_;
-  const int points_;
-  const std::string short_name_;
-  const std::string long_name_;
+  const CardSuit suit;
+  const int rank;
+  const int points;
+  const std::string short_name;
+  const std::string long_name;
 };
 
 using CardDeck = std::array<TarokCard, 54>;

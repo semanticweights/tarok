@@ -2,6 +2,7 @@
 
 #include "src/cards.h"
 
+#include <algorithm>
 #include <array>
 #include <random>
 #include <string>
@@ -12,17 +13,20 @@ namespace tarok {
 
 TarokCard::TarokCard(CardSuit suit, int rank, int points,
                      std::string short_name, std::string long_name)
-    : suit_(suit),
-      rank_(rank),
-      points_(points),
-      short_name_(short_name),
-      long_name_(long_name) {}
+    : suit(suit),
+      rank(rank),
+      points(points),
+      short_name(short_name),
+      long_name(long_name) {}
 
 bool TarokCard::IsTrula() const {
-  return suit_ == CardSuit::kTaroks && points_ == 5;
+  return suit == CardSuit::kTaroks && points == 5;
 }
 
-std::string TarokCard::ToString() const { return long_name_; }
+// overload cards operator<< so that we can output instances on output stream
+std::ostream &operator<<(std::ostream &stream, const TarokCard &card) {
+  return stream << card.long_name;
+}
 
 CardDeck InitializeCardDeck() {
   static const std::array<TarokCard, 54> deck = {

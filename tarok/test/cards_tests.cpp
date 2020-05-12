@@ -1,45 +1,43 @@
 /* Copyright 2020 Semantic Weights. All rights reserved. */
 
+#include <algorithm>
+
 #include "gtest/gtest.h"
 #include "src/cards.h"
 
 namespace tarok {
 
-TEST(CardsTests, TestDealCards) {
-  auto [talon, private_cards] = DealCards(3, 42);
+class TarokCardsTests : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    num_players_ = 3;
+    std::tie(talon_, players_cards_) = DealCards(num_players_, 42);
+  }
 
-  EXPECT_EQ(talon.size(), 6);  // first element is talon and has 6 cards
-  EXPECT_EQ(private_cards[0].size(), 16);  // each player has 16 cards
-  EXPECT_EQ(private_cards[1].size(), 16);  // each player has 16 cards
-  EXPECT_EQ(private_cards[2].size(), 16);  // each player has 16 cards
+  int num_players_;
+  std::vector<int> talon_;
+  std::vector<std::vector<int>> players_cards_;
+};
 
-  std::array<std::vector<int>, 4> splits = {talon, private_cards[0],
-                                            private_cards[1], private_cards[2]};
+TEST_F(TarokCardsTests, TestDealtCardsSize) {
+  EXPECT_EQ(talon_.size(), 6);
+  for (auto &player_cards : players_cards_) {
+    EXPECT_EQ(player_cards.size(), 16);
+  }
+}
 
-  for (int i = 0; i < splits.size() - 1; i++) {
-    // sort cards
-    sort(splits[i].begin(), splits[i].end());
-    // lowest card must be greater or equal to 0
-    EXPECT_GE(splits[i][0], 0);
-    // highest card must be lower or equal to 53
-    EXPECT_LE(splits[i][0], 53);
+TEST_F(TarokCardsTests, TestDealtCardsContent) {
+  // flatten and sort all the dealt cards
+  std::vector<int> all_dealt_cards(talon_.begin(), talon_.end());
+  for (auto &player_cards : players_cards_) {
+    all_dealt_cards.insert(all_dealt_cards.end(), player_cards.begin(),
+                           player_cards.end());
+  }
+  std::sort(all_dealt_cards.begin(), all_dealt_cards.end());
 
-    for (int j = i + 1; j < splits.size(); j++) {
-      // sort cards
-      sort(splits[j].begin(), splits[j].end());
-      // lowest card must be greater or equal to 0
-      EXPECT_GE(splits[j][0], 0);
-      // highest card must be lower or equal to 53
-      EXPECT_LE(splits[j][0], 53);
-
-      // find intersection
-      std::vector<int> intersection;
-      std::set_intersection(splits[i].begin(), splits[i].end(),
-                            splits[j].begin(), splits[j].end(),
-                            back_inserter(intersection));
-      // intersection must be an empty set
-      EXPECT_EQ(intersection.size(), 0);
-    }
+  // check the actual content
+  for (int i = 0; i < 54; i++) {
+    EXPECT_EQ(all_dealt_cards.at(i), i);
   }
 }
 
