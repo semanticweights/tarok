@@ -11,7 +11,7 @@
 namespace tarok {
 
 inline constexpr int kDefaultNumPLayers = 3;
-// seed for shuffling the cards, should be >= 0, -1 means seeded by clock
+// seed for shuffling the cards, -1 means seeded by clock
 inline constexpr int kDefaultRngSeed = -1;
 
 class TarokGame : public open_spiel::Game {

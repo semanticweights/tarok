@@ -34,9 +34,9 @@ const open_spiel::GameType kGameType{
 TarokGame::TarokGame(const open_spiel::GameParameters& params)
     : Game(kGameType, params),
       num_players_(this->ParameterValue<int>("num_players")),
-      rng_(new std::mt19937(this->ParameterValue<int>("rng_seed") >= 0
-                                ? this->ParameterValue<int>("rng_seed")
-                                : std::time(0))) {}
+      rng_(new std::mt19937(this->ParameterValue<int>("rng_seed") == -1
+                                ? std::time(0)
+                                : this->ParameterValue<int>("rng_seed"))) {}
 
 int TarokGame::NumDistinctActions() const { return 0; }
 

@@ -7,7 +7,8 @@ int main() {
   auto params =
       open_spiel::GameParameters({{"rng_seed", open_spiel::GameParameter(0)}});
   auto game = tarok::NewTarokGame(params);
-  auto state = game->NewInitialTarokState();
+  auto state1 = game->NewInitialTarokState();
+  auto state2 = game->NewInitialTarokState();
 
   return 0;
 }
