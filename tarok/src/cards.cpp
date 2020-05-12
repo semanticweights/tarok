@@ -92,26 +92,24 @@ std::array<Card, 54> BuildDeck() {
 DealtCards DealCards(int numPlayers, int seed) {
   // create vector of card indices
   std::vector<int> cards(54);
-  std::iota(std::begin(cards), std::end(cards), 0);
-
+  std::iota(cards.begin(), cards.end(), 0);
   // shuffle indices
-  auto rng = std::default_random_engine(seed);
-  std::shuffle(std::begin(cards), std::end(cards), rng);
+  std::shuffle(cards.begin(), cards.end(), std::default_random_engine(seed));
 
   // first six cards are talon
-  std::vector<int>::iterator start(cards.begin());
-  std::vector<int>::iterator end(cards.begin() + 6);
-  std::vector<int> talon(start, end);
+  std::vector<int>::iterator begin = cards.begin();
+  std::vector<int>::iterator end = begin + 6;
+  std::vector<int> talon(begin, end);
 
   // deal the rest of the cards to players
   int numCardsPerPlayer = 48 / numPlayers;
   std::vector<std::vector<int>> players_cards;
 
-  std::advance(start, 6);
+  std::advance(begin, 6);
   for (int i = 0; i < numPlayers; i++) {
     std::advance(end, numCardsPerPlayer);
-    players_cards.push_back(std::vector<int>(start, end));
-    std::advance(start, numCardsPerPlayer);
+    players_cards.push_back(std::vector<int>(begin, end));
+    std::advance(begin, numCardsPerPlayer);
   }
 
   return {talon, players_cards};
