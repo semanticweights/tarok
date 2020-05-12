@@ -66,11 +66,6 @@ TarokCard TarokGame::ActionToCard(open_spiel::Action action) const {
   return kCardDeck[action];
 }
 
-std::shared_ptr<const open_spiel::Game> NewGame(
-    const open_spiel::GameParameters& params) {
-  return NewTarokGame(params);
-}
-
 std::shared_ptr<const TarokGame> NewTarokGame(
     const open_spiel::GameParameters& params) {
   return std::shared_ptr<const TarokGame>(new TarokGame(params));

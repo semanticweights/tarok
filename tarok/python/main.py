@@ -3,8 +3,14 @@ import pytarok as ta
 
 
 def main():
-    tarok_game = ta.new_tarok_game({})
-    print(tarok_game.num_distinct_actions())
+    tarok_game = ta.TarokGame({})
+    print("Number of players: {:d}".format(tarok_game.num_players()))
+    tarok_state = tarok_game.new_initial_tarok_state()
+    print("Legal actions: {}".format(tarok_state.legal_actions()))
+    cfr_solver = sp.CFRSolver(tarok_game)
+    print("CFR policy: {}".format(
+        cfr_solver.current_policy().action_probabilities(tarok_state)),
+    )
 
 
 if __name__ == '__main__':
