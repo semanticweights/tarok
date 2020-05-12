@@ -3,6 +3,7 @@
 #include "open_spiel/spiel.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
+#include "src/cards.h"
 #include "src/game.h"
 #include "src/state.h"
 
@@ -24,9 +25,14 @@ PYBIND11_MODULE(pytarok, m) {
   }));
 
   tarok_game.def("new_initial_tarok_state", &TarokGame::NewInitialTarokState);
+  tarok_game.def("action_to_card", &TarokGame::ActionToCard);
 
   // state object
   py::class_<TarokState, open_spiel::State> tarok_state(m, "TarokState");
+
+  // card object
+  py::class_<TarokCard> tarok_card(m, "TarokCard");
+  tarok_card.def("__str__", &TarokCard::ToString);
 }
 
 }  // namespace tarok

@@ -23,6 +23,8 @@ bool TarokCard::IsTrula() const {
   return suit == CardSuit::kTaroks && points == 5;
 }
 
+std::string TarokCard::ToString() const { return long_name; }
+
 // overload cards operator<< so that we can output instances on output stream
 std::ostream &operator<<(std::ostream &stream, const TarokCard &card) {
   return stream << card.long_name;
