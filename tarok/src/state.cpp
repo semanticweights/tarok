@@ -14,8 +14,9 @@ namespace tarok {
 // state definition
 TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
     : open_spiel::State(game),
-      parent_game_(static_cast<const TarokGame&>(*game)) {
-  std::tie(talon_, players_cards_) = DealCards(parent_game_.RngSeed());
+      tarok_parent_game_(static_cast<const TarokGame&>(*game)) {
+  std::tie(talon_, players_cards) =
+      DealCards(game->NumPlayers(), tarok_parent_game_.RngSeed());
 }
 
 open_spiel::Player TarokState::CurrentPlayer() const { return -1; }

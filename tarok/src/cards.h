@@ -27,7 +27,8 @@ class Card {
 
 std::array<Card, 54> BuildDeck();
 
-std::tuple<std::vector<int>, std::array<std::vector<int>, 3>> DealCards(
-    int seed);
+// a type for a pair holding talon and players' private cards
+using DealtCards = std::tuple<std::vector<int>, std::vector<std::vector<int>>>;
+DealtCards DealCards(int numPlayers, int seed);
 
 }  // namespace tarok

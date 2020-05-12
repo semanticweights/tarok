@@ -32,9 +32,9 @@ class TarokState : public open_spiel::State {
   void DoApplyAction(open_spiel::Action action_id) override;
 
  private:
-  const TarokGame& parent_game_;
+  const TarokGame& tarok_parent_game_;
   std::vector<int> talon_;
-  std::array<std::vector<int>, 3> players_cards_;
+  std::vector<std::vector<int>> players_cards;
 };
 
 }  // namespace tarok

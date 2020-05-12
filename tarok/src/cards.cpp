@@ -89,8 +89,7 @@ std::array<Card, 54> BuildDeck() {
   return deck;
 }
 
-std::tuple<std::vector<int>, std::array<std::vector<int>, 3>> DealCards(
-    int seed) {
+DealtCards DealCards(int numPlayers, int seed) {
   // create vector of card indices
   std::vector<int> cards(54);
   std::iota(std::begin(cards), std::end(cards), 0);
@@ -104,16 +103,18 @@ std::tuple<std::vector<int>, std::array<std::vector<int>, 3>> DealCards(
   std::vector<int>::iterator end(cards.begin() + 6);
   std::vector<int> talon(start, end);
 
-  std::array<std::vector<int>, 3> private_cards{};
-  // every player gets next 16 cards
+  // deal the rest of the cards to players
+  int numCardsPerPlayer = 48 / numPlayers;
+  std::vector<std::vector<int>> players_cards;
+
   std::advance(start, 6);
-  for (int i = 0; i < 3; i++) {
-    std::advance(end, 16);
-    private_cards[i] = std::vector<int>(start, end);
-    std::advance(start, 16);
+  for (int i = 0; i < numPlayers; i++) {
+    std::advance(end, numCardsPerPlayer);
+    players_cards.push_back(std::vector<int>(start, end));
+    std::advance(start, numCardsPerPlayer);
   }
 
-  return {talon, private_cards};
+  return {talon, players_cards};
 }
 
 }  // namespace tarok

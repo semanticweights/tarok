@@ -6,7 +6,7 @@
 namespace tarok {
 
 TEST(CardsTests, TestDealCards) {
-  auto [talon, private_cards] = DealCards(42);
+  auto [talon, private_cards] = DealCards(3, 42);
 
   EXPECT_EQ(talon.size(), 6);  // first element is talon and has 6 cards
   EXPECT_EQ(private_cards[0].size(), 16);  // each player has 16 cards
