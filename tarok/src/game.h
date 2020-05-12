@@ -9,6 +9,9 @@
 
 namespace tarok {
 
+inline constexpr int kDefaultNumPLayers = 3;
+inline constexpr int kDefaultRngSeed = 0;
+
 class TarokGame : public open_spiel::Game {
  public:
   explicit TarokGame(const open_spiel::GameParameters& params);
@@ -23,12 +26,17 @@ class TarokGame : public open_spiel::Game {
   // double UtilitySum() const override;
   int MaxGameLength() const override;
 
-  const std::array<Card, 54> kDeck = BuildDeck();
+  int RngSeed() const { return rng_seed_; }
+
+ private:
+  inline static const std::array<Card, 54> kDeck = BuildDeck();
+  int num_players_;
+  int rng_seed_;
 };
 
 // instantiate the game instance via a shared_ptr
 // (see Game declaration comments in open_spiel/spiel.h)
-std::shared_ptr<const TarokGame> NewTarokGame(
+std::shared_ptr<const open_spiel::Game> NewTarokGame(
     const open_spiel::GameParameters& params);
 
 }  // namespace tarok

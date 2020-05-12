@@ -1,5 +1,7 @@
 /* Copyright 2020 Semantic Weights. All rights reserved. */
 
+#include "src/cards.h"
+
 #include <algorithm>
 #include <array>
 #include <iterator>
@@ -7,8 +9,6 @@
 #include <string>
 #include <tuple>
 #include <vector>
-
-#include "src/cards.h"
 
 namespace tarok {
 
@@ -90,7 +90,7 @@ std::array<Card, 54> BuildDeck() {
 }
 
 std::tuple<std::vector<int>, std::array<std::vector<int>, 3>> DealCards(
-    int seed = 42) {
+    int seed) {
   // create vector of card indices
   std::vector<int> cards(54);
   std::iota(std::begin(cards), std::end(cards), 0);

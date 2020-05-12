@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "open_spiel/spiel.h"
+#include "src/game.h"
 
 namespace tarok {
 
@@ -27,11 +28,13 @@ class TarokState : public open_spiel::State {
   std::unique_ptr<State> Clone() const override;
   open_spiel::ActionsAndProbs ChanceOutcomes() const override;
 
-  std::vector<int> talon_;
-  std::array<std::vector<int>, 3> private_cards_;
-
  protected:
   void DoApplyAction(open_spiel::Action action_id) override;
+
+ private:
+  const TarokGame& parent_game_;
+  std::vector<int> talon_;
+  std::array<std::vector<int>, 3> players_cards_;
 };
 
 }  // namespace tarok
