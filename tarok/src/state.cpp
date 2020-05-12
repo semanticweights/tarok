@@ -1,17 +1,23 @@
 /* Copyright 2020 Semantic Weights. All rights reserved. */
 
+#include "src/state.h"
+
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "open_spiel/spiel.h"
-#include "src/state.h"
+#include "src/game.h"
 
 namespace tarok {
 
 // state definition
 TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
-    : open_spiel::State(game) {}
+    : open_spiel::State(game),
+      tarok_parent_game_(static_cast<const TarokGame&>(*game)) {
+  std::tie(talon_, players_cards) =
+      DealCards(game->NumPlayers(), tarok_parent_game_.ShuffleCardDeckSeed());
+}
 
 open_spiel::Player TarokState::CurrentPlayer() const { return -1; }
 

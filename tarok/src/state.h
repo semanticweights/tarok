@@ -10,6 +10,8 @@
 
 namespace tarok {
 
+class TarokGame;
+
 class TarokState : public open_spiel::State {
  public:
   explicit TarokState(std::shared_ptr<const open_spiel::Game> game);
@@ -29,6 +31,11 @@ class TarokState : public open_spiel::State {
 
  protected:
   void DoApplyAction(open_spiel::Action action_id) override;
+
+ private:
+  const TarokGame& tarok_parent_game_;
+  std::vector<int> talon_;
+  std::vector<std::vector<int>> players_cards;
 };
 
 }  // namespace tarok
