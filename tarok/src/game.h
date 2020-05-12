@@ -27,9 +27,10 @@ class TarokGame : public open_spiel::Game {
   int MaxGameLength() const override;
 
   int RngSeed() const { return rng_seed_; }
+  TarokCard ActionToCard(open_spiel::Action action) const;
 
  private:
-  inline static const std::array<Card, 54> kDeck = BuildDeck();
+  inline static const CardDeck kCardDeck = InitializeCardDeck();
   int num_players_;
   int rng_seed_;
 };

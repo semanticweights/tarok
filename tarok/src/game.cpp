@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "open_spiel/spiel.h"
+#include "src/cards.h"
 #include "src/state.h"
 
 namespace tarok {
@@ -51,6 +52,10 @@ std::shared_ptr<const open_spiel::Game> TarokGame::Clone() const {
 }
 
 int TarokGame::MaxGameLength() const { return 0; }
+
+TarokCard TarokGame::ActionToCard(open_spiel::Action action) const {
+  return kCardDeck[action];
+}
 
 std::shared_ptr<const open_spiel::Game> NewTarokGame(
     const open_spiel::GameParameters& params) {
