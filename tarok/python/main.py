@@ -8,9 +8,8 @@ def main():
     tarok_state = tarok_game.new_initial_tarok_state()
     print("Legal actions: {}".format(tarok_state.legal_actions()))
     cfr_solver = sp.CFRSolver(tarok_game)
-    print("CFR policy: {}".format(
-        cfr_solver.current_policy().action_probabilities(tarok_state)),
-    )
+    policy = cfr_solver.current_policy().action_probabilities(tarok_state)
+    print("CFR policy: {}".format(policy))
 
 
 if __name__ == '__main__':
