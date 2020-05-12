@@ -8,6 +8,6 @@ namespace tarok {
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(pytarok, m) { m.def("new_tarok_game", &NewTarokGame); }
+PYBIND11_MODULE(pytarok, m) { m.def("new_tarok_game", &NewGame); }
 
 }  // namespace tarok

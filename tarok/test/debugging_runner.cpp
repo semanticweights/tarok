@@ -4,9 +4,10 @@
 #include "src/game.h"
 
 int main() {
-  open_spiel::GameParameters params = open_spiel::GameParameters();
-  std::shared_ptr<const open_spiel::Game> game = tarok::NewTarokGame(params);
-  std::unique_ptr<open_spiel::State> state = game->NewInitialState();
+  auto params =
+      open_spiel::GameParameters({{"rng_seed", open_spiel::GameParameter(0)}});
+  auto game = tarok::NewTarokGame(params);
+  auto state = game->NewInitialTarokState();
 
   return 0;
 }

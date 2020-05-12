@@ -100,8 +100,8 @@ DealtCards DealCards(int numPlayers, int seed) {
   std::shuffle(cards.begin(), cards.end(), std::default_random_engine(seed));
 
   // first six cards are talon
-  std::vector<int>::iterator begin = cards.begin();
-  std::vector<int>::iterator end = begin + 6;
+  auto begin = cards.begin();
+  auto end = begin + 6;
   std::vector<int> talon(begin, end);
 
   // deal the rest of the cards to players

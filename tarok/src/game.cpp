@@ -2,6 +2,7 @@
 
 #include "src/game.h"
 
+#include <ctime>
 #include <memory>
 
 #include "open_spiel/spiel.h"
@@ -19,7 +20,7 @@ const open_spiel::GameType kGameType{
     open_spiel::GameType::Information::kImperfectInformation,
     open_spiel::GameType::Utility::kGeneralSum,
     open_spiel::GameType::RewardModel::kTerminal,
-    3,      // max_num_players
+    4,      // max_num_players
     3,      // min_num_players
     true,   // provides_information_state_string
     false,  // provides_information_state_tensor
@@ -33,12 +34,18 @@ const open_spiel::GameType kGameType{
 TarokGame::TarokGame(const open_spiel::GameParameters& params)
     : Game(kGameType, params),
       num_players_(this->ParameterValue<int>("num_players")),
-      rng_seed_(this->ParameterValue<int>("rng_seed")) {}
+      rng_(new std::mt19937(this->ParameterValue<int>("rng_seed") >= 0
+                                ? this->ParameterValue<int>("rng_seed")
+                                : std::time(0))) {}
 
 int TarokGame::NumDistinctActions() const { return 0; }
 
 std::unique_ptr<open_spiel::State> TarokGame::NewInitialState() const {
-  return std::unique_ptr<open_spiel::State>(new TarokState(shared_from_this()));
+  return NewInitialTarokState();
+}
+
+std::unique_ptr<TarokState> TarokGame::NewInitialTarokState() const {
+  return std::unique_ptr<TarokState>(new TarokState(shared_from_this()));
 }
 
 int TarokGame::NumPlayers() const { return num_players_; }
@@ -53,13 +60,20 @@ std::shared_ptr<const open_spiel::Game> TarokGame::Clone() const {
 
 int TarokGame::MaxGameLength() const { return 0; }
 
+int TarokGame::ShuffleCardDeckSeed() const { return rng_->operator()(); }
+
 TarokCard TarokGame::ActionToCard(open_spiel::Action action) const {
   return kCardDeck[action];
 }
 
-std::shared_ptr<const open_spiel::Game> NewTarokGame(
+std::shared_ptr<const open_spiel::Game> NewGame(
     const open_spiel::GameParameters& params) {
-  return std::shared_ptr<const open_spiel::Game>(new TarokGame(params));
+  return NewTarokGame(params);
+}
+
+std::shared_ptr<const TarokGame> NewTarokGame(
+    const open_spiel::GameParameters& params) {
+  return std::shared_ptr<const TarokGame>(new TarokGame(params));
 }
 
 }  // namespace tarok

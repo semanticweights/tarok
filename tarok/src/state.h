@@ -7,9 +7,10 @@
 #include <vector>
 
 #include "open_spiel/spiel.h"
-#include "src/game.h"
 
 namespace tarok {
+
+class TarokGame;
 
 class TarokState : public open_spiel::State {
  public:
