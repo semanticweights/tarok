@@ -39,9 +39,6 @@ class TarokGame : public open_spiel::Game {
 
 // instantiate the game instance via a shared_ptr
 // (see Game declaration comments in open_spiel/spiel.h)
-std::shared_ptr<const open_spiel::Game> NewGame(
-    const open_spiel::GameParameters& params);
-
 std::shared_ptr<const TarokGame> NewTarokGame(
     const open_spiel::GameParameters& params);
 
