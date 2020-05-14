@@ -97,6 +97,9 @@ open_spiel::ActionsAndProbs TarokState::ChanceOutcomes() const {
 std::vector<int> TarokState::Talon() const { return talon_; }
 
 std::vector<int> TarokState::PlayerCards(open_spiel::Player player) const {
+  if (current_game_phase_ == GamePhase::kCardDealing) {
+    return {};
+  }
   return players_cards_.at(player);
 }
 
