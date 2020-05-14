@@ -36,6 +36,8 @@ class TarokState : public open_spiel::State {
   std::string InformationStateString(open_spiel::Player player) const override;
   std::unique_ptr<State> Clone() const override;
   open_spiel::ActionsAndProbs ChanceOutcomes() const override;
+  std::vector<int> Talon() const;
+  std::vector<int> PlayerCards(open_spiel::Player player) const;
 
  protected:
   void DoApplyAction(open_spiel::Action action_id) override;

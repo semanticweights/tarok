@@ -17,9 +17,18 @@ TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
     : open_spiel::State(game),
       tarok_parent_game_(static_cast<const TarokGame&>(*game)),
       current_game_phase_(GamePhase::kCardDealing),
-      current_player_(open_spiel::kChancePlayerId) {}
+      current_player_(0) {}
 
-open_spiel::Player TarokState::CurrentPlayer() const { return current_player_; }
+open_spiel::Player TarokState::CurrentPlayer() const {
+  switch (current_game_phase_) {
+    case GamePhase::kCardDealing:
+      return open_spiel::kChancePlayerId;
+    case GamePhase::kFinished:
+      return open_spiel::kTerminalPlayerId;
+    default:
+      return current_player_;
+  }
+}
 
 std::vector<open_spiel::Action> TarokState::LegalActions() const {
   switch (current_game_phase_) {
@@ -85,6 +94,12 @@ open_spiel::ActionsAndProbs TarokState::ChanceOutcomes() const {
   return {};
 }
 
+std::vector<int> TarokState::Talon() const { return talon_; }
+
+std::vector<int> TarokState::PlayerCards(open_spiel::Player player) const {
+  return players_cards_.at(player);
+}
+
 void TarokState::DoApplyAction(open_spiel::Action action_id) {
   // todo: we should probably check that action is legal for the current player
   switch (current_game_phase_) {
@@ -111,7 +126,6 @@ void TarokState::DoApplyActionInCardDealing() {
       DealCards(tarok_parent_game_.NumPlayers(),
                 tarok_parent_game_.ShuffleCardDeckSeed());
   current_game_phase_ = GamePhase::kBidding;
-  current_player_ = 0;
 }
 
 }  // namespace tarok
