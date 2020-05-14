@@ -12,7 +12,7 @@ namespace tarok {
 
 inline constexpr int kDefaultNumPLayers = 3;
 // seed for shuffling the cards, -1 means seeded by clock
-inline constexpr int kDefaultRngSeed = -1;
+inline constexpr int kDefaultSeed = -1;
 
 class TarokGame : public open_spiel::Game {
  public:
@@ -27,7 +27,6 @@ class TarokGame : public open_spiel::Game {
   double MaxUtility() const override;
   std::shared_ptr<const Game> Clone() const override;
   int MaxGameLength() const override;
-  TarokCard ActionToCard(open_spiel::Action action) const;
 
  private:
   friend class TarokState;

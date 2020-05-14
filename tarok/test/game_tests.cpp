@@ -16,7 +16,7 @@ TEST(TarokGameTests, TestDefaultNumPlayers) {
 
 TEST(TarokGameTests, TestCardDeckShufflingSeed) {
   auto game = tarok::NewTarokGame(
-      open_spiel::GameParameters({{"rng_seed", open_spiel::GameParameter(0)}}));
+      open_spiel::GameParameters({{"seed", open_spiel::GameParameter(0)}}));
   // subsequent shuffles within the same game should be different
   auto state1 = game->NewInitialTarokState();
   state1->ApplyAction(0);
@@ -25,7 +25,7 @@ TEST(TarokGameTests, TestCardDeckShufflingSeed) {
   EXPECT_NE(state1->Talon(), state2->Talon());
 
   game = tarok::NewTarokGame(
-      open_spiel::GameParameters({{"rng_seed", open_spiel::GameParameter(0)}}));
+      open_spiel::GameParameters({{"seed", open_spiel::GameParameter(0)}}));
   // shuffles should be the same when recreating a game with the same seed
   auto state3 = game->NewInitialTarokState();
   state3->ApplyAction(0);

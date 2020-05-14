@@ -28,15 +28,15 @@ const open_spiel::GameType kGameType{
     false,  // provides_observation_tensor
     // parameter_specification
     {{"num_players", open_spiel::GameParameter(kDefaultNumPLayers)},
-     {"rng_seed", open_spiel::GameParameter(kDefaultRngSeed)}}};
+     {"seed", open_spiel::GameParameter(kDefaultSeed)}}};
 
 // game definition
 TarokGame::TarokGame(const open_spiel::GameParameters& params)
     : Game(kGameType, params),
       num_players_(ParameterValue<int>("num_players")),
-      rng_(new std::mt19937(ParameterValue<int>("rng_seed") == -1
+      rng_(new std::mt19937(ParameterValue<int>("seed") == -1
                                 ? std::time(0)
-                                : ParameterValue<int>("rng_seed"))) {}
+                                : ParameterValue<int>("seed"))) {}
 
 int TarokGame::NumDistinctActions() const {
   // todo: implement
@@ -79,10 +79,6 @@ int TarokGame::MaxGameLength() const {
 }
 
 int TarokGame::ShuffleCardDeckSeed() const { return rng_->operator()(); }
-
-TarokCard TarokGame::ActionToCard(open_spiel::Action action) const {
-  return kCardDeck[action];
-}
 
 std::shared_ptr<const TarokGame> NewTarokGame(
     const open_spiel::GameParameters& params) {

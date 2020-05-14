@@ -24,7 +24,6 @@ PYBIND11_MODULE(pytarok, m) {
     return std::shared_ptr<TarokGame>(new TarokGame(params));
   }));
   tarok_game.def("new_initial_tarok_state", &TarokGame::NewInitialTarokState);
-  tarok_game.def("action_to_card", &TarokGame::ActionToCard);
 
   // state object
   py::class_<TarokState, open_spiel::State> tarok_state(m, "TarokState");
