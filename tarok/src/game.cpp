@@ -33,12 +33,15 @@ const open_spiel::GameType kGameType{
 // game definition
 TarokGame::TarokGame(const open_spiel::GameParameters& params)
     : Game(kGameType, params),
-      num_players_(this->ParameterValue<int>("num_players")),
-      rng_(new std::mt19937(this->ParameterValue<int>("rng_seed") == -1
+      num_players_(ParameterValue<int>("num_players")),
+      rng_(new std::mt19937(ParameterValue<int>("rng_seed") == -1
                                 ? std::time(0)
-                                : this->ParameterValue<int>("rng_seed"))) {}
+                                : ParameterValue<int>("rng_seed"))) {}
 
-int TarokGame::NumDistinctActions() const { return 0; }
+int TarokGame::NumDistinctActions() const {
+  // todo: implement
+  return 0;
+}
 
 std::unique_ptr<open_spiel::State> TarokGame::NewInitialState() const {
   return NewInitialTarokState();
@@ -48,17 +51,32 @@ std::unique_ptr<TarokState> TarokGame::NewInitialTarokState() const {
   return std::unique_ptr<TarokState>(new TarokState(shared_from_this()));
 }
 
+int TarokGame::MaxChanceOutcomes() const {
+  // game is implicitly stochastic
+  return 1;
+}
+
 int TarokGame::NumPlayers() const { return num_players_; }
 
-double TarokGame::MinUtility() const { return 0.0; }
+double TarokGame::MinUtility() const {
+  // todo: implement
+  return 0.0;
+}
 
-double TarokGame::MaxUtility() const { return 0.0; }
+double TarokGame::MaxUtility() const {
+  // todo: implement
+  return 0.0;
+}
 
 std::shared_ptr<const open_spiel::Game> TarokGame::Clone() const {
+  // todo: implement
   return nullptr;
 }
 
-int TarokGame::MaxGameLength() const { return 0; }
+int TarokGame::MaxGameLength() const {
+  // todo: implement
+  return 0;
+}
 
 int TarokGame::ShuffleCardDeckSeed() const { return rng_->operator()(); }
 

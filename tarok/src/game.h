@@ -21,24 +21,25 @@ class TarokGame : public open_spiel::Game {
   int NumDistinctActions() const override;
   std::unique_ptr<open_spiel::State> NewInitialState() const override;
   std::unique_ptr<TarokState> NewInitialTarokState() const;
-  // int MaxChanceOutcomes() const override;
+  int MaxChanceOutcomes() const override;
   int NumPlayers() const override;
   double MinUtility() const override;
   double MaxUtility() const override;
   std::shared_ptr<const Game> Clone() const override;
-  // double UtilitySum() const override;
   int MaxGameLength() const override;
-  int ShuffleCardDeckSeed() const;
   TarokCard ActionToCard(open_spiel::Action action) const;
 
  private:
+  friend class TarokState;
+  int ShuffleCardDeckSeed() const;
+
   inline static const CardDeck kCardDeck = InitializeCardDeck();
-  int num_players_;
+  const int num_players_;
   std::unique_ptr<std::mt19937> rng_;
 };
 
-// instantiate the game instance via a shared_ptr
-// (see Game declaration comments in open_spiel/spiel.h)
+// instantiate the game instance via a shared_ptr, see game declaration
+// comments in open_spiel/spiel.h for more info
 std::shared_ptr<const TarokGame> NewTarokGame(
     const open_spiel::GameParameters& params);
 

@@ -19,8 +19,8 @@ PYBIND11_MODULE(pytarok, m) {
       tarok_game(m, "TarokGame");
 
   tarok_game.def(py::init([](const open_spiel::GameParameters& params) {
-    // instantiate the game instance via a shared_ptr
-    // (see Game declaration comments in open_spiel/spiel.h)
+    // instantiate the game instance via a shared_ptr, see game declaration
+    // comments in open_spiel/spiel.h for more info
     return std::shared_ptr<TarokGame>(new TarokGame(params));
   }));
 
