@@ -21,7 +21,7 @@ class TarokCardsTests : public ::testing::Test {
 
 TEST_F(TarokCardsTests, TestDealtCardsSize) {
   EXPECT_EQ(talon_.size(), 6);
-  for (auto &player_cards : players_cards_) {
+  for (auto const& player_cards : players_cards_) {
     EXPECT_EQ(player_cards.size(), 16);
   }
 }
@@ -29,7 +29,7 @@ TEST_F(TarokCardsTests, TestDealtCardsSize) {
 TEST_F(TarokCardsTests, TestDealtCardsContent) {
   // flatten and sort all the dealt cards
   std::vector<int> all_dealt_cards(talon_.begin(), talon_.end());
-  for (auto &player_cards : players_cards_) {
+  for (auto const& player_cards : players_cards_) {
     all_dealt_cards.insert(all_dealt_cards.end(), player_cards.begin(),
                            player_cards.end());
   }

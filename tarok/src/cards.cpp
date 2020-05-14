@@ -109,6 +109,7 @@ DealtCards DealCards(int numPlayers, int seed) {
   // deal the rest of the cards to players
   int numCardsPerPlayer = 48 / numPlayers;
   std::vector<std::vector<int>> players_cards;
+  players_cards.reserve(numPlayers);
 
   std::advance(begin, 6);
   for (int i = 0; i < numPlayers; i++) {
