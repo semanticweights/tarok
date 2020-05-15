@@ -87,19 +87,16 @@ std::unique_ptr<open_spiel::State> TarokState::Clone() const {
 }
 
 open_spiel::ActionsAndProbs TarokState::ChanceOutcomes() const {
-  if (current_game_phase_ == GamePhase::kCardDealing) {
+  if (current_game_phase_ == GamePhase::kCardDealing)
     // return a dummy action with probability 1 due to implicit stochasticity
     return {{0, 1.0}};
-  }
   return {};
 }
 
 std::vector<int> TarokState::Talon() const { return talon_; }
 
 std::vector<int> TarokState::PlayerCards(open_spiel::Player player) const {
-  if (current_game_phase_ == GamePhase::kCardDealing) {
-    return {};
-  }
+  if (current_game_phase_ == GamePhase::kCardDealing) return {};
   return players_cards_.at(player);
 }
 
