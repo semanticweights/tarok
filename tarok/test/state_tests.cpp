@@ -20,9 +20,9 @@ TEST(TarokStateTests, TestCardDealingPhase) {
 
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_TRUE(!state->Talon().empty());
+  EXPECT_FALSE(state->Talon().empty());
   for (int i = 0; i < game->NumPlayers(); i++) {
-    EXPECT_TRUE(!state->PlayerCards(i).empty());
+    EXPECT_FALSE(state->PlayerCards(i).empty());
   }
 }
 
