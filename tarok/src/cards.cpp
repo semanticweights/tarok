@@ -23,14 +23,14 @@ bool TarokCard::IsTrula() const {
   return suit == CardSuit::kTaroks && points == 5;
 }
 
-std::string TarokCard::ToString() const { return long_name; }
+const std::string TarokCard::ToString() const { return long_name; }
 
 // overload cards operator<< so that we can output instances on output stream
 std::ostream &operator<<(std::ostream &stream, const TarokCard &card) {
-  return stream << card.long_name;
+  return stream << card.ToString();
 }
 
-std::array<TarokCard, 54> InitializeCardDeck() {
+const std::array<TarokCard, 54> InitializeCardDeck() {
   static const std::array<TarokCard, 54> deck = {
       // taroks
       TarokCard(CardSuit::kTaroks, 8, 5, "T1", "Pagat"),
