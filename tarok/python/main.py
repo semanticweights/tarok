@@ -3,17 +3,17 @@ import pytarok as ta
 
 
 def main():
-    # game and state are pyspiel's subtypes, i.e. TarokGame and TarokState
-    tarok_game = ta.TarokGame({})
-    print("Number of players: {:d}".format(tarok_game.num_players()))
-    tarok_state = tarok_game.new_initial_tarok_state()
-    print("Legal actions: {}".format(tarok_state.legal_actions()))
-    print("Human readable action: {}".format(tarok_game.action_to_card(0)))
+    game = ta.TarokGame({'seed': sp.GameParameter(0)})
+    state = game.new_initial_tarok_state()
+    print("Current player: {}".format(state.current_player()))
+    print("Legal actions: {}".format(state.legal_actions()))
+    print("Chance outcomes: {}\n".format(state.chance_outcomes()))
 
-    # they can be used with pyspiel algorithm implementations
-    cfr_solver = sp.CFRSolver(tarok_game)
-    policy = cfr_solver.current_policy().action_probabilities(tarok_state)
-    print("CFR policy: {}".format(policy))
+    print("Dealing cards...")
+    state.apply_action(0)
+    print("Current player: {}".format(state.current_player()))
+    print("Player cards: {}".format(state.player_cards(0)))
+    print("Talon: {}".format(state.talon()))
 
 
 if __name__ == '__main__':

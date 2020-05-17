@@ -10,6 +10,14 @@
 
 namespace tarok {
 
+enum class GamePhase {
+  kCardDealing,
+  kBidding,
+  kTalonExchange,
+  kTricksPlaying,
+  kFinished
+};
+
 class TarokGame;
 
 class TarokState : public open_spiel::State {
@@ -28,14 +36,20 @@ class TarokState : public open_spiel::State {
   std::string InformationStateString(open_spiel::Player player) const override;
   std::unique_ptr<State> Clone() const override;
   open_spiel::ActionsAndProbs ChanceOutcomes() const override;
+  std::vector<int> Talon() const;
+  std::vector<int> PlayerCards(open_spiel::Player player) const;
 
  protected:
   void DoApplyAction(open_spiel::Action action_id) override;
 
  private:
-  const TarokGame& tarok_parent_game_;
+  void DoApplyActionInCardDealing();
+
+  std::shared_ptr<const TarokGame> tarok_parent_game_;
+  GamePhase current_game_phase_;
+  open_spiel::Player current_player_;
   std::vector<int> talon_;
-  std::vector<std::vector<int>> players_cards;
+  std::vector<std::vector<int>> players_cards_;
 };
 
 }  // namespace tarok

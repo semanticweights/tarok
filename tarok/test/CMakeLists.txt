@@ -1,6 +1,6 @@
 # build the test runner binary
-add_executable(tarok_tests game_tests.cpp cards_tests.cpp)
-target_link_libraries(tarok_tests gtest_main tarok_lib)
+add_executable(tarok_tests game_tests.cpp state_tests.cpp cards_tests.cpp)
+target_link_libraries(tarok_tests gtest_main gmock tarok_lib)
 add_test(NAME all_tests COMMAND run)
 
 # build the debugging runner binary

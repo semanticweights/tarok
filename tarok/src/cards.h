@@ -15,7 +15,7 @@ struct TarokCard {
             std::string long_name);
 
   bool IsTrula() const;
-  std::string ToString() const;
+  const std::string ToString() const;
 
   const CardSuit suit;
   const int rank;
@@ -24,11 +24,10 @@ struct TarokCard {
   const std::string long_name;
 };
 
-using CardDeck = std::array<TarokCard, 54>;
-CardDeck InitializeCardDeck();
+const std::array<TarokCard, 54> InitializeCardDeck();
 
 // a type for a pair holding talon and players' private cards
 using DealtCards = std::tuple<std::vector<int>, std::vector<std::vector<int>>>;
-DealtCards DealCards(int numPlayers, int seed);
+DealtCards DealCards(int num_players, int seed);
 
 }  // namespace tarok

@@ -23,14 +23,14 @@ bool TarokCard::IsTrula() const {
   return suit == CardSuit::kTaroks && points == 5;
 }
 
-std::string TarokCard::ToString() const { return long_name; }
+const std::string TarokCard::ToString() const { return long_name; }
 
 // overload cards operator<< so that we can output instances on output stream
 std::ostream &operator<<(std::ostream &stream, const TarokCard &card) {
-  return stream << card.long_name;
+  return stream << card.ToString();
 }
 
-CardDeck InitializeCardDeck() {
+const std::array<TarokCard, 54> InitializeCardDeck() {
   static const std::array<TarokCard, 54> deck = {
       // taroks
       TarokCard(CardSuit::kTaroks, 8, 5, "T1", "Pagat"),
@@ -94,7 +94,7 @@ CardDeck InitializeCardDeck() {
   return deck;
 }
 
-DealtCards DealCards(int numPlayers, int seed) {
+DealtCards DealCards(int num_players, int seed) {
   // create vector of card indices
   std::vector<int> cards(54);
   std::iota(cards.begin(), cards.end(), 0);
@@ -107,14 +107,15 @@ DealtCards DealCards(int numPlayers, int seed) {
   std::vector<int> talon(begin, end);
 
   // deal the rest of the cards to players
-  int numCardsPerPlayer = 48 / numPlayers;
+  int num_cards_per_player = 48 / num_players;
   std::vector<std::vector<int>> players_cards;
+  players_cards.reserve(num_players);
 
   std::advance(begin, 6);
-  for (int i = 0; i < numPlayers; i++) {
-    std::advance(end, numCardsPerPlayer);
+  for (int i = 0; i < num_players; i++) {
+    std::advance(end, num_cards_per_player);
     players_cards.push_back(std::vector<int>(begin, end));
-    std::advance(begin, numCardsPerPlayer);
+    std::advance(begin, num_cards_per_player);
   }
 
   return {talon, players_cards};

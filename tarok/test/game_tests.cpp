@@ -14,24 +14,25 @@ TEST(TarokGameTests, TestDefaultNumPlayers) {
   EXPECT_EQ(game->NumPlayers(), 4);
 }
 
-// todo: enable and implement this test when information strings are implemented
-TEST(TarokGameTests, DISABLED_TestCardDeckShufflingSeed) {
+TEST(TarokGameTests, TestCardDeckShufflingSeed) {
   auto game = tarok::NewTarokGame(
-      open_spiel::GameParameters({{"rng_seed", open_spiel::GameParameter(0)}}));
-  auto state1 = game->NewInitialTarokState();
-  auto state2 = game->NewInitialTarokState();
+      open_spiel::GameParameters({{"seed", open_spiel::GameParameter(0)}}));
   // subsequent shuffles within the same game should be different
-  EXPECT_NE(state1, state2);
+  auto state1 = game->NewInitialTarokState();
+  state1->ApplyAction(0);
+  auto state2 = game->NewInitialTarokState();
+  state2->ApplyAction(0);
+  EXPECT_NE(state1->Talon(), state2->Talon());
 
   game = tarok::NewTarokGame(
-      open_spiel::GameParameters({{"rng_seed", open_spiel::GameParameter(0)}}));
-  auto state3 = game->NewInitialTarokState();
-  auto state4 = game->NewInitialTarokState();
-  EXPECT_NE(state3, state4);
-
+      open_spiel::GameParameters({{"seed", open_spiel::GameParameter(0)}}));
   // shuffles should be the same when recreating a game with the same seed
-  EXPECT_EQ(state1, state3);
-  EXPECT_EQ(state2, state4);
+  auto state3 = game->NewInitialTarokState();
+  state3->ApplyAction(0);
+  auto state4 = game->NewInitialTarokState();
+  state4->ApplyAction(0);
+  EXPECT_EQ(state1->Talon(), state3->Talon());
+  EXPECT_EQ(state2->Talon(), state4->Talon());
 }
 
 }  // namespace tarok
