@@ -29,12 +29,17 @@ PYBIND11_MODULE(pytarok, m) {
 
   // state object
   py::class_<TarokState, open_spiel::State> tarok_state(m, "TarokState");
+  tarok_state.def("current_game_phase", &TarokState::CurrentGamePhase);
   tarok_state.def("talon", &TarokState::Talon);
   tarok_state.def("player_cards", &TarokState::PlayerCards);
 
-  // card object
-  py::class_<TarokCard> tarok_card(m, "TarokCard");
-  tarok_card.def("__str__", &TarokCard::ToString);
+  // game phase object
+  py::enum_<GamePhase> game_phase(m, "GamePhase");
+  game_phase.value("CARD_DEALING", GamePhase::kCardDealing);
+  game_phase.value("BIDDING", GamePhase::kBidding);
+  game_phase.value("TALON_EXCHANGE", GamePhase::kTalonExchange);
+  game_phase.value("TRICKS_PLAYING", GamePhase::kTricksPlaying);
+  game_phase.value("FINISHED", GamePhase::kFinished);
 }
 
 }  // namespace tarok
