@@ -30,11 +30,14 @@ class TarokGame : public open_spiel::Game {
 
  private:
   friend class TarokState;
-  int ShuffleCardDeckSeed() const;
+  // this function is const so that it can be called from state instances,
+  // note that it nevertheless changes the state of the mutable rng_ used
+  // for shuffling the cards
+  int RNG() const;
 
   inline static const CardDeck kCardDeck = InitializeCardDeck();
   const int num_players_;
-  std::unique_ptr<std::mt19937> rng_;
+  mutable std::mt19937 rng_;
 };
 
 // instantiate the game instance via a shared_ptr, see game declaration

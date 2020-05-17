@@ -15,7 +15,7 @@ namespace tarok {
 // state definition
 TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
     : open_spiel::State(game),
-      tarok_parent_game_(static_cast<const TarokGame&>(*game)),
+      tarok_parent_game_(std::static_pointer_cast<const TarokGame>(game)),
       current_game_phase_(GamePhase::kCardDealing),
       current_player_(0) {}
 
@@ -123,8 +123,7 @@ void TarokState::DoApplyAction(open_spiel::Action action_id) {
 void TarokState::DoApplyActionInCardDealing() {
   // do the actual sampling here due to implicit stochasticity
   std::tie(talon_, players_cards_) =
-      DealCards(tarok_parent_game_.NumPlayers(),
-                tarok_parent_game_.ShuffleCardDeckSeed());
+      DealCards(tarok_parent_game_->NumPlayers(), tarok_parent_game_->RNG());
   current_game_phase_ = GamePhase::kBidding;
 }
 

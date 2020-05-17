@@ -45,7 +45,7 @@ class TarokState : public open_spiel::State {
  private:
   void DoApplyActionInCardDealing();
 
-  const TarokGame& tarok_parent_game_;
+  std::shared_ptr<const TarokGame> tarok_parent_game_;
   GamePhase current_game_phase_;
   open_spiel::Player current_player_;
   std::vector<int> talon_;
