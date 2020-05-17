@@ -31,7 +31,7 @@ std::unique_ptr<open_spiel::State> TarokGame::NewInitialState() const {
 }
 
 std::unique_ptr<TarokState> TarokGame::NewInitialTarokState() const {
-  return std::unique_ptr<TarokState>(new TarokState(shared_from_this()));
+  return std::make_unique<TarokState>(shared_from_this());
 }
 
 int TarokGame::MaxChanceOutcomes() const {
@@ -65,7 +65,7 @@ int TarokGame::RNG() const { return rng_(); }
 
 std::shared_ptr<const TarokGame> NewTarokGame(
     const open_spiel::GameParameters& params) {
-  return std::shared_ptr<const TarokGame>(new TarokGame(params));
+  return std::make_shared<const TarokGame>(params);
 }
 
 }  // namespace tarok
