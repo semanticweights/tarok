@@ -12,7 +12,7 @@
 namespace tarok {
 
 // game facts
-const open_spiel::GameType kGameType{
+inline static const open_spiel::GameType kGameType{
     "tarok",            // short_name
     "Slovenian Tarok",  // long_name
     open_spiel::GameType::Dynamics::kSequential,

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <array>
 #include <memory>
 
 #include "open_spiel/spiel.h"
@@ -35,7 +36,8 @@ class TarokGame : public open_spiel::Game {
   // for shuffling the cards
   int RNG() const;
 
-  inline static const CardDeck kCardDeck = InitializeCardDeck();
+  inline static const std::array<TarokCard, 54> card_deck_ =
+      InitializeCardDeck();
   const int num_players_;
   mutable std::mt19937 rng_;
 };
