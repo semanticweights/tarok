@@ -50,9 +50,11 @@ class TarokGame : public open_spiel::Game {
 
  private:
   friend class TarokState;
-  // this function is const so that it can be called from state instances,
+  // this function is const so that it can be called from state objects,
   // note that it nevertheless changes the state of the mutable rng_ used
-  // for shuffling the cards
+  // for shuffling the cards, this is expected behaviour since the game
+  // object has to maintain an internal RNG state due to implicit stochasticity,
+  // see ChanceOutcomes() comments in open_spiel/spiel.h for more info
   int RNG() const;
 
   inline static const std::array<TarokCard, 54> card_deck_ =
