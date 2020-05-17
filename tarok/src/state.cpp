@@ -98,6 +98,7 @@ GamePhase TarokState::CurrentGamePhase() const { return current_game_phase_; }
 std::vector<std::string> TarokState::Talon() const {
   std::vector<std::string> talon;
   talon.reserve(talon_.size());
+
   for (const int& card_index : talon_) {
     talon.push_back(tarok_parent_game_->Card(card_index).ToString());
   }
@@ -110,6 +111,7 @@ std::vector<std::string> TarokState::PlayerCards(
 
   std::vector<std::string> player_cards;
   player_cards.reserve(players_cards_.at(player).size());
+
   for (const int& card_index : players_cards_.at(player)) {
     player_cards.push_back(tarok_parent_game_->Card(card_index).ToString());
   }
