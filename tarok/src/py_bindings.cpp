@@ -1,5 +1,7 @@
 /* Copyright 2020 Semantic Weights. All rights reserved. */
 
+#include <memory>
+
 #include "open_spiel/spiel.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
@@ -21,7 +23,7 @@ PYBIND11_MODULE(pytarok, m) {
   tarok_game.def(py::init([](const open_spiel::GameParameters& params) {
     // instantiate the game instance via a shared_ptr, see game declaration
     // comments in open_spiel/spiel.h for more info
-    return std::shared_ptr<TarokGame>(new TarokGame(params));
+    return std::make_shared<TarokGame>(params);
   }));
   tarok_game.def("new_initial_tarok_state", &TarokGame::NewInitialTarokState);
 
