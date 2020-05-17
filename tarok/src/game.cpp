@@ -11,26 +11,6 @@
 
 namespace tarok {
 
-// game facts
-inline static const open_spiel::GameType kGameType{
-    "tarok",            // short_name
-    "Slovenian Tarok",  // long_name
-    open_spiel::GameType::Dynamics::kSequential,
-    open_spiel::GameType::ChanceMode::kSampledStochastic,
-    open_spiel::GameType::Information::kImperfectInformation,
-    open_spiel::GameType::Utility::kGeneralSum,
-    open_spiel::GameType::RewardModel::kTerminal,
-    4,      // max_num_players
-    3,      // min_num_players
-    true,   // provides_information_state_string
-    false,  // provides_information_state_tensor
-    false,  // provides_observation_string
-    false,  // provides_observation_tensor
-    // parameter_specification
-    {{"num_players", open_spiel::GameParameter(kDefaultNumPLayers)},
-     {"seed", open_spiel::GameParameter(kDefaultSeed)}}};
-
-// game definition
 TarokGame::TarokGame(const open_spiel::GameParameters& params)
     : Game(kGameType, params),
       num_players_(ParameterValue<int>("num_players")),
