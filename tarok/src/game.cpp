@@ -16,7 +16,10 @@ TarokGame::TarokGame(const open_spiel::GameParameters& params)
       num_players_(ParameterValue<int>("num_players")),
       rng_(std::mt19937(ParameterValue<int>("seed") == -1
                             ? std::time(0)
-                            : ParameterValue<int>("seed"))) {}
+                            : ParameterValue<int>("seed"))) {
+  SPIEL_CHECK_GE(num_players_, kGameType.min_num_players);
+  SPIEL_CHECK_LE(num_players_, kGameType.max_num_players);
+}
 
 int TarokGame::NumDistinctActions() const {
   // todo: implement
