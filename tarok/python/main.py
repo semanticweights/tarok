@@ -15,15 +15,17 @@ def print_info(game, state):
     print("Game phase: {}".format(state.current_game_phase()))
     print("Current player: {}".format(state.current_player()))
     print("Legal actions: {}".format(state.legal_actions()))
-    print("Chance outcomes: {}".format(state.chance_outcomes()))
+    print("Chance outcomes: {}\n".format(state.chance_outcomes()))
     print_players_cards(game, state)
     print("Talon: {}".format(state.talon()))
 
 
 def print_players_cards(game, state):
     for player in range(game.num_players()):
-        print("Player {:d} cards: {}".format(
-            player, state.player_cards(player)))
+        print("Player {:d} cards:".format(player))
+        for card in state.player_cards(player):
+            print(card)
+        print()
 
 
 if __name__ == '__main__':
