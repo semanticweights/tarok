@@ -25,11 +25,6 @@ bool TarokCard::IsTrula() const {
 
 const std::string TarokCard::ToString() const { return long_name; }
 
-// overload cards operator<< so that we can output instances on output stream
-std::ostream &operator<<(std::ostream &stream, const TarokCard &card) {
-  return stream << card.ToString();
-}
-
 const std::array<TarokCard, 54> InitializeCardDeck() {
   static const std::array<TarokCard, 54> deck = {
       // taroks
@@ -114,7 +109,11 @@ DealtCards DealCards(int num_players, int seed) {
   std::advance(begin, 6);
   for (int i = 0; i < num_players; i++) {
     std::advance(end, num_cards_per_player);
-    players_cards.push_back(std::vector<int>(begin, end));
+    std::vector<int> player_cards(begin, end);
+    // player's cards are sorted since legal actions need to be returned in
+    // ascending order
+    std::sort(player_cards.begin(), player_cards.end());
+    players_cards.push_back(player_cards);
     std::advance(begin, num_cards_per_player);
   }
 

@@ -41,4 +41,10 @@ TEST_F(TarokCardsTests, TestDealtCardsContent) {
   }
 }
 
+TEST_F(TarokCardsTests, TestPlayersCardsSorted) {
+  for (auto const& player_cards : players_cards_) {
+    EXPECT_TRUE(std::is_sorted(player_cards.begin(), player_cards.end()));
+  }
+}
+
 }  // namespace tarok

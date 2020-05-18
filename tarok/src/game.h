@@ -56,6 +56,7 @@ class TarokGame : public open_spiel::Game {
   // object has to maintain an internal RNG state due to implicit stochasticity,
   // see ChanceOutcomes() comments in open_spiel/spiel.h for more info
   int RNG() const;
+  const TarokCard& Card(int card_index) const;
 
   inline static const std::array<TarokCard, 54> card_deck_ =
       InitializeCardDeck();

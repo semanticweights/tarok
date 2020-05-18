@@ -93,11 +93,29 @@ open_spiel::ActionsAndProbs TarokState::ChanceOutcomes() const {
   return {};
 }
 
-std::vector<int> TarokState::Talon() const { return talon_; }
+GamePhase TarokState::CurrentGamePhase() const { return current_game_phase_; }
 
-std::vector<int> TarokState::PlayerCards(open_spiel::Player player) const {
+std::vector<std::string> TarokState::Talon() const {
+  std::vector<std::string> talon;
+  talon.reserve(talon_.size());
+
+  for (const int& card_index : talon_) {
+    talon.push_back(tarok_parent_game_->Card(card_index).ToString());
+  }
+  return talon;
+}
+
+std::vector<std::string> TarokState::PlayerCards(
+    open_spiel::Player player) const {
   if (current_game_phase_ == GamePhase::kCardDealing) return {};
-  return players_cards_.at(player);
+
+  std::vector<std::string> player_cards;
+  player_cards.reserve(players_cards_.at(player).size());
+
+  for (const int& card_index : players_cards_.at(player)) {
+    player_cards.push_back(tarok_parent_game_->Card(card_index).ToString());
+  }
+  return player_cards;
 }
 
 void TarokState::DoApplyAction(open_spiel::Action action_id) {
