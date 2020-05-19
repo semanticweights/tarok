@@ -11,12 +11,12 @@
 
 namespace tarok {
 
-inline constexpr int kDefaultNumPLayers = 3;
+static constexpr int kDefaultNumPLayers = 3;
 // seed for shuffling the cards, -1 means seeded by clock
-inline constexpr int kDefaultSeed = -1;
+static constexpr int kDefaultSeed = -1;
 
 // game facts
-inline static const open_spiel::GameType kGameType{
+static inline const open_spiel::GameType kGameType{
     "tarok",            // short_name
     "Slovenian Tarok",  // long_name
     open_spiel::GameType::Dynamics::kSequential,
@@ -58,7 +58,7 @@ class TarokGame : public open_spiel::Game {
   int RNG() const;
   const TarokCard& Card(int card_index) const;
 
-  inline static const std::array<TarokCard, 54> card_deck_ =
+  static inline const std::array<TarokCard, 54> card_deck_ =
       InitializeCardDeck();
   const int num_players_;
   mutable std::mt19937 rng_;
