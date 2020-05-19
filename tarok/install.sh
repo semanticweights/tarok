@@ -21,8 +21,8 @@ if [ ! -d ${BUILD_DIR} ]; then
   mkdir ${BUILD_DIR}
 fi
 cd ${BUILD_DIR}
-cmake --target pytarok tarok_tests ../tarok
-make
+cmake ../tarok
+make pytarok tarok_tests pyspiel
 
 # remind to add modules to python path
 cd ..
