@@ -1,5 +1,11 @@
+set(SRC_TEST_FILES
+  game_tests.cpp
+  state_tests.cpp
+  cards_tests.cpp
+)
+
 # build the test runner binary
-add_executable(tarok_tests game_tests.cpp state_tests.cpp cards_tests.cpp)
+add_executable(tarok_tests ${SRC_TEST_FILES})
 target_link_libraries(tarok_tests gtest_main gmock tarok_lib)
 add_test(NAME all_tests COMMAND run)
 
