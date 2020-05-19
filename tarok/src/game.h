@@ -7,6 +7,7 @@
 
 #include "open_spiel/spiel.h"
 #include "src/cards.h"
+#include "src/contracts.h"
 #include "src/state.h"
 
 namespace tarok {
@@ -60,6 +61,9 @@ class TarokGame : public open_spiel::Game {
 
   static inline const std::array<TarokCard, 54> card_deck_ =
       InitializeCardDeck();
+  static inline const std::array<ContractInfo, 12> contracts_ =
+      InitializeContracts();
+
   const int num_players_;
   mutable std::mt19937 rng_;
 };
