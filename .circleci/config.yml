@@ -22,8 +22,8 @@ references:
     run:
       name: Install dependencies
       command: |
-        pip3 install --upgrade pip setuptools
-        pip3 install -r tarok/python/requirements.txt
+        python3 -m pip install --upgrade pip setuptools
+        python3 -m pip install -r tarok/python/requirements.txt
 
   run_linter: &run_linter
     run:
