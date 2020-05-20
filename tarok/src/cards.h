@@ -7,6 +7,8 @@
 #include <tuple>
 #include <vector>
 
+#include "open_spiel/spiel.h"
+
 namespace tarok {
 
 enum class CardSuit { kHearts, kDiamonds, kSpades, kClubs, kTaroks };
@@ -28,7 +30,8 @@ struct TarokCard {
 const std::array<TarokCard, 54> InitializeCardDeck();
 
 // a type for a pair holding talon and players' private cards
-using DealtCards = std::tuple<std::vector<int>, std::vector<std::vector<int>>>;
+using DealtCards = std::tuple<std::vector<open_spiel::Action>,
+                              std::vector<std::vector<open_spiel::Action>>>;
 DealtCards DealCards(int num_players, int seed);
 
 }  // namespace tarok

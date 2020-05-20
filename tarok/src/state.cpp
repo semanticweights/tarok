@@ -98,8 +98,21 @@ void TarokState::AddLegalActionsInBidding4(
 
 std::string TarokState::ActionToString(open_spiel::Player player,
                                        open_spiel::Action action_id) const {
-  // todo: implement
-  return "";
+  switch (current_game_phase_) {
+    case GamePhase::kCardDealing:
+      // return a dummy action due to implicit stochasticity
+      return "Deal cards";
+    case GamePhase::kBidding:
+      if (action_id == 0)
+        return "Pass";
+      else
+        return tarok_parent_game_->Contract(action_id).name;
+    case GamePhase::kTalonExchange:
+    case GamePhase::kTricksPlaying:
+      return tarok_parent_game_->Card(action_id).ToString();
+    case GamePhase::kFinished:
+      return "";
+  }
 }
 
 open_spiel::Action TarokState::StringToAction(

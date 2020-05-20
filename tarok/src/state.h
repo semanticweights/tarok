@@ -57,9 +57,9 @@ class TarokState : public open_spiel::State {
   std::shared_ptr<const TarokGame> tarok_parent_game_;
   GamePhase current_game_phase_;
   open_spiel::Player current_player_;
-  std::vector<int> talon_;
-  std::vector<std::vector<int>> players_cards_;
-  std::vector<int> players_bids_;
+  std::vector<open_spiel::Action> talon_;
+  std::vector<std::vector<open_spiel::Action>> players_cards_;
+  std::vector<open_spiel::Action> players_bids_;
 };
 
 }  // namespace tarok

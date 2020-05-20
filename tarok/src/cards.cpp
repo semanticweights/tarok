@@ -9,6 +9,8 @@
 #include <tuple>
 #include <vector>
 
+#include "open_spiel/spiel.h"
+
 namespace tarok {
 
 TarokCard::TarokCard(CardSuit suit, int rank, int points,
@@ -89,7 +91,7 @@ const std::array<TarokCard, 54> InitializeCardDeck() {
 
 DealtCards DealCards(int num_players, int seed) {
   // create vector of card indices
-  std::vector<int> cards(54);
+  std::vector<open_spiel::Action> cards(54);
   std::iota(cards.begin(), cards.end(), 0);
   // shuffle indices
   std::shuffle(cards.begin(), cards.end(), std::default_random_engine(seed));
@@ -97,17 +99,17 @@ DealtCards DealCards(int num_players, int seed) {
   // first six cards are talon
   auto begin = cards.begin();
   auto end = begin + 6;
-  std::vector<int> talon(begin, end);
+  std::vector<open_spiel::Action> talon(begin, end);
 
   // deal the rest of the cards to players
   int num_cards_per_player = 48 / num_players;
-  std::vector<std::vector<int>> players_cards;
+  std::vector<std::vector<open_spiel::Action>> players_cards;
   players_cards.reserve(num_players);
 
   std::advance(begin, 6);
   for (int i = 0; i < num_players; i++) {
     std::advance(end, num_cards_per_player);
-    std::vector<int> player_cards(begin, end);
+    std::vector<open_spiel::Action> player_cards(begin, end);
     // player's cards are sorted since legal actions need to be returned in
     // ascending order
     std::sort(player_cards.begin(), player_cards.end());
