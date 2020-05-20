@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "open_spiel/abseil-cpp/absl/strings/str_cat.h"
 #include "open_spiel/spiel.h"
 #include "src/cards.h"
 #include "src/contracts.h"
@@ -72,8 +73,8 @@ void TarokState::AddLegalActionsInBidding3(
     std::vector<open_spiel::Action>* result_actions) const {
   if (!AllButCurrentPlayerPassedBidding() ||
       (current_player_ == 2 && players_bids_.at(current_player_) == -1))
-    // the last player can pass if no bidding has happened before
-    // which results in a compulsory klop
+    // other players still playing or the last player and no bidding has
+    // happened before which results in a compulsory klop
     result_actions->push_back(0);
 
   for (const int& action : kBiddableContracts3) {
@@ -90,10 +91,11 @@ void TarokState::AddLegalActionsInBidding4(
     std::vector<open_spiel::Action>* result_actions) const {
   if (current_player_ == 0 && players_bids_.at(current_player_) == -1 &&
       AllButCurrentPlayerPassedBidding())
-    // it is possible to play klop or three and not possible to pass for
-    // forehand in case all others have passed
+    // no bidding has happened before so forehand can
+    // bid any contract but can't pass
     result_actions->insert(result_actions->end(), {1, 2});
   else if (!AllButCurrentPlayerPassedBidding())
+    // other players still playing
     result_actions->push_back(0);
 
   for (const int& action : kBiddableContracts4) {
@@ -191,7 +193,12 @@ std::vector<std::string> TarokState::PlayerCards(
 }
 
 void TarokState::DoApplyAction(open_spiel::Action action_id) {
-  // todo: we should probably check that action is legal for the current player
+  auto legal_actions = LegalActions();
+  if (std::find(legal_actions.begin(), legal_actions.end(), action_id) ==
+      legal_actions.end())
+    open_spiel::SpielFatalError(absl::StrCat(
+        "Action ", action_id, " is not valid in the current state."));
+
   switch (current_game_phase_) {
     case GamePhase::kCardDealing:
       DoApplyActionInCardDealing();

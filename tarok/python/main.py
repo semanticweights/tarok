@@ -8,7 +8,7 @@ def main():
     state = game.new_initial_tarok_state()
     while(True):
         print_info(game, state)
-        state.apply_action(int(input()))
+        state.apply_action(int(input("Enter action: ")))
 
 
 def print_info(game, state):
@@ -18,7 +18,6 @@ def print_info(game, state):
     legal_actions = zip([state.action_to_string(a)
                          for a in state.legal_actions()], legal_actions)
     print("Legal actions: {}".format([x for x in legal_actions]))
-    # print("Chance outcomes: {}\n".format(state.chance_outcomes()))
     # print_players_cards(game, state)
     # print("Talon: {}".format(state.talon()))
 
