@@ -13,6 +13,7 @@ namespace tarok {
 enum class GamePhase {
   kCardDealing,
   kBidding,
+  kKingCalling,
   kTalonExchange,
   kTricksPlaying,
   kFinished
@@ -51,7 +52,11 @@ class TarokState : public open_spiel::State {
   void AddLegalActionsInBidding4(
       int max_bid, int max_bid_player,
       std::vector<open_spiel::Action>* result_actions) const;
+
   void DoApplyActionInCardDealing();
+  void DoApplyActionInBidding(open_spiel::Action action_id);
+
+  bool AllButCurrentPlayerPassedBidding() const;
   void NextPlayer();
 
   std::shared_ptr<const TarokGame> tarok_parent_game_;

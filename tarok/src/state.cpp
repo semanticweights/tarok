@@ -38,6 +38,9 @@ std::vector<open_spiel::Action> TarokState::LegalActions() const {
       return {0};
     case GamePhase::kBidding:
       return LegalActionsInBidding();
+    case GamePhase::kKingCalling:
+      // todo: implement
+      return {};
     case GamePhase::kTalonExchange:
       // todo: implement
       return {};
@@ -67,11 +70,16 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInBidding() const {
 void TarokState::AddLegalActionsInBidding3(
     int max_bid, int max_bid_player,
     std::vector<open_spiel::Action>* result_actions) const {
-  result_actions->push_back(0);
+  if (!AllButCurrentPlayerPassedBidding() ||
+      (current_player_ == 2 && players_bids_.at(current_player_) == -1))
+    // the last player can pass if no bidding has happened before
+    // which results in a compulsory klop
+    result_actions->push_back(0);
+
   for (const int& action : kBiddableContracts3) {
     if (action < max_bid) continue;
     if ((action > max_bid) ||
-        (action == max_bid && current_player_ < max_bid_player)) {
+        (action == max_bid && current_player_ <= max_bid_player)) {
       result_actions->push_back(action);
     }
   }
@@ -80,19 +88,18 @@ void TarokState::AddLegalActionsInBidding3(
 void TarokState::AddLegalActionsInBidding4(
     int max_bid, int max_bid_player,
     std::vector<open_spiel::Action>* result_actions) const {
-  if (current_player_ == 0 &&
-      std::all_of(players_bids_.begin() + 1, players_bids_.end(),
-                  [](int i) { return i == 0; })) {
-    // current player is the forehand and all others have passed, so it is
-    // also possible to play klop or three and not possible to pass
+  if (current_player_ == 0 && players_bids_.at(current_player_) == -1 &&
+      AllButCurrentPlayerPassedBidding())
+    // it is possible to play klop or three and not possible to pass for
+    // forehand in case all others have passed
     result_actions->insert(result_actions->end(), {1, 2});
-  } else
+  else if (!AllButCurrentPlayerPassedBidding())
     result_actions->push_back(0);
 
   for (const int& action : kBiddableContracts4) {
     if (action < max_bid) continue;
     if ((action > max_bid) ||
-        (action == max_bid && current_player_ < max_bid_player)) {
+        (action == max_bid && current_player_ <= max_bid_player)) {
       result_actions->push_back(action);
     }
   }
@@ -110,6 +117,7 @@ std::string TarokState::ActionToString(open_spiel::Player player,
       else
         return tarok_parent_game_->contracts_.at(action_id - 1).name;
     }
+    case GamePhase::kKingCalling:
     case GamePhase::kTalonExchange:
     case GamePhase::kTricksPlaying:
       return tarok_parent_game_->card_deck_.at(action_id).ToString();
@@ -189,6 +197,9 @@ void TarokState::DoApplyAction(open_spiel::Action action_id) {
       DoApplyActionInCardDealing();
       break;
     case GamePhase::kBidding:
+      DoApplyActionInBidding(action_id);
+      break;
+    case GamePhase::kKingCalling:
       // todo: implement
       break;
     case GamePhase::kTalonExchange:
@@ -200,11 +211,6 @@ void TarokState::DoApplyAction(open_spiel::Action action_id) {
     case GamePhase::kFinished:
       open_spiel::SpielFatalError("Calling DoApplyAction on a terminal state.");
   }
-}
-
-void TarokState::NextPlayer() {
-  current_player_ += 1;
-  if (current_player_ == num_players_) current_player_ = 0;
 }
 
 void TarokState::DoApplyActionInCardDealing() {
@@ -224,6 +230,35 @@ void TarokState::DoApplyActionInCardDealing() {
   else
     // forehand has to wait
     current_player_ = 1;
+}
+
+void TarokState::DoApplyActionInBidding(open_spiel::Action action_id) {
+  players_bids_.at(current_player_) = action_id;
+
+  if (AllButCurrentPlayerPassedBidding()) {
+    current_game_phase_ = GamePhase::kTalonExchange;
+    // todo set correct game phase
+    // todo set declearer
+    // todo set contract
+    // todo set current player
+  } else {
+    do {
+      NextPlayer();
+    } while (players_bids_.at(current_player_) == 0);
+  }
+}
+
+bool TarokState::AllButCurrentPlayerPassedBidding() const {
+  for (int i = 0; i < num_players_; i++) {
+    if (i == current_player_) continue;
+    if (players_bids_.at(i) != 0) return false;
+  }
+  return true;
+}
+
+void TarokState::NextPlayer() {
+  current_player_ += 1;
+  if (current_player_ == num_players_) current_player_ = 0;
 }
 
 }  // namespace tarok
