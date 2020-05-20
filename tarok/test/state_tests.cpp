@@ -17,6 +17,9 @@ TEST(TarokStateTests, TestCardDealingPhase) {
   }
   EXPECT_EQ(state->LegalActions().size(), 1);
   ASSERT_THAT(state->LegalActions(), testing::ElementsAre(0));
+  ASSERT_THAT(
+      state->ChanceOutcomes(),
+      testing::ElementsAreArray<open_spiel::ActionsAndProbs>({{0, 1.0}}));
 
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentPlayer(), 0);
@@ -24,6 +27,7 @@ TEST(TarokStateTests, TestCardDealingPhase) {
   for (int i = 0; i < game->NumPlayers(); i++) {
     EXPECT_FALSE(state->PlayerCards(i).empty());
   }
+  ASSERT_TRUE(state->ChanceOutcomes().empty());
 }
 
 }  // namespace tarok

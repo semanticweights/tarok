@@ -2,12 +2,14 @@
 
 #include "src/state.h"
 
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "open_spiel/spiel.h"
 #include "src/cards.h"
+#include "src/contracts.h"
 #include "src/game.h"
 
 namespace tarok {
@@ -16,8 +18,7 @@ namespace tarok {
 TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
     : open_spiel::State(game),
       tarok_parent_game_(std::static_pointer_cast<const TarokGame>(game)),
-      current_game_phase_(GamePhase::kCardDealing),
-      current_player_(0) {}
+      current_game_phase_(GamePhase::kCardDealing) {}
 
 open_spiel::Player TarokState::CurrentPlayer() const {
   switch (current_game_phase_) {
@@ -36,8 +37,7 @@ std::vector<open_spiel::Action> TarokState::LegalActions() const {
       // return a dummy action due to implicit stochasticity
       return {0};
     case GamePhase::kBidding:
-      // todo: implement
-      return {};
+      return LegalActionsInBidding();
     case GamePhase::kTalonExchange:
       // todo: implement
       return {};
@@ -46,6 +46,53 @@ std::vector<open_spiel::Action> TarokState::LegalActions() const {
       return {};
     case GamePhase::kFinished:
       return {};
+  }
+}
+
+std::vector<open_spiel::Action> TarokState::LegalActionsInBidding() const {
+  // actions 1 - 12 correspond to contracts as returned by InitializeContracts()
+  // respectively, action 0 means pass
+  auto it = std::max_element(players_bids_.begin(), players_bids_.end());
+  int max_bid = *it;
+  int max_bid_player = it - players_bids_.begin();
+
+  std::vector<open_spiel::Action> actions;
+  if (num_players_ == 3)
+    AddLegalActionsInBidding3(max_bid, max_bid_player, actions);
+  else if (num_players_ == 4)
+    AddLegalActionsInBidding4(max_bid, max_bid_player, actions);
+  return actions;
+}
+
+void TarokState::AddLegalActionsInBidding3(
+    int max_bid, int max_bid_player,
+    std::vector<open_spiel::Action>& result_actions) const {
+  result_actions.push_back(0);
+  for (const int& action : kBiddableContracts3) {
+    if (action < max_bid) continue;
+    if ((action > max_bid) ||
+        (action == max_bid && current_player_ < max_bid_player))
+      result_actions.push_back(action);
+  }
+}
+
+void TarokState::AddLegalActionsInBidding4(
+    int max_bid, int max_bid_player,
+    std::vector<open_spiel::Action>& result_actions) const {
+  if (current_player_ == 0 &&
+      std::all_of(players_bids_.begin() + 1, players_bids_.end(),
+                  [](int i) { return i == 0; }))
+    // current player is the forehand and all others have passed so it is
+    // also possible to play klop or three and not possible to pass
+    result_actions.insert(result_actions.end(), {1, 2});
+  else
+    result_actions.push_back(0);
+
+  for (const int& action : kBiddableContracts4) {
+    if (action < max_bid) continue;
+    if ((action > max_bid) ||
+        (action == max_bid && current_player_ < max_bid_player))
+      result_actions.push_back(action);
   }
 }
 
@@ -138,11 +185,28 @@ void TarokState::DoApplyAction(open_spiel::Action action_id) {
   }
 }
 
+void TarokState::NextPlayer() {
+  current_player_ += 1;
+  if (current_player_ == num_players_) current_player_ = 0;
+}
+
 void TarokState::DoApplyActionInCardDealing() {
   // do the actual sampling here due to implicit stochasticity
+  // todo: deal again if any player without taroks and play compulsory klop
   std::tie(talon_, players_cards_) =
-      DealCards(tarok_parent_game_->NumPlayers(), tarok_parent_game_->RNG());
+      DealCards(num_players_, tarok_parent_game_->RNG());
+
   current_game_phase_ = GamePhase::kBidding;
+  players_bids_.reserve(num_players_);
+  players_bids_.insert(players_bids_.end(), num_players_, -1);
+
+  // lower player indices correspond to higher bidding priority,
+  // i.e. 0 is the forehand, num_players - 1 is the dealer
+  if (num_players_ == 3)
+    current_player_ = 0;
+  else if (num_players_ == 4)
+    // forehand has to wait
+    current_player_ = 1;
 }
 
 }  // namespace tarok

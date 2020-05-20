@@ -44,13 +44,22 @@ class TarokState : public open_spiel::State {
   void DoApplyAction(open_spiel::Action action_id) override;
 
  private:
+  std::vector<open_spiel::Action> LegalActionsInBidding() const;
+  void AddLegalActionsInBidding3(
+      int max_bid, int max_bid_player,
+      std::vector<open_spiel::Action>& result_actions) const;
+  void AddLegalActionsInBidding4(
+      int max_bid, int max_bid_player,
+      std::vector<open_spiel::Action>& result_actions) const;
   void DoApplyActionInCardDealing();
+  void NextPlayer();
 
   std::shared_ptr<const TarokGame> tarok_parent_game_;
   GamePhase current_game_phase_;
   open_spiel::Player current_player_;
   std::vector<int> talon_;
   std::vector<std::vector<int>> players_cards_;
+  std::vector<int> players_bids_;
 };
 
 }  // namespace tarok
