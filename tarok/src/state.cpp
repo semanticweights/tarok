@@ -58,41 +58,43 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInBidding() const {
 
   std::vector<open_spiel::Action> actions;
   if (num_players_ == 3)
-    AddLegalActionsInBidding3(max_bid, max_bid_player, actions);
-  else if (num_players_ == 4)
-    AddLegalActionsInBidding4(max_bid, max_bid_player, actions);
+    AddLegalActionsInBidding3(max_bid, max_bid_player, &actions);
+  else
+    AddLegalActionsInBidding4(max_bid, max_bid_player, &actions);
   return actions;
 }
 
 void TarokState::AddLegalActionsInBidding3(
     int max_bid, int max_bid_player,
-    std::vector<open_spiel::Action>& result_actions) const {
-  result_actions.push_back(0);
+    std::vector<open_spiel::Action>* result_actions) const {
+  result_actions->push_back(0);
   for (const int& action : kBiddableContracts3) {
     if (action < max_bid) continue;
     if ((action > max_bid) ||
-        (action == max_bid && current_player_ < max_bid_player))
-      result_actions.push_back(action);
+        (action == max_bid && current_player_ < max_bid_player)) {
+      result_actions->push_back(action);
+    }
   }
 }
 
 void TarokState::AddLegalActionsInBidding4(
     int max_bid, int max_bid_player,
-    std::vector<open_spiel::Action>& result_actions) const {
+    std::vector<open_spiel::Action>* result_actions) const {
   if (current_player_ == 0 &&
       std::all_of(players_bids_.begin() + 1, players_bids_.end(),
-                  [](int i) { return i == 0; }))
-    // current player is the forehand and all others have passed so it is
+                  [](int i) { return i == 0; })) {
+    // current player is the forehand and all others have passed, so it is
     // also possible to play klop or three and not possible to pass
-    result_actions.insert(result_actions.end(), {1, 2});
-  else
-    result_actions.push_back(0);
+    result_actions->insert(result_actions->end(), {1, 2});
+  } else
+    result_actions->push_back(0);
 
   for (const int& action : kBiddableContracts4) {
     if (action < max_bid) continue;
     if ((action > max_bid) ||
-        (action == max_bid && current_player_ < max_bid_player))
-      result_actions.push_back(action);
+        (action == max_bid && current_player_ < max_bid_player)) {
+      result_actions->push_back(action);
+    }
   }
 }
 
@@ -102,14 +104,15 @@ std::string TarokState::ActionToString(open_spiel::Player player,
     case GamePhase::kCardDealing:
       // return a dummy action due to implicit stochasticity
       return "Deal cards";
-    case GamePhase::kBidding:
+    case GamePhase::kBidding: {
       if (action_id == 0)
         return "Pass";
       else
-        return tarok_parent_game_->Contract(action_id).name;
+        return tarok_parent_game_->contracts_.at(action_id - 1).name;
+    }
     case GamePhase::kTalonExchange:
     case GamePhase::kTricksPlaying:
-      return tarok_parent_game_->Card(action_id).ToString();
+      return tarok_parent_game_->card_deck_.at(action_id).ToString();
     case GamePhase::kFinished:
       return "";
   }
@@ -160,7 +163,7 @@ std::vector<std::string> TarokState::Talon() const {
   talon.reserve(talon_.size());
 
   for (const int& card_index : talon_) {
-    talon.push_back(tarok_parent_game_->Card(card_index).ToString());
+    talon.push_back(tarok_parent_game_->card_deck_.at(card_index).ToString());
   }
   return talon;
 }
@@ -173,7 +176,8 @@ std::vector<std::string> TarokState::PlayerCards(
   player_cards.reserve(players_cards_.at(player).size());
 
   for (const int& card_index : players_cards_.at(player)) {
-    player_cards.push_back(tarok_parent_game_->Card(card_index).ToString());
+    player_cards.push_back(
+        tarok_parent_game_->card_deck_.at(card_index).ToString());
   }
   return player_cards;
 }
@@ -217,7 +221,7 @@ void TarokState::DoApplyActionInCardDealing() {
   // i.e. 0 is the forehand, num_players - 1 is the dealer
   if (num_players_ == 3)
     current_player_ = 0;
-  else if (num_players_ == 4)
+  else
     // forehand has to wait
     current_player_ = 1;
 }
