@@ -19,6 +19,7 @@ def print_info(game, state):
     legal_actions = zip([state.action_to_string(a)
                          for a in state.legal_actions()], legal_actions)
     print("Legal actions: {}".format([x for x in legal_actions]))
+    print()
     # print_players_cards(game, state)
     # print("Talon: {}".format(state.talon()))
 
