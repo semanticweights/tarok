@@ -3,7 +3,7 @@ import pytarok as ta
 
 
 def main():
-    params = {'num_players': sp.GameParameter(4), 'seed': sp.GameParameter(0)}
+    params = {'num_players': sp.GameParameter(3), 'seed': sp.GameParameter(0)}
     game = ta.TarokGame(params)
     state = game.new_initial_tarok_state()
     while(True):
@@ -13,6 +13,7 @@ def main():
 
 def print_info(game, state):
     print("Game phase: {}".format(state.current_game_phase()))
+    print("Selected contract: {}".format(state.selected_contract()))
     print("Current player: {}".format(state.current_player()))
     legal_actions = state.legal_actions()
     legal_actions = zip([state.action_to_string(a)

@@ -192,6 +192,13 @@ std::vector<std::string> TarokState::PlayerCards(
   return player_cards;
 }
 
+Contract TarokState::SelectedContract() const {
+  if (current_game_phase_ == GamePhase::kCardDealing ||
+      current_game_phase_ == GamePhase::kBidding)
+    return Contract::kNotSelected;
+  return selected_contract_->contract;
+}
+
 void TarokState::DoApplyAction(open_spiel::Action action_id) {
   auto legal_actions = LegalActions();
   if (std::find(legal_actions.begin(), legal_actions.end(), action_id) ==
@@ -241,17 +248,34 @@ void TarokState::DoApplyActionInCardDealing() {
 
 void TarokState::DoApplyActionInBidding(open_spiel::Action action_id) {
   players_bids_.at(current_player_) = action_id;
-
   if (AllButCurrentPlayerPassedBidding()) {
-    current_game_phase_ = GamePhase::kTalonExchange;
-    // todo set correct game phase
-    // todo set declearer
-    // todo set contract
-    // todo set current player
+    FinishBiddingPhase(action_id);
   } else {
     do {
       NextPlayer();
     } while (players_bids_.at(current_player_) == 0);
+  }
+}
+
+void TarokState::FinishBiddingPhase(open_spiel::Action action_id) {
+  declarer_ = current_player_;
+  if (action_id == 0) {
+    // compulsory klop, this state should only occur in a 3-player game
+    selected_contract_ = &tarok_parent_game_->contracts_.at(0);
+  } else {
+    selected_contract_ = &tarok_parent_game_->contracts_.at(action_id - 1);
+  }
+
+  if (num_players_ == 4 && selected_contract_->needs_king_calling) {
+    current_game_phase_ = GamePhase::kKingCalling;
+  } else if (selected_contract_->NeedsTalonExchange()) {
+    current_game_phase_ = GamePhase::kTalonExchange;
+  } else {
+    current_game_phase_ = GamePhase::kTricksPlaying;
+    if (selected_contract_->declarer_starts)
+      current_player_ = declarer_;
+    else
+      current_player_ = 0;
   }
 }
 
