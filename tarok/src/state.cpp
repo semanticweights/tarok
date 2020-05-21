@@ -272,10 +272,7 @@ void TarokState::FinishBiddingPhase(open_spiel::Action action_id) {
     current_game_phase_ = GamePhase::kTalonExchange;
   } else {
     current_game_phase_ = GamePhase::kTricksPlaying;
-    if (selected_contract_->declarer_starts)
-      current_player_ = declarer_;
-    else
-      current_player_ = 0;
+    if (!selected_contract_->declarer_starts) current_player_ = 0;
   }
 }
 
