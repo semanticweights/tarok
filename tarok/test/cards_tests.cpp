@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "gtest/gtest.h"
+#include "open_spiel/spiel.h"
 #include "src/cards.h"
 
 namespace tarok {
@@ -15,8 +16,8 @@ class TarokCardsTests : public ::testing::Test {
   }
 
   int num_players_;
-  std::vector<int> talon_;
-  std::vector<std::vector<int>> players_cards_;
+  std::vector<open_spiel::Action> talon_;
+  std::vector<std::vector<open_spiel::Action>> players_cards_;
 };
 
 TEST_F(TarokCardsTests, TestDealtCardsSize) {

@@ -8,15 +8,10 @@
 int main() {
   auto game = tarok::NewTarokGame(
       open_spiel::GameParameters({{"seed", open_spiel::GameParameter(0)}}));
-
   auto state = game->NewInitialTarokState();
-  std::cout << "Current player: " << state->CurrentPlayer() << std::endl;
-  std::cout << "Talon size: " << state->Talon().size() << "\n" << std::endl;
 
-  std::cout << "Dealing cards..." << std::endl;
   state->ApplyAction(0);
-  std::cout << "Current player: " << state->CurrentPlayer() << std::endl;
-  std::cout << "Talon size: " << state->Talon().size() << std::endl;
+  state->LegalActions();
 
   return 0;
 }

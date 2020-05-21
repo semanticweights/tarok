@@ -63,10 +63,6 @@ int TarokGame::MaxGameLength() const {
 
 int TarokGame::RNG() const { return rng_(); }
 
-const TarokCard& TarokGame::Card(int card_index) const {
-  return card_deck_.at(card_index);
-}
-
 std::shared_ptr<const TarokGame> NewTarokGame(
     const open_spiel::GameParameters& params) {
   return std::make_shared<const TarokGame>(params);
