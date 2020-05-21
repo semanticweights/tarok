@@ -6,16 +6,16 @@
 namespace tarok {
 
 TEST(TarokGameTests, TestDefaultNumPlayers) {
-  auto game = tarok::NewTarokGame(open_spiel::GameParameters());
+  auto game = NewTarokGame(open_spiel::GameParameters());
   EXPECT_EQ(game->NumPlayers(), 3);
 
-  game = tarok::NewTarokGame(open_spiel::GameParameters(
+  game = NewTarokGame(open_spiel::GameParameters(
       {{"num_players", open_spiel::GameParameter(4)}}));
   EXPECT_EQ(game->NumPlayers(), 4);
 }
 
 TEST(TarokGameTests, TestCardDeckShufflingSeed) {
-  auto game = tarok::NewTarokGame(
+  auto game = NewTarokGame(
       open_spiel::GameParameters({{"seed", open_spiel::GameParameter(0)}}));
   // subsequent shuffles within the same game should be different
   auto state1 = game->NewInitialTarokState();
@@ -24,7 +24,7 @@ TEST(TarokGameTests, TestCardDeckShufflingSeed) {
   state2->ApplyAction(0);
   EXPECT_NE(state1->Talon(), state2->Talon());
 
-  game = tarok::NewTarokGame(
+  game = NewTarokGame(
       open_spiel::GameParameters({{"seed", open_spiel::GameParameter(0)}}));
   // shuffles should be the same when recreating a game with the same seed
   auto state3 = game->NewInitialTarokState();
