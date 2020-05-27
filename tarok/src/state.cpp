@@ -94,10 +94,11 @@ void TarokState::AddLegalActionsInBidding3(
     int max_bid, int max_bid_player,
     std::vector<open_spiel::Action>* result_actions) const {
   if (!AllButCurrentPlayerPassedBidding() ||
-      (current_player_ == 2 && players_bids_.at(current_player_) == -1))
+      (current_player_ == 2 && players_bids_.at(current_player_) == -1)) {
     // other players still playing or the last player and no bidding has
     // happened before which results in a compulsory klop
     result_actions->push_back(0);
+  }
 
   for (const int& action : kBiddableContracts3) {
     if (action < max_bid) continue;
@@ -112,13 +113,14 @@ void TarokState::AddLegalActionsInBidding4(
     int max_bid, int max_bid_player,
     std::vector<open_spiel::Action>* result_actions) const {
   if (current_player_ == 0 && players_bids_.at(current_player_) == -1 &&
-      AllButCurrentPlayerPassedBidding())
+      AllButCurrentPlayerPassedBidding()) {
     // no bidding has happened before so forehand can
     // bid any contract but can't pass
     result_actions->insert(result_actions->end(), {1, 2});
-  else if (!AllButCurrentPlayerPassedBidding())
+  } else if (!AllButCurrentPlayerPassedBidding()) {
     // other players still playing
     result_actions->push_back(0);
+  }
 
   for (const int& action : kBiddableContracts4) {
     if (action < max_bid) continue;
@@ -201,9 +203,10 @@ std::unique_ptr<open_spiel::State> TarokState::Clone() const {
 }
 
 open_spiel::ActionsAndProbs TarokState::ChanceOutcomes() const {
-  if (current_game_phase_ == GamePhase::kCardDealing)
+  if (current_game_phase_ == GamePhase::kCardDealing) {
     // return a dummy action with probability 1 due to implicit stochasticity
     return {{0, 1.0}};
+  }
   return {};
 }
 
@@ -236,8 +239,9 @@ std::string TarokState::CardActionToString(open_spiel::Action action_id) const {
 
 Contract TarokState::SelectedContract() const {
   if (current_game_phase_ == GamePhase::kCardDealing ||
-      current_game_phase_ == GamePhase::kBidding)
+      current_game_phase_ == GamePhase::kBidding) {
     return Contract::kNotSelected;
+  }
   return selected_contract_->contract;
 }
 
@@ -283,7 +287,6 @@ void TarokState::DoApplyActionInCardDealing() {
   if (num_players_ == 3)
     current_player_ = 0;
   else
-    // forehand has to wait
     current_player_ = 1;
 }
 

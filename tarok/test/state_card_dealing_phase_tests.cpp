@@ -32,7 +32,7 @@ TEST(TarokStateTests, TestCardDealingPhase) {
   EXPECT_NE(state->CurrentPlayer(), open_spiel::kChancePlayerId);
   EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
 
-  EXPECT_FALSE(state->Talon().empty());
+  EXPECT_TRUE(state->Talon().empty());
   for (int i = 0; i < game->NumPlayers(); i++) {
     EXPECT_FALSE(state->PlayerCards(i).empty());
   }
