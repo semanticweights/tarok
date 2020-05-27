@@ -18,6 +18,12 @@ def print_info(game, state):
     print(state.current_game_phase())
     print(state.selected_contract())
     print("Current player: {}".format(state.current_player()))
+
+    if (state.current_game_phase() == ta.GamePhase.TALON_EXCHANGE):
+        talon = [[state.card_action_to_string(x) for x in talon_set]
+                 for talon_set in state.talon()]
+        print("Talon: {}".format(talon))
+
     legal_actions = state.legal_actions()
     action_names = [state.action_to_string(a) for a in state.legal_actions()]
     print("Legal actions: {}".format(

@@ -33,6 +33,7 @@ PYBIND11_MODULE(pytarok, m) {
   tarok_state.def("current_game_phase", &TarokState::CurrentGamePhase);
   tarok_state.def("talon", &TarokState::Talon);
   tarok_state.def("player_cards", &TarokState::PlayerCards);
+  tarok_state.def("card_action_to_string", &TarokState::CardActionToString);
   tarok_state.def("selected_contract", &TarokState::SelectedContract);
 
   // game phase object

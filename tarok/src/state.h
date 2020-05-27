@@ -42,8 +42,9 @@ class TarokState : public open_spiel::State {
   std::unique_ptr<State> Clone() const override;
   open_spiel::ActionsAndProbs ChanceOutcomes() const override;
   GamePhase CurrentGamePhase() const;
-  std::vector<open_spiel::Action> Talon() const;
+  std::vector<std::vector<open_spiel::Action>> Talon() const;
   std::vector<open_spiel::Action> PlayerCards(open_spiel::Player player) const;
+  std::string CardActionToString(open_spiel::Action action_id) const;
   Contract SelectedContract() const;
 
  protected:
@@ -69,8 +70,8 @@ class TarokState : public open_spiel::State {
   static bool ActionInActions(open_spiel::Action action_id,
                               const std::vector<open_spiel::Action>& actions);
   static void MoveActionFromTo(open_spiel::Action action_id,
-                               std::vector<open_spiel::Action>& from,
-                               std::vector<open_spiel::Action>& to);
+                               std::vector<open_spiel::Action>* from,
+                               std::vector<open_spiel::Action>* to);
 
   std::shared_ptr<const TarokGame> tarok_parent_game_;
   GamePhase current_game_phase_ = GamePhase::kCardDealing;
