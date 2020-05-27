@@ -18,8 +18,7 @@ namespace tarok {
 // state definition
 TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
     : open_spiel::State(game),
-      tarok_parent_game_(std::static_pointer_cast<const TarokGame>(game)),
-      current_game_phase_(GamePhase::kCardDealing) {}
+      tarok_parent_game_(std::static_pointer_cast<const TarokGame>(game)) {}
 
 open_spiel::Player TarokState::CurrentPlayer() const {
   switch (current_game_phase_) {
@@ -40,8 +39,7 @@ std::vector<open_spiel::Action> TarokState::LegalActions() const {
     case GamePhase::kBidding:
       return LegalActionsInBidding();
     case GamePhase::kKingCalling:
-      // todo: implement
-      return {};
+      return {29, 37, 45, 53};
     case GamePhase::kTalonExchange:
       // todo: implement
       return {};
@@ -113,16 +111,14 @@ std::string TarokState::ActionToString(open_spiel::Player player,
     case GamePhase::kCardDealing:
       // return a dummy action due to implicit stochasticity
       return "Deal cards";
-    case GamePhase::kBidding: {
-      if (action_id == 0)
-        return "Pass";
-      else
-        return tarok_parent_game_->contracts_.at(action_id - 1).name;
-    }
+    case GamePhase::kBidding:
+      if (action_id == 0) return "Pass";
+      return tarok_parent_game_->contracts_.at(action_id - 1).name;
     case GamePhase::kKingCalling:
-    case GamePhase::kTalonExchange:
     case GamePhase::kTricksPlaying:
       return tarok_parent_game_->card_deck_.at(action_id).ToString();
+    case GamePhase::kTalonExchange:
+      return "";
     case GamePhase::kFinished:
       return "";
   }
@@ -168,28 +164,12 @@ open_spiel::ActionsAndProbs TarokState::ChanceOutcomes() const {
 
 GamePhase TarokState::CurrentGamePhase() const { return current_game_phase_; }
 
-std::vector<std::string> TarokState::Talon() const {
-  std::vector<std::string> talon;
-  talon.reserve(talon_.size());
+std::vector<open_spiel::Action> TarokState::Talon() const { return talon_; }
 
-  for (const int& card_index : talon_) {
-    talon.push_back(tarok_parent_game_->card_deck_.at(card_index).ToString());
-  }
-  return talon;
-}
-
-std::vector<std::string> TarokState::PlayerCards(
+std::vector<open_spiel::Action> TarokState::PlayerCards(
     open_spiel::Player player) const {
   if (current_game_phase_ == GamePhase::kCardDealing) return {};
-
-  std::vector<std::string> player_cards;
-  player_cards.reserve(players_cards_.at(player).size());
-
-  for (const int& card_index : players_cards_.at(player)) {
-    player_cards.push_back(
-        tarok_parent_game_->card_deck_.at(card_index).ToString());
-  }
-  return player_cards;
+  return players_cards_.at(player);
 }
 
 Contract TarokState::SelectedContract() const {
@@ -200,11 +180,10 @@ Contract TarokState::SelectedContract() const {
 }
 
 void TarokState::DoApplyAction(open_spiel::Action action_id) {
-  auto legal_actions = LegalActions();
-  if (std::find(legal_actions.begin(), legal_actions.end(), action_id) ==
-      legal_actions.end())
+  if (!ActionInActions(action_id, LegalActions())) {
     open_spiel::SpielFatalError(absl::StrCat(
         "Action ", action_id, " is not valid in the current state."));
+  }
 
   switch (current_game_phase_) {
     case GamePhase::kCardDealing:
@@ -214,7 +193,7 @@ void TarokState::DoApplyAction(open_spiel::Action action_id) {
       DoApplyActionInBidding(action_id);
       break;
     case GamePhase::kKingCalling:
-      // todo: implement
+      DoApplyActionInKingCalling(action_id);
       break;
     case GamePhase::kTalonExchange:
       // todo: implement
@@ -276,6 +255,18 @@ void TarokState::FinishBiddingPhase(open_spiel::Action action_id) {
   }
 }
 
+void TarokState::DoApplyActionInKingCalling(open_spiel::Action action_id) {
+  for (int i = 0; i < num_players_; i++) {
+    if (i == current_player_) {
+      continue;
+    } else if (ActionInActions(action_id, players_cards_.at(i))) {
+      declarer_partner_ = i;
+      break;
+    }
+  }
+  current_game_phase_ = GamePhase::kTalonExchange;
+}
+
 bool TarokState::AllButCurrentPlayerPassedBidding() const {
   for (int i = 0; i < num_players_; i++) {
     if (i == current_player_) continue;
@@ -287,6 +278,11 @@ bool TarokState::AllButCurrentPlayerPassedBidding() const {
 void TarokState::NextPlayer() {
   current_player_ += 1;
   if (current_player_ == num_players_) current_player_ = 0;
+}
+
+bool TarokState::ActionInActions(
+    open_spiel::Action action, const std::vector<open_spiel::Action>& actions) {
+  return std::find(actions.begin(), actions.end(), action) != actions.end();
 }
 
 }  // namespace tarok

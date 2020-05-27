@@ -39,8 +39,8 @@ class TarokState : public open_spiel::State {
   std::unique_ptr<State> Clone() const override;
   open_spiel::ActionsAndProbs ChanceOutcomes() const override;
   GamePhase CurrentGamePhase() const;
-  std::vector<std::string> Talon() const;
-  std::vector<std::string> PlayerCards(open_spiel::Player player) const;
+  std::vector<open_spiel::Action> Talon() const;
+  std::vector<open_spiel::Action> PlayerCards(open_spiel::Player player) const;
   Contract SelectedContract() const;
 
  protected:
@@ -57,18 +57,22 @@ class TarokState : public open_spiel::State {
   void DoApplyActionInCardDealing();
   void DoApplyActionInBidding(open_spiel::Action action_id);
   void FinishBiddingPhase(open_spiel::Action action_id);
+  void DoApplyActionInKingCalling(open_spiel::Action action_id);
   bool AllButCurrentPlayerPassedBidding() const;
   void NextPlayer();
+  static bool ActionInActions(open_spiel::Action action,
+                              const std::vector<open_spiel::Action>& actions);
 
   std::shared_ptr<const TarokGame> tarok_parent_game_;
-  GamePhase current_game_phase_;
-  open_spiel::Player current_player_;
+  GamePhase current_game_phase_ = GamePhase::kCardDealing;
+  open_spiel::Player current_player_ = open_spiel::kInvalidPlayer;
   std::vector<open_spiel::Action> talon_;
   std::vector<std::vector<open_spiel::Action>> players_cards_;
   std::vector<open_spiel::Action> players_bids_;
-  open_spiel::Player declarer_;
+  open_spiel::Player declarer_ = open_spiel::kInvalidPlayer;
   // contract pointed to is managed by the game instance
   const ContractInfo* selected_contract_;
+  open_spiel::Player declarer_partner_ = open_spiel::kInvalidPlayer;
 };
 
 }  // namespace tarok
