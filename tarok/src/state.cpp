@@ -3,6 +3,7 @@
 #include "src/state.h"
 
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -14,6 +15,30 @@
 #include "src/game.h"
 
 namespace tarok {
+
+std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase) {
+  os << "GamePhase::";
+  switch (game_phase) {
+    case GamePhase::kCardDealing:
+      os << "CardDealing";
+      break;
+    case GamePhase::kBidding:
+      os << "Bidding";
+      break;
+    case GamePhase::kKingCalling:
+      os << "KingCalling:";
+      break;
+    case GamePhase::kTalonExchange:
+      os << "TalonExchange";
+      break;
+    case GamePhase::kTricksPlaying:
+      os << "TricksPlaying";
+      break;
+    case GamePhase::kFinished:
+      os << "Finished";
+  }
+  return os;
+}
 
 // state definition
 TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
@@ -41,8 +66,7 @@ std::vector<open_spiel::Action> TarokState::LegalActions() const {
     case GamePhase::kKingCalling:
       return {29, 37, 45, 53};
     case GamePhase::kTalonExchange:
-      // todo: implement
-      return {};
+      return LegalActionsInTalonExchange();
     case GamePhase::kTricksPlaying:
       // todo: implement
       return {};
@@ -105,12 +129,32 @@ void TarokState::AddLegalActionsInBidding4(
   }
 }
 
+std::vector<open_spiel::Action> TarokState::LegalActionsInTalonExchange()
+    const {
+  if (talon_.size() == 6) {
+    // choosing one of the talon card sets where actions are encoded as
+    // 0, 1, 2, etc. from left to right, i.e. 0 is the leftmost talon set
+    std::vector<open_spiel::Action> actions(
+        6 / selected_contract_->num_talon_exchanges);
+    std::iota(actions.begin(), actions.end(), 0);
+    return actions;
+  }
+
+  // discarding the cards
+  std::vector<open_spiel::Action> actions;
+  for (const auto& card : players_cards_.at(current_player_)) {
+    if (tarok_parent_game_->card_deck_.at(card).points != 5)
+      actions.push_back(card);
+  }
+  return actions;
+}
+
 std::string TarokState::ActionToString(open_spiel::Player player,
                                        open_spiel::Action action_id) const {
   switch (current_game_phase_) {
     case GamePhase::kCardDealing:
       // return a dummy action due to implicit stochasticity
-      return "Deal cards";
+      return "Deal";
     case GamePhase::kBidding:
       if (action_id == 0) return "Pass";
       return tarok_parent_game_->contracts_.at(action_id - 1).name;
@@ -118,7 +162,8 @@ std::string TarokState::ActionToString(open_spiel::Player player,
     case GamePhase::kTricksPlaying:
       return tarok_parent_game_->card_deck_.at(action_id).ToString();
     case GamePhase::kTalonExchange:
-      return "";
+      if (talon_.size() == 6) return absl::StrCat("Talon set ", action_id + 1);
+      return tarok_parent_game_->card_deck_.at(action_id).ToString();
     case GamePhase::kFinished:
       return "";
   }
@@ -196,7 +241,7 @@ void TarokState::DoApplyAction(open_spiel::Action action_id) {
       DoApplyActionInKingCalling(action_id);
       break;
     case GamePhase::kTalonExchange:
-      // todo: implement
+      DoApplyActionInTalonExchange(action_id);
       break;
     case GamePhase::kTricksPlaying:
       // todo: implement
@@ -245,13 +290,16 @@ void TarokState::FinishBiddingPhase(open_spiel::Action action_id) {
     selected_contract_ = &tarok_parent_game_->contracts_.at(action_id - 1);
   }
 
-  if (num_players_ == 4 && selected_contract_->needs_king_calling) {
+  if (num_players_ == 4 && selected_contract_->needs_king_calling)
     current_game_phase_ = GamePhase::kKingCalling;
-  } else if (selected_contract_->NeedsTalonExchange()) {
+  else if (selected_contract_->NeedsTalonExchange())
     current_game_phase_ = GamePhase::kTalonExchange;
-  } else {
-    current_game_phase_ = GamePhase::kTricksPlaying;
-    if (!selected_contract_->declarer_starts) current_player_ = 0;
+  else
+    StartTricksPlayingPhase();
+
+  players_collected_cards_.reserve(num_players_);
+  for (int i = 0; i < num_players_; i++) {
+    players_collected_cards_.push_back(std::vector<open_spiel::Action>());
   }
 }
 
@@ -265,6 +313,33 @@ void TarokState::DoApplyActionInKingCalling(open_spiel::Action action_id) {
     }
   }
   current_game_phase_ = GamePhase::kTalonExchange;
+}
+
+void TarokState::DoApplyActionInTalonExchange(open_spiel::Action action_id) {
+  if (talon_.size() == 6) {
+    // choosing one of the talon card sets
+    int pos = action_id * selected_contract_->num_talon_exchanges;
+    for (int i = pos; i < pos + selected_contract_->num_talon_exchanges; i++) {
+      players_cards_.at(current_player_).push_back(talon_.at(i));
+    }
+    std::sort(players_cards_.at(current_player_).begin(),
+              players_cards_.at(current_player_).end());
+    talon_.erase(
+        talon_.begin() + pos,
+        talon_.begin() + pos + selected_contract_->num_talon_exchanges);
+  } else {
+    // discarding the cards
+    MoveActionFromTo(action_id, players_cards_.at(current_player_),
+                     players_collected_cards_.at(current_player_));
+    if (players_cards_.at(current_player_).size() == 48 / num_players_) {
+      StartTricksPlayingPhase();
+    }
+  }
+}
+
+void TarokState::StartTricksPlayingPhase() {
+  current_game_phase_ = GamePhase::kTricksPlaying;
+  if (!selected_contract_->declarer_starts) current_player_ = 0;
 }
 
 bool TarokState::AllButCurrentPlayerPassedBidding() const {
@@ -281,8 +356,16 @@ void TarokState::NextPlayer() {
 }
 
 bool TarokState::ActionInActions(
-    open_spiel::Action action, const std::vector<open_spiel::Action>& actions) {
-  return std::find(actions.begin(), actions.end(), action) != actions.end();
+    open_spiel::Action action_id,
+    const std::vector<open_spiel::Action>& actions) {
+  return std::find(actions.begin(), actions.end(), action_id) != actions.end();
+}
+
+void TarokState::MoveActionFromTo(open_spiel::Action action_id,
+                                  std::vector<open_spiel::Action>& from,
+                                  std::vector<open_spiel::Action>& to) {
+  from.erase(std::remove(from.begin(), from.end(), action_id), from.end());
+  to.push_back(action_id);
 }
 
 }  // namespace tarok

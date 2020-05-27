@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -19,6 +20,8 @@ enum class GamePhase {
   kTricksPlaying,
   kFinished
 };
+
+std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase);
 
 class TarokGame;
 
@@ -54,14 +57,20 @@ class TarokState : public open_spiel::State {
   void AddLegalActionsInBidding4(
       int max_bid, int max_bid_player,
       std::vector<open_spiel::Action>* result_actions) const;
+  std::vector<open_spiel::Action> LegalActionsInTalonExchange() const;
   void DoApplyActionInCardDealing();
   void DoApplyActionInBidding(open_spiel::Action action_id);
   void FinishBiddingPhase(open_spiel::Action action_id);
   void DoApplyActionInKingCalling(open_spiel::Action action_id);
+  void DoApplyActionInTalonExchange(open_spiel::Action action_id);
+  void StartTricksPlayingPhase();
   bool AllButCurrentPlayerPassedBidding() const;
   void NextPlayer();
-  static bool ActionInActions(open_spiel::Action action,
+  static bool ActionInActions(open_spiel::Action action_id,
                               const std::vector<open_spiel::Action>& actions);
+  static void MoveActionFromTo(open_spiel::Action action_id,
+                               std::vector<open_spiel::Action>& from,
+                               std::vector<open_spiel::Action>& to);
 
   std::shared_ptr<const TarokGame> tarok_parent_game_;
   GamePhase current_game_phase_ = GamePhase::kCardDealing;
@@ -73,6 +82,7 @@ class TarokState : public open_spiel::State {
   // contract pointed to is managed by the game instance
   const ContractInfo* selected_contract_;
   open_spiel::Player declarer_partner_ = open_spiel::kInvalidPlayer;
+  std::vector<std::vector<open_spiel::Action>> players_collected_cards_;
 };
 
 }  // namespace tarok

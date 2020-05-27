@@ -3,6 +3,7 @@
 #pragma once
 
 #include <array>
+#include <iostream>
 #include <string>
 
 #include "open_spiel/spiel.h"
@@ -24,6 +25,8 @@ enum class Contract {
   kValatWithout,
   kNotSelected
 };
+
+std::ostream& operator<<(std::ostream& os, const Contract& contract);
 
 // biddable contracts, note that these are actions that are offset by +1
 // wrt. InitializeContracts() since action 0 means pass
