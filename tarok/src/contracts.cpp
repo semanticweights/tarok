@@ -2,7 +2,54 @@
 
 #include "src/contracts.h"
 
+#include <iostream>
+
 namespace tarok {
+
+std::ostream& operator<<(std::ostream& os, const Contract& contract) {
+  os << "Contract::";
+  switch (contract) {
+    case Contract::kKlop:
+      os << "Klop";
+      break;
+    case Contract::kThree:
+      os << "Three";
+      break;
+    case Contract::kTwo:
+      os << "Two";
+      break;
+    case Contract::kOne:
+      os << "One";
+      break;
+    case Contract::kSoloThree:
+      os << "SoloThree";
+      break;
+    case Contract::kSoloTwo:
+      os << "SoloTwo";
+      break;
+    case Contract::kSoloOne:
+      os << "SoloOne";
+      break;
+    case Contract::kBeggar:
+      os << "Beggar";
+      break;
+    case Contract::kSoloWithout:
+      os << "SoloWithout";
+      break;
+    case Contract::kOpenBeggar:
+      os << "OpenBeggar";
+      break;
+    case Contract::kColourValatWithout:
+      os << "ColourValatWithout";
+      break;
+    case Contract::kValatWithout:
+      os << "ValatWithout";
+      break;
+    case Contract::kNotSelected:
+      os << "NotSelected";
+  }
+  return os;
+}
 
 ContractInfo::ContractInfo(Contract contract, std::string name, int score,
                            int num_talon_exchanges, bool needs_king_calling,
