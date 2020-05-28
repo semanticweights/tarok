@@ -141,7 +141,6 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInTalonExchange()
     std::iota(actions.begin(), actions.end(), 0);
     return actions;
   }
-
   // discarding the cards
   std::vector<open_spiel::Action> actions;
   for (const auto& card : players_cards_.at(current_player_)) {
@@ -250,7 +249,6 @@ void TarokState::DoApplyAction(open_spiel::Action action_id) {
     open_spiel::SpielFatalError(absl::StrCat(
         "Action ", action_id, " is not valid in the current state."));
   }
-
   switch (current_game_phase_) {
     case GamePhase::kCardDealing:
       DoApplyActionInCardDealing();
