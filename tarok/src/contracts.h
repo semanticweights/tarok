@@ -30,9 +30,10 @@ std::ostream& operator<<(std::ostream& os, const Contract& contract);
 
 // biddable contracts, note that these are actions that are offset by +1
 // wrt. InitializeContracts() since action 0 means pass
-// 3 player game
-static constexpr std::array<open_spiel::Action, 5> kBiddableContracts3 = {
-    2, 3, 4, 8, 9};
+
+// 3 player game excluding the forehand
+static constexpr std::array<open_spiel::Action, 7> kBiddableContracts3 = {
+    3, 4, 8, 9, 10, 11, 12};
 // 4 player game excluding the forehand
 static constexpr std::array<open_spiel::Action, 10> kBiddableContracts4 = {
     3, 4, 5, 6, 7, 8, 9, 10, 11, 12};

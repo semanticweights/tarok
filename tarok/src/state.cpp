@@ -83,6 +83,16 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInBidding() const {
   int max_bid_player = it - players_bids_.begin();
 
   std::vector<open_spiel::Action> actions;
+  if (current_player_ == 0 && players_bids_.at(current_player_) == -1 &&
+      AllButCurrentPlayerPassedBidding()) {
+    // no bidding has happened before so forehand can
+    // bid any contract but can't pass
+    actions.insert(actions.end(), {1, 2});
+  } else if (!AllButCurrentPlayerPassedBidding()) {
+    // other players still playing
+    actions.push_back(0);
+  }
+
   if (num_players_ == 3)
     AddLegalActionsInBidding3(max_bid, max_bid_player, &actions);
   else
@@ -93,13 +103,6 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInBidding() const {
 void TarokState::AddLegalActionsInBidding3(
     int max_bid, int max_bid_player,
     std::vector<open_spiel::Action>* result_actions) const {
-  if (!AllButCurrentPlayerPassedBidding() ||
-      (current_player_ == 2 && players_bids_.at(current_player_) == -1)) {
-    // other players still playing or the last player and no bidding has
-    // happened before which results in a compulsory klop
-    result_actions->push_back(0);
-  }
-
   for (const int& action : kBiddableContracts3) {
     if (action < max_bid) continue;
     if ((action > max_bid) ||
@@ -112,16 +115,6 @@ void TarokState::AddLegalActionsInBidding3(
 void TarokState::AddLegalActionsInBidding4(
     int max_bid, int max_bid_player,
     std::vector<open_spiel::Action>* result_actions) const {
-  if (current_player_ == 0 && players_bids_.at(current_player_) == -1 &&
-      AllButCurrentPlayerPassedBidding()) {
-    // no bidding has happened before so forehand can
-    // bid any contract but can't pass
-    result_actions->insert(result_actions->end(), {1, 2});
-  } else if (!AllButCurrentPlayerPassedBidding()) {
-    // other players still playing
-    result_actions->push_back(0);
-  }
-
   for (const int& action : kBiddableContracts4) {
     if (action < max_bid) continue;
     if ((action > max_bid) ||
@@ -282,10 +275,7 @@ void TarokState::DoApplyActionInCardDealing() {
 
   // lower player indices correspond to higher bidding priority,
   // i.e. 0 is the forehand, num_players - 1 is the dealer
-  if (num_players_ == 3)
-    current_player_ = 0;
-  else
-    current_player_ = 1;
+  current_player_ = 1;
 }
 
 void TarokState::DoApplyActionInBidding(open_spiel::Action action_id) {
@@ -301,12 +291,7 @@ void TarokState::DoApplyActionInBidding(open_spiel::Action action_id) {
 
 void TarokState::FinishBiddingPhase(open_spiel::Action action_id) {
   declarer_ = current_player_;
-  if (action_id == 0) {
-    // compulsory klop, this state should only occur in a 3-player game
-    selected_contract_ = &tarok_parent_game_->contracts_.at(0);
-  } else {
-    selected_contract_ = &tarok_parent_game_->contracts_.at(action_id - 1);
-  }
+  selected_contract_ = &tarok_parent_game_->contracts_.at(action_id - 1);
 
   if (num_players_ == 4 && selected_contract_->needs_king_calling)
     current_game_phase_ = GamePhase::kKingCalling;
