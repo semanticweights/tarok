@@ -2,8 +2,6 @@
 
 #include "src/contracts.h"
 
-#include <iostream>
-
 namespace tarok {
 
 std::ostream& operator<<(std::ostream& os, const Contract& contract) {

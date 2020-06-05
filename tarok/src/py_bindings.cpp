@@ -2,13 +2,9 @@
 
 #include <memory>
 
-#include "open_spiel/spiel.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
-#include "src/cards.h"
-#include "src/contracts.h"
 #include "src/game.h"
-#include "src/state.h"
 
 namespace tarok {
 

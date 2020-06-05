@@ -3,7 +3,6 @@
 #include <algorithm>
 
 #include "gtest/gtest.h"
-#include "open_spiel/spiel.h"
 #include "src/cards.h"
 
 namespace tarok {

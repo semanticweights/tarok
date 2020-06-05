@@ -3,15 +3,7 @@
 #include "src/state.h"
 
 #include <algorithm>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
 
-#include "open_spiel/abseil-cpp/absl/strings/str_cat.h"
-#include "open_spiel/spiel.h"
-#include "src/cards.h"
-#include "src/contracts.h"
 #include "src/game.h"
 
 namespace tarok {

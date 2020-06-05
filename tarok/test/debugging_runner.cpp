@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include "open_spiel/spiel.h"
 #include "src/game.h"
 
 int main() {

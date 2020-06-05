@@ -3,11 +3,6 @@
 #include "src/game.h"
 
 #include <ctime>
-#include <memory>
-
-#include "open_spiel/spiel.h"
-#include "src/cards.h"
-#include "src/state.h"
 
 namespace tarok {
 

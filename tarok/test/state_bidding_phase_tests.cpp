@@ -2,10 +2,7 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "open_spiel/spiel.h"
-#include "src/contracts.h"
 #include "src/game.h"
-#include "src/state.h"
 
 namespace tarok {
 
