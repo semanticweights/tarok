@@ -314,7 +314,10 @@ void TarokState::DoApplyActionInTalonExchange(open_spiel::Action action_id) {
 
 void TarokState::StartTricksPlayingPhase() {
   current_game_phase_ = GamePhase::kTricksPlaying;
-  if (!selected_contract_->declarer_starts) current_player_ = 0;
+  if (selected_contract_->declarer_starts)
+    current_player_ = declarer_;
+  else
+    current_player_ = 0;
 }
 
 bool TarokState::AllButCurrentPlayerPassedBidding() const {
