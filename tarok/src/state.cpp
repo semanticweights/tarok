@@ -93,35 +93,15 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInBidding() const {
     actions.push_back(0);
   }
 
-  if (num_players_ == 3)
-    AddLegalActionsInBidding3(max_bid, max_bid_player, &actions);
-  else
-    AddLegalActionsInBidding4(max_bid, max_bid_player, &actions);
+  for (int action = 3; action <= 12; action++) {
+    if (num_players_ == 3 && action >= 5 && action <= 7) continue;
+    if (action < max_bid) continue;
+    if ((action > max_bid) ||
+        (action == max_bid && current_player_ <= max_bid_player)) {
+      actions.push_back(action);
+    }
+  }
   return actions;
-}
-
-void TarokState::AddLegalActionsInBidding3(
-    int max_bid, int max_bid_player,
-    std::vector<open_spiel::Action>* result_actions) const {
-  for (const int& action : kBiddableContracts3) {
-    if (action < max_bid) continue;
-    if ((action > max_bid) ||
-        (action == max_bid && current_player_ <= max_bid_player)) {
-      result_actions->push_back(action);
-    }
-  }
-}
-
-void TarokState::AddLegalActionsInBidding4(
-    int max_bid, int max_bid_player,
-    std::vector<open_spiel::Action>* result_actions) const {
-  for (const int& action : kBiddableContracts4) {
-    if (action < max_bid) continue;
-    if ((action > max_bid) ||
-        (action == max_bid && current_player_ <= max_bid_player)) {
-      result_actions->push_back(action);
-    }
-  }
 }
 
 std::vector<open_spiel::Action> TarokState::LegalActionsInTalonExchange()
