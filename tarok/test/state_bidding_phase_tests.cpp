@@ -18,17 +18,20 @@ TEST(TarokStateTests, TestBiddingPhase3Players1) {
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
   EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
 
-  EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 2, 3, 4, 8, 9));
-  state->ApplyAction(0);
-
   EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 2, 3, 4, 8, 9));
+  EXPECT_THAT(state->LegalActions(),
+              testing::ElementsAre(0, 3, 4, 8, 9, 10, 11, 12));
   state->ApplyAction(0);
 
   EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 2, 3, 4, 8, 9));
+  EXPECT_THAT(state->LegalActions(),
+              testing::ElementsAre(0, 3, 4, 8, 9, 10, 11, 12));
   state->ApplyAction(0);
+
+  EXPECT_EQ(state->CurrentPlayer(), 0);
+  EXPECT_THAT(state->LegalActions(),
+              testing::ElementsAre(1, 2, 3, 4, 8, 9, 10, 11, 12));
+  state->ApplyAction(1);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
   EXPECT_EQ(state->SelectedContract(), Contract::kKlop);
@@ -36,39 +39,6 @@ TEST(TarokStateTests, TestBiddingPhase3Players1) {
 }
 
 TEST(TarokStateTests, TestBiddingPhase3Players2) {
-  // scenario: forehand bids three, player 1 passes, player 2 bids one
-  auto game = NewTarokGame(open_spiel::GameParameters());
-  auto state = game->NewInitialTarokState();
-  state->ApplyAction(0);
-  EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
-  EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
-
-  EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 2, 3, 4, 8, 9));
-  state->ApplyAction(2);
-
-  EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 3, 4, 8, 9));
-  state->ApplyAction(0);
-
-  EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 3, 4, 8, 9));
-  state->ApplyAction(4);
-
-  EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 4, 8, 9));
-  state->ApplyAction(0);
-
-  EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(4, 8, 9));
-  state->ApplyAction(4);
-
-  EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
-  EXPECT_EQ(state->SelectedContract(), Contract::kOne);
-  EXPECT_EQ(state->CurrentPlayer(), 2);
-}
-
-TEST(TarokStateTests, TestBiddingPhase3Players3) {
   // scenario: forehand passes, player 1 eventually
   // bids beggar, player 2 bids beggar
   auto game = NewTarokGame(open_spiel::GameParameters());
@@ -77,28 +47,30 @@ TEST(TarokStateTests, TestBiddingPhase3Players3) {
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
   EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
 
+  EXPECT_EQ(state->CurrentPlayer(), 1);
+  EXPECT_THAT(state->LegalActions(),
+              testing::ElementsAre(0, 3, 4, 8, 9, 10, 11, 12));
+  state->ApplyAction(3);
+
+  EXPECT_EQ(state->CurrentPlayer(), 2);
+  EXPECT_THAT(state->LegalActions(),
+              testing::ElementsAre(0, 4, 8, 9, 10, 11, 12));
+  state->ApplyAction(8);
+
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 2, 3, 4, 8, 9));
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 8, 9, 10, 11, 12));
   state->ApplyAction(0);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 2, 3, 4, 8, 9));
-  state->ApplyAction(4);
-
-  EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 8, 9));
-  state->ApplyAction(8);
-
-  EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 8, 9));
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 8, 9, 10, 11, 12));
   state->ApplyAction(8);
 
   EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 9));
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 9, 10, 11, 12));
   state->ApplyAction(0);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(8, 9));
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(8, 9, 10, 11, 12));
   state->ApplyAction(8);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
@@ -106,32 +78,33 @@ TEST(TarokStateTests, TestBiddingPhase3Players3) {
   EXPECT_EQ(state->CurrentPlayer(), 1);
 }
 
-TEST(TarokStateTests, TestBiddingPhase3Players4) {
-  // scenario: forehand bids beggar, player 1 passes, player 2 bids solo without
+TEST(TarokStateTests, TestBiddingPhase3Players3) {
+  // scenario: forehand passes, player 1 bids beggar, player 2 bids solo without
   auto game = NewTarokGame(open_spiel::GameParameters());
   auto state = game->NewInitialTarokState();
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
   EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
 
-  EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 2, 3, 4, 8, 9));
+  EXPECT_EQ(state->CurrentPlayer(), 1);
+  EXPECT_THAT(state->LegalActions(),
+              testing::ElementsAre(0, 3, 4, 8, 9, 10, 11, 12));
   state->ApplyAction(8);
 
-  EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 9));
-  state->ApplyAction(0);
-
   EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 9));
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 9, 10, 11, 12));
   state->ApplyAction(9);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 9));
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 9, 10, 11, 12));
+  state->ApplyAction(0);
+
+  EXPECT_EQ(state->CurrentPlayer(), 1);
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 9, 10, 11, 12));
   state->ApplyAction(0);
 
   EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(9));
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(9, 10, 11, 12));
   state->ApplyAction(9);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
@@ -139,8 +112,8 @@ TEST(TarokStateTests, TestBiddingPhase3Players4) {
   EXPECT_EQ(state->CurrentPlayer(), 2);
 }
 
-TEST(TarokStateTests, TestBiddingPhase3Players5) {
-  // scenario: forehand bids solo without, others are forced to pass
+TEST(TarokStateTests, TestBiddingPhase3Players4) {
+  // scenario: forehand bids valat without, others are forced to pass
   // todo: we could check this case in DoApplyActionInBidding
   // and simply finish the bidding phase early
   auto game = NewTarokGame(open_spiel::GameParameters());
@@ -149,9 +122,20 @@ TEST(TarokStateTests, TestBiddingPhase3Players5) {
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
   EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
 
+  EXPECT_EQ(state->CurrentPlayer(), 1);
+  EXPECT_THAT(state->LegalActions(),
+              testing::ElementsAre(0, 3, 4, 8, 9, 10, 11, 12));
+  state->ApplyAction(3);
+
+  EXPECT_EQ(state->CurrentPlayer(), 2);
+  EXPECT_THAT(state->LegalActions(),
+              testing::ElementsAre(0, 4, 8, 9, 10, 11, 12));
+  state->ApplyAction(4);
+
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 2, 3, 4, 8, 9));
-  state->ApplyAction(9);
+  EXPECT_THAT(state->LegalActions(),
+              testing::ElementsAre(0, 4, 8, 9, 10, 11, 12));
+  state->ApplyAction(12);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0));
@@ -162,11 +146,11 @@ TEST(TarokStateTests, TestBiddingPhase3Players5) {
   state->ApplyAction(0);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(9));
-  state->ApplyAction(9);
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(12));
+  state->ApplyAction(12);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kSoloWithout);
+  EXPECT_EQ(state->SelectedContract(), Contract::kValatWithout);
   EXPECT_EQ(state->CurrentPlayer(), 0);
 }
 
