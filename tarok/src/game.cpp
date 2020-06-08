@@ -63,4 +63,6 @@ std::shared_ptr<const TarokGame> NewTarokGame(
   return std::make_shared<const TarokGame>(params);
 }
 
+open_spiel::REGISTER_SPIEL_GAME(kGameType, NewTarokGame);
+
 }  // namespace tarok
