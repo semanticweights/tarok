@@ -3,11 +3,6 @@
 #include "src/game.h"
 
 #include <ctime>
-#include <memory>
-
-#include "open_spiel/spiel.h"
-#include "src/cards.h"
-#include "src/state.h"
 
 namespace tarok {
 
@@ -67,5 +62,7 @@ std::shared_ptr<const TarokGame> NewTarokGame(
     const open_spiel::GameParameters& params) {
   return std::make_shared<const TarokGame>(params);
 }
+
+open_spiel::REGISTER_SPIEL_GAME(kGameType, NewTarokGame);
 
 }  // namespace tarok

@@ -3,13 +3,7 @@
 #include "src/cards.h"
 
 #include <algorithm>
-#include <array>
 #include <random>
-#include <string>
-#include <tuple>
-#include <vector>
-
-#include "open_spiel/spiel.h"
 
 namespace tarok {
 

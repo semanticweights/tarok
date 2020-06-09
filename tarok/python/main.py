@@ -3,12 +3,8 @@ import pytarok as ta
 
 
 def play_game():
-    game = ta.TarokGame({
-        'num_players': sp.GameParameter(4),
-        'seed': sp.GameParameter(0),
-    })
-    state = game.new_initial_tarok_state()
-
+    game = sp.load_game('tarok(num_players=3,seed=0)')
+    state = game.new_initial_state()
     while(True):
         print_info(game, state)
         state.apply_action(int(input("Enter action: ")))

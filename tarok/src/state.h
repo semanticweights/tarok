@@ -52,12 +52,6 @@ class TarokState : public open_spiel::State {
 
  private:
   std::vector<open_spiel::Action> LegalActionsInBidding() const;
-  void AddLegalActionsInBidding3(
-      int max_bid, int max_bid_player,
-      std::vector<open_spiel::Action>* result_actions) const;
-  void AddLegalActionsInBidding4(
-      int max_bid, int max_bid_player,
-      std::vector<open_spiel::Action>* result_actions) const;
   std::vector<open_spiel::Action> LegalActionsInTalonExchange() const;
   void DoApplyActionInCardDealing();
   void DoApplyActionInBidding(open_spiel::Action action_id);
