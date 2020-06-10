@@ -133,11 +133,11 @@ TarokState::LegalActionsInTricksPlayingFollowing() const {
   auto [can_follow_suit, cant_follow_suit_but_has_tarok] =
       CanFollowSuitOrCantButHasTarok();
 
-  // todo: the emperor trick in negative contracts (must play pagat)
   if (can_follow_suit) {
     CardSuit opening_suit =
         tarok_parent_game_->card_deck_.at(trick_cards_.front()).suit;
     if (selected_contract_->is_negative) {
+      // todo: the emperor trick in negative contracts (must play pagat)
       auto actions = TakeSuitFromPlayerCardsHigherIfNeeded();
       if (opening_suit == CardSuit::kTaroks) {
         return RemovePagatIfNeeded(actions);
@@ -148,6 +148,8 @@ TarokState::LegalActionsInTricksPlayingFollowing() const {
     }
   } else if (cant_follow_suit_but_has_tarok) {
     if (selected_contract_->is_negative) {
+      // todo: do we need TakeSuitFromPlayerCardsHigherIfNeeded here?
+      // todo: the emperor trick in negative contracts (must play pagat)
       return RemovePagatIfNeeded(TakeSuitFromPlayerCards(CardSuit::kTaroks));
     } else {
       return TakeSuitFromPlayerCards(CardSuit::kTaroks);
@@ -519,7 +521,7 @@ open_spiel::Player TarokState::ResolveTrickWinner() const {
   open_spiel::Player trick_winner = current_player_;
   for (int i = 0; i < trick_cards_.size() - 1 - winning_action_i; i++) {
     trick_winner -= 1;
-    if (trick_winner == -1) trick_winner = 0;
+    if (trick_winner == -1) trick_winner = num_players_ - 1;
   }
   return trick_winner;
 }

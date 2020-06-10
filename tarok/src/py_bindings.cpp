@@ -22,7 +22,6 @@ PYBIND11_MODULE(pytarok, m) {
     // comments in open_spiel/spiel.h for more info
     return std::make_shared<TarokGame>(params);
   }));
-  tarok_game.def("new_initial_tarok_state", &TarokGame::NewInitialTarokState);
 
   // state object
   py::class_<TarokState, open_spiel::State> tarok_state(m, "TarokState");
