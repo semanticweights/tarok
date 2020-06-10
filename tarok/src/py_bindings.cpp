@@ -27,8 +27,9 @@ PYBIND11_MODULE(pytarok, m) {
   // state object
   py::class_<TarokState, open_spiel::State> tarok_state(m, "TarokState");
   tarok_state.def("current_game_phase", &TarokState::CurrentGamePhase);
-  tarok_state.def("talon", &TarokState::Talon);
+  tarok_state.def("talon", &TarokState::TalonSets);
   tarok_state.def("player_cards", &TarokState::PlayerCards);
+  tarok_state.def("trick_cards", &TarokState::TrickCards);
   tarok_state.def("card_action_to_string", &TarokState::CardActionToString);
   tarok_state.def("selected_contract", &TarokState::SelectedContract);
 

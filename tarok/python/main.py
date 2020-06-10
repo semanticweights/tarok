@@ -8,6 +8,7 @@ def play_game():
     while(True):
         print_info(game, state)
         state.apply_action(int(input("Enter action: ")))
+        print("-" * 70, "\n")
 
 
 def print_info(game, state):
@@ -16,16 +17,38 @@ def print_info(game, state):
     print("Current player: {}".format(state.current_player()))
 
     if (state.current_game_phase() == ta.GamePhase.TALON_EXCHANGE):
-        talon = [[state.card_action_to_string(x) for x in talon_set]
-                 for talon_set in state.talon()]
-        print("Talon: {}".format(talon))
+        print_talon_exchange_info(state)
+    elif (state.current_game_phase() == ta.GamePhase.TRICKS_PLAYING):
+        print_tricks_playing_info(state)
+    else:
+        print()
 
     legal_actions = state.legal_actions()
     action_names = [state.action_to_string(a) for a in state.legal_actions()]
-    print("Legal actions: {}".format(
+    print("Legal actions: {}\n".format(
         [x for x in zip(action_names, legal_actions)]
     ))
-    print()
+
+
+def print_talon_exchange_info(state):
+    talon = [[state.card_action_to_string(x) for x in talon_set]
+             for talon_set in state.talon()]
+    print("\nTalon: {}\n".format(talon))
+
+
+def print_tricks_playing_info(state):
+    player_cards = state.player_cards(state.current_player())
+    player_cards_names = [
+        state.card_action_to_string(a) for a in player_cards]
+    print("\nPlayer cards: {}".format(
+        [x for x in zip(player_cards_names, player_cards)]
+    ))
+    trick_cards = state.trick_cards()
+    trick_cards_names = [
+        state.card_action_to_string(a) for a in trick_cards]
+    print("\nTrick cards: {}\n".format(
+        [x for x in zip(trick_cards_names, trick_cards)]
+    ))
 
 
 if __name__ == '__main__':
