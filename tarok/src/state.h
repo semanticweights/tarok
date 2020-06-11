@@ -64,9 +64,11 @@ class TarokState : public open_spiel::State {
   // can't but still has at least one tarok, if the first value is true, the
   // second might be set incorrectly as it is irrelevant
   std::tuple<bool, bool> CanFollowSuitOrCantButHasTarok() const;
-  std::vector<open_spiel::Action> TakeSuitFromPlayerCards(CardSuit suit) const;
-  std::vector<open_spiel::Action> TakeSuitFromPlayerCardsHigherIfNeeded() const;
-  const TarokCard& CardToBeatInNegativeContracts() const;
+  std::vector<open_spiel::Action> TakeSuitFromPlayerCardsInPositiveContracts(
+      CardSuit suit) const;
+  std::vector<open_spiel::Action> TakeSuitFromPlayerCardsInNegativeContracts(
+      CardSuit suit) const;
+  const TarokCard* CardToBeatInNegativeContracts(CardSuit suit) const;
   void DoApplyActionInCardDealing();
   void DoApplyActionInBidding(open_spiel::Action action_id);
   bool AllButCurrentPlayerPassedBidding() const;
