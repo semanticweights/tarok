@@ -208,6 +208,7 @@ TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
       const TarokCard& current_card = tarok_parent_game_->card_deck_.at(action);
       if (current_card.suit == suit && current_card.rank > card_to_beat->rank) {
         have_higher_card = true;
+        break;
       }
     }
     // collect the actual cards
@@ -224,23 +225,23 @@ TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
 
 const TarokCard* TarokState::CardToBeatInNegativeContracts(
     CardSuit suit) const {
-  // card to beat in negative contracts is the highest card on the table
-  // that is either the same suit as the opening card or is CardSuit::kTaroks,
-  // depending on the situation
-  if (suit == CardSuit::kTaroks) {
-    bool tarok_in_trick_cards = false;
-    for (auto const& action : trick_cards_) {
-      if (tarok_parent_game_->card_deck_.at(action).suit == CardSuit::kTaroks) {
-        tarok_in_trick_cards = true;
-      }
-    }
-    if (!tarok_in_trick_cards) {
-      // this happens when a player can't follow suit and has at least one tarok
-      // but no taroks have been played so far in this trick
-      return nullptr;
+  // there are two cases where no card has to be beaten; we are following a
+  // colour suit and there is already at least one tarok in trick_cards_ or
+  // we are forced to play a tarok and there are no taroks in trick_cards_
+  bool tarok_in_trick_cards = false;
+  for (auto const& action : trick_cards_) {
+    if (tarok_parent_game_->card_deck_.at(action).suit == CardSuit::kTaroks) {
+      tarok_in_trick_cards = true;
+      break;
     }
   }
-  // the specified suit should be present in trick_cards_ from here on
+  if ((suit != CardSuit::kTaroks && tarok_in_trick_cards) ||
+      (suit == CardSuit::kTaroks && !tarok_in_trick_cards)) {
+    return nullptr;
+  }
+  // the specified suit should be present in trick_cards_ from here on because
+  // it is either a suit of the opening card or CardSuit::kTaroks with existing
+  // taroks in trick_cards_
   const TarokCard* card_to_beat;
   for (auto const& action : trick_cards_) {
     const TarokCard& current_card = tarok_parent_game_->card_deck_.at(action);
