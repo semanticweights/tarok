@@ -19,7 +19,7 @@ The easiest way to run Python scripts that use Tarok and OpenSpiel is via docker
 1. Clone the repository and `cd` into it
 2. Run
 ```bash
-docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-cd3e8b1 /src/play_game.py
+docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-d29578a /src/play_game.py
 ```
 Note that hash values after the *run-* part correspond to commits from the *stable* branch.
 
@@ -31,8 +31,8 @@ Note that hash values after the *run-* part correspond to commits from the *stab
     - `make`
     - `python3` (tested with 3.7.4)
 3. Create a new virtual environment and activate it
-4. Run `pip install --upgrade pip setuptools`
-5. Run `pip install -r tarok/python/requirements.txt`
+4. Run `python3 -m pip install --upgrade pip setuptools`
+5. Run `python3 -m pip install -r tarok/python/requirements.txt`
 6. Run `./tarok/install.sh`
 7. Add Python modules to `PYTHONPATH` (see output from the previous step)
 
