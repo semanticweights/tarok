@@ -35,6 +35,7 @@ class TarokState : public open_spiel::State {
   std::vector<open_spiel::Action> LegalActions() const override;
   std::string ActionToString(open_spiel::Player player,
                              open_spiel::Action action_id) const override;
+  std::string CardActionToString(open_spiel::Action action_id) const;
   open_spiel::Action StringToAction(
       open_spiel::Player player, const std::string& action_str) const override;
   std::string ToString() const override;
@@ -44,11 +45,10 @@ class TarokState : public open_spiel::State {
   std::unique_ptr<State> Clone() const override;
   open_spiel::ActionsAndProbs ChanceOutcomes() const override;
   GamePhase CurrentGamePhase() const;
-  std::vector<std::vector<open_spiel::Action>> TalonSets() const;
   std::vector<open_spiel::Action> PlayerCards(open_spiel::Player player) const;
-  std::vector<open_spiel::Action> TrickCards() const;
-  std::string CardActionToString(open_spiel::Action action_id) const;
   Contract SelectedContract() const;
+  std::vector<std::vector<open_spiel::Action>> TalonSets() const;
+  std::vector<open_spiel::Action> TrickCards() const;
 
  protected:
   void DoApplyAction(open_spiel::Action action_id) override;
@@ -58,17 +58,18 @@ class TarokState : public open_spiel::State {
   std::vector<open_spiel::Action> LegalActionsInTalonExchange() const;
   std::vector<open_spiel::Action> LegalActionsInTricksPlaying() const;
   std::vector<open_spiel::Action> LegalActionsInTricksPlayingFollowing() const;
-  std::vector<open_spiel::Action> RemovePagatIfNeeded(
-      const std::vector<open_spiel::Action>& actions) const;
   // checks whether the current player can follow the opening card suit or
   // can't but still has at least one tarok, if the first value is true, the
   // second might be set incorrectly as it is irrelevant
   std::tuple<bool, bool> CanFollowSuitOrCantButHasTarok() const;
-  std::vector<open_spiel::Action> TakeSuitFromPlayerCardsInPositiveContracts(
-      CardSuit suit) const;
   std::vector<open_spiel::Action> TakeSuitFromPlayerCardsInNegativeContracts(
       CardSuit suit) const;
   const TarokCard* CardToBeatInNegativeContracts(CardSuit suit) const;
+  std::vector<open_spiel::Action> RemovePagatIfNeeded(
+      const std::vector<open_spiel::Action>& actions) const;
+  std::vector<open_spiel::Action> TakeSuitFromPlayerCardsInPositiveContracts(
+      CardSuit suit) const;
+
   void DoApplyActionInCardDealing();
   void DoApplyActionInBidding(open_spiel::Action action_id);
   bool AllButCurrentPlayerPassedBidding() const;
@@ -79,6 +80,7 @@ class TarokState : public open_spiel::State {
   void DoApplyActionInTricksPlaying(open_spiel::Action action_id);
   void ResolveTrick();
   open_spiel::Player ResolveTrickWinner() const;
+
   void NextPlayer();
   static bool ActionInActions(open_spiel::Action action_id,
                               const std::vector<open_spiel::Action>& actions);
@@ -95,7 +97,7 @@ class TarokState : public open_spiel::State {
   std::vector<open_spiel::Action> players_bids_;
   open_spiel::Player declarer_ = open_spiel::kInvalidPlayer;
   // contract pointed to is managed by the game instance
-  const ContractInfo* selected_contract_;
+  const ContractInfo* selected_contract_info_;
   open_spiel::Player declarer_partner_ = open_spiel::kInvalidPlayer;
   std::vector<std::vector<open_spiel::Action>> players_collected_cards_;
   std::vector<open_spiel::Action> trick_cards_;

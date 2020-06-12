@@ -5,7 +5,7 @@ import pytarok as ta
 def play_game():
     game = sp.load_game('tarok(num_players=3,seed=0)')
     state = game.new_initial_state()
-    while(state.current_game_phase() != ta.GamePhase.FINISHED):
+    while(not state.is_terminal()):
         print_info(game, state)
         state.apply_action(int(input("Enter action: ")))
         print("-" * 70, "\n")
