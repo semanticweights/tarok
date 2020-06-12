@@ -12,7 +12,7 @@
 ---
 [Slovenian Tarok](https://en.wikipedia.org/wiki/K%C3%B6nigrufen#Slovenia) is a variant of central European [Tarot card games](https://en.wikipedia.org/wiki/Tarot_card_games). It is essentially a three- or four-player, trick-taking, competitive game of skill with bidding. Computationally speaking, Tarok is moderately more complex than [Bridge](https://en.wikipedia.org/wiki/Contract_bridge) [[1]](#references). Detailed game rules are available [here](https://www.pagat.com/tarot/sltarok.html).
 
-This repository provides a C++ game environment for the [OpenSpiel framework](https://github.com/deepmind/open_spiel) [[2]](#references) and custom Python bindings for `Game` and `State` objects.
+This repository provides a C++ game environment for the [OpenSpiel framework](https://github.com/deepmind/open_spiel) and custom Python bindings for `Game` and `State` objects [[2]](#references).
 
 ### Running in Docker
 The easiest way to run Python scripts that use Tarok and OpenSpiel is via docker:
@@ -21,15 +21,15 @@ The easiest way to run Python scripts that use Tarok and OpenSpiel is via docker
 ```bash
 docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-cd3e8b1 /src/play_game.py
 ```
-Note that hash values after the *run-* part correspond to commits from the **stable** branch.
+Note that hash values after the *run-* part correspond to commits from the *stable* branch.
 
 ### Local Development
 1. Clone this repository and `cd` into it
 2. Ensure you have the following installed:
-    - **a compiler that supports the C++17 standard** (tested with Clang)
-    - **cmake** (version **3.13.4** or above)
-    - **make**
-    - **python3** (tested with **3.7.4**)
+    - a compiler that supports the C++17 standard (tested with Clang)
+    - `cmake` (version 3.13.4 or above)
+    - `make`
+    - `python3` (tested with 3.7.4)
 3. Create a new virtual environment and activate it
 4. Run `pip install --upgrade pip setuptools`
 5. Run `pip install -r tarok/python/requirements.txt`
