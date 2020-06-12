@@ -49,6 +49,11 @@ open_spiel::Player TarokState::CurrentPlayer() const {
 }
 
 std::vector<open_spiel::Action> TarokState::LegalActions() const {
+  // all card actions are encoded as 0, 1, ..., 52, 53 and correspond to card
+  // indices wrt. tarok_parent_game_->card_deck_, card actions are returned:
+  //   - in the king calling phase
+  //   - by LegalActionsInTalonExchange() after the talon set is selected
+  //   - by LegalActionsInTricksPlaying()
   switch (current_game_phase_) {
     case GamePhase::kCardDealing:
       // return a dummy action due to implicit stochasticity
@@ -192,10 +197,18 @@ TarokState::TakeSuitFromPlayerCardsInPositiveContracts(CardSuit suit) const {
 
 std::vector<open_spiel::Action>
 TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
-  // todo: the emperor trick (must play pagat)
-  const TarokCard* card_to_beat = CardToBeatInNegativeContracts(suit);
+  bool player_has_pagat =
+      ActionInActions(0, players_cards_.at(current_player_));
+  if (player_has_pagat && ActionInActions(20, trick_cards_) &&
+      ActionInActions(21, trick_cards_)) {
+    // the emperor trick, i.e. pagat has to be played as it is the only card
+    // that will win the trick
+    return {0};
+  }
 
+  const TarokCard* card_to_beat = CardToBeatInNegativeContracts(suit);
   std::vector<open_spiel::Action> actions;
+
   if (!card_to_beat) {
     actions = TakeSuitFromPlayerCardsInPositiveContracts(suit);
   } else {
@@ -219,7 +232,11 @@ TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
       }
     }
   }
-  return RemovePagatIfNeeded(actions);
+
+  if (player_has_pagat)
+    return RemovePagatIfNeeded(actions);
+  else
+    return actions;
 }
 
 const TarokCard* TarokState::CardToBeatInNegativeContracts(
@@ -381,7 +398,7 @@ void TarokState::DoApplyAction(open_spiel::Action action_id) {
 
 void TarokState::DoApplyActionInCardDealing() {
   // do the actual sampling here due to implicit stochasticity
-  // todo: deal again if any player without taroks and play compulsory klop
+  // todo: deal again if any player without taroks
   std::tie(talon_, players_cards_) =
       DealCards(num_players_, tarok_parent_game_->RNG());
 
@@ -480,7 +497,7 @@ void TarokState::DoApplyActionInTricksPlaying(open_spiel::Action action_id) {
   if (trick_cards_.size() == num_players_) {
     ResolveTrick();
     if (players_cards_.at(current_player_).empty()) {
-      // todo: compute player scores
+      // todo: compute rewards
       current_game_phase_ = GamePhase::kFinished;
     }
   } else {
@@ -506,19 +523,30 @@ void TarokState::ResolveTrick() {
 }
 
 open_spiel::Player TarokState::ResolveTrickWinner() const {
-  // todo: the emperor trick
+  const TarokCard& opening_card = ActionToCard(trick_cards_.front());
   // compute the winning action index within trick_cards_
-  int winning_action_i = 0;
-  for (int i = 1; i < trick_cards_.size(); i++) {
-    const TarokCard& winning_card =
-        ActionToCard(trick_cards_.at(winning_action_i));
-    const TarokCard& current_card = ActionToCard(trick_cards_.at(i));
+  int winning_action_i;
+  if ((ActionInActions(0, trick_cards_) && ActionInActions(20, trick_cards_) &&
+       ActionInActions(21, trick_cards_)) &&
+      (selected_contract_->contract != Contract::kColourValatWithout ||
+       opening_card.suit == CardSuit::kTaroks)) {
+    // the emperor trick, i.e. pagat wins in all cases but in
+    // Contract::kColourValatWithout when a non-trump is led
+    winning_action_i = std::find(trick_cards_.begin(), trick_cards_.end(), 0) -
+                       trick_cards_.begin();
+  } else {
+    winning_action_i = 0;
+    for (int i = 1; i < trick_cards_.size(); i++) {
+      const TarokCard& winning_card =
+          ActionToCard(trick_cards_.at(winning_action_i));
+      const TarokCard& current_card = ActionToCard(trick_cards_.at(i));
 
-    if (((current_card.suit == CardSuit::kTaroks &&
-          selected_contract_->contract != Contract::kColourValatWithout) ||
-         current_card.suit == winning_card.suit) &&
-        current_card.rank > winning_card.rank) {
-      winning_action_i = i;
+      if (((current_card.suit == CardSuit::kTaroks &&
+            selected_contract_->contract != Contract::kColourValatWithout) ||
+           current_card.suit == winning_card.suit) &&
+          current_card.rank > winning_card.rank) {
+        winning_action_i = i;
+      }
     }
   }
   // figure out which player belongs to the winning action index as the player
