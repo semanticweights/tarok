@@ -13,21 +13,14 @@ int main() {
   state->ApplyAction(0);
   // bidding
   state->ApplyAction(0);
-  state->ApplyAction(3);
   state->ApplyAction(0);
-  state->ApplyAction(3);
+  state->ApplyAction(1);
   // talon exchange
-  state->ApplyAction(0);
-  state->ApplyAction(33);
-  state->ApplyAction(36);
-  // tricks playing
-  state->ApplyAction(0);
-  state->ApplyAction(17);
-  state->ApplyAction(19);
-
-  state->ApplyAction(21);
+  // state->LegalActions();
   state->ApplyAction(3);
+  // state->LegalActions();
   state->ApplyAction(5);
+  state->LegalActions();
 
   return 0;
 }

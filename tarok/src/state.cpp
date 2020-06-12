@@ -182,19 +182,19 @@ TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
     return {0};
   }
 
-  const TarokCard* card_to_beat = CardToBeatInNegativeContracts(suit);
+  std::optional<open_spiel::Action> action_to_beat =
+      ActionToBeatInNegativeContracts(suit);
   std::vector<open_spiel::Action> actions;
 
-  if (!card_to_beat) {
-    actions = TakeSuitFromPlayerCardsInPositiveContracts(suit);
-  } else {
+  if (action_to_beat) {
+    const TarokCard& card_to_beat = ActionToCard(*action_to_beat);
     auto const& player_cards = players_cards_.at(current_player_);
     // a higher card only has to be played when the player actually has a higher
     // card otherwise any card of the suit can be played
     bool has_higher_card = false;
     for (auto const& action : player_cards) {
       const TarokCard& current_card = ActionToCard(action);
-      if (current_card.suit == suit && current_card.rank > card_to_beat->rank) {
+      if (current_card.suit == suit && current_card.rank > card_to_beat.rank) {
         has_higher_card = true;
         break;
       }
@@ -203,10 +203,13 @@ TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
     for (auto const& action : player_cards) {
       const TarokCard& current_card = ActionToCard(action);
       if (current_card.suit == suit &&
-          (!has_higher_card || current_card.rank > card_to_beat->rank)) {
+          (!has_higher_card || current_card.rank > card_to_beat.rank)) {
         actions.push_back(action);
       }
     }
+  } else {
+    // no need to beat any card so simply return all cards of the correct suit
+    actions = TakeSuitFromPlayerCardsInPositiveContracts(suit);
   }
 
   if (player_has_pagat)
@@ -215,11 +218,12 @@ TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
     return actions;
 }
 
-const TarokCard* TarokState::CardToBeatInNegativeContracts(
+std::optional<open_spiel::Action> TarokState::ActionToBeatInNegativeContracts(
     CardSuit suit) const {
-  // there are two cases where no card has to be beaten; we are following a
-  // colour suit and there is already at least one tarok in trick_cards_ or
-  // we are forced to play a tarok and there are no taroks in trick_cards_
+  // there are two cases where no card has to be beaten; the player is following
+  // a colour suit and there is already at least one tarok in trick_cards_ or
+  // the player is forced to play a tarok and there are no taroks in
+  // trick_cards_
   bool tarok_in_trick_cards = false;
   for (auto const& action : trick_cards_) {
     if (ActionToCard(action).suit == CardSuit::kTaroks) {
@@ -229,21 +233,19 @@ const TarokCard* TarokState::CardToBeatInNegativeContracts(
   }
   if ((suit != CardSuit::kTaroks && tarok_in_trick_cards) ||
       (suit == CardSuit::kTaroks && !tarok_in_trick_cards)) {
-    return nullptr;
+    return {};
   }
   // the specified suit should be present in trick_cards_ from here on because
   // it is either a suit of the opening card or CardSuit::kTaroks with existing
   // taroks in trick_cards_
-  const TarokCard* card_to_beat;
-  for (auto const& action : trick_cards_) {
-    const TarokCard& current_card = ActionToCard(action);
-    if (current_card.suit != suit) continue;
-    if (!card_to_beat)
-      card_to_beat = &current_card;
-    else if (current_card.rank > card_to_beat->rank)
-      card_to_beat = &current_card;
+  open_spiel::Action action_to_beat = trick_cards_.front();
+  for (int i = 1; i < trick_cards_.size(); i++) {
+    const TarokCard& card_to_beat = ActionToCard(action_to_beat);
+    const TarokCard& current_card = ActionToCard(trick_cards_.at(i));
+    if (current_card.suit == suit && current_card.rank > card_to_beat.rank)
+      action_to_beat = trick_cards_.at(i);
   }
-  return card_to_beat;
+  return action_to_beat;
 }
 
 std::vector<open_spiel::Action> TarokState::RemovePagatIfNeeded(
@@ -348,21 +350,23 @@ Contract TarokState::SelectedContract() const {
   return selected_contract_info_->contract;
 }
 
+std::vector<open_spiel::Action> TarokState::Talon() const { return talon_; }
+
 std::vector<std::vector<open_spiel::Action>> TarokState::TalonSets() const {
   if (current_game_phase_ != GamePhase::kTalonExchange) return {};
 
   int num_talon_sets =
       talon_.size() / selected_contract_info_->num_talon_exchanges;
-  std::vector<std::vector<open_spiel::Action>> talon;
-  talon.reserve(num_talon_sets);
+  std::vector<std::vector<open_spiel::Action>> talon_sets;
+  talon_sets.reserve(num_talon_sets);
 
+  auto begin = talon_.begin();
   for (int i = 0; i < num_talon_sets; i++) {
-    auto begin =
-        talon_.begin() + i * selected_contract_info_->num_talon_exchanges;
-    talon.push_back(std::vector<open_spiel::Action>(
+    talon_sets.push_back(std::vector<open_spiel::Action>(
         begin, begin + selected_contract_info_->num_talon_exchanges));
+    std::advance(begin, selected_contract_info_->num_talon_exchanges);
   }
-  return talon;
+  return talon_sets;
 }
 
 std::vector<open_spiel::Action> TarokState::TrickCards() const {
@@ -528,8 +532,8 @@ open_spiel::Player TarokState::ResolveTrickWinner() const {
        ActionInActions(21, trick_cards_)) &&
       (selected_contract_info_->contract != Contract::kColourValatWithout ||
        ActionToCard(trick_cards_.front()).suit == CardSuit::kTaroks)) {
-    // the emperor trick, i.e. pagat wins in all cases but in
-    // Contract::kColourValatWithout when a non-trump is led
+    // the emperor trick, i.e. pagat wins over mond and skis in all cases but
+    // not in Contract::kColourValatWithout when a non-trump is led
     winning_action_i = std::find(trick_cards_.begin(), trick_cards_.end(), 0) -
                        trick_cards_.begin();
   } else {
@@ -548,14 +552,16 @@ open_spiel::Player TarokState::ResolveTrickWinner() const {
       }
     }
   }
-  // figure out which player belongs to the winning action index as the player
-  // who opens the trick always belongs to index 0 within trick_cards_
-  open_spiel::Player trick_winner = current_player_;
-  for (int i = 0; i < trick_cards_.size() - 1 - winning_action_i; i++) {
-    trick_winner -= 1;
-    if (trick_winner == -1) trick_winner = num_players_ - 1;
+  return TrickCardsIndexToPlayer(winning_action_i);
+}
+
+open_spiel::Player TarokState::TrickCardsIndexToPlayer(int index) const {
+  open_spiel::Player player = current_player_;
+  for (int i = 0; i < trick_cards_.size() - 1 - index; i++) {
+    player -= 1;
+    if (player == -1) player = num_players_ - 1;
   }
-  return trick_winner;
+  return player;
 }
 
 void TarokState::NextPlayer() {

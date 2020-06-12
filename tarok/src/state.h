@@ -47,6 +47,7 @@ class TarokState : public open_spiel::State {
   GamePhase CurrentGamePhase() const;
   std::vector<open_spiel::Action> PlayerCards(open_spiel::Player player) const;
   Contract SelectedContract() const;
+  std::vector<open_spiel::Action> Talon() const;
   std::vector<std::vector<open_spiel::Action>> TalonSets() const;
   std::vector<open_spiel::Action> TrickCards() const;
 
@@ -64,7 +65,8 @@ class TarokState : public open_spiel::State {
   std::tuple<bool, bool> CanFollowSuitOrCantButHasTarok() const;
   std::vector<open_spiel::Action> TakeSuitFromPlayerCardsInNegativeContracts(
       CardSuit suit) const;
-  const TarokCard* CardToBeatInNegativeContracts(CardSuit suit) const;
+  std::optional<open_spiel::Action> ActionToBeatInNegativeContracts(
+      CardSuit suit) const;
   std::vector<open_spiel::Action> RemovePagatIfNeeded(
       const std::vector<open_spiel::Action>& actions) const;
   std::vector<open_spiel::Action> TakeSuitFromPlayerCardsInPositiveContracts(
@@ -80,6 +82,9 @@ class TarokState : public open_spiel::State {
   void DoApplyActionInTricksPlaying(open_spiel::Action action_id);
   void ResolveTrick();
   open_spiel::Player ResolveTrickWinner() const;
+  // computes which player belongs to the trick_cards_ index as the player
+  // who opens the trick always belongs to index 0 within trick_cards_
+  open_spiel::Player TrickCardsIndexToPlayer(int index) const;
 
   void NextPlayer();
   static bool ActionInActions(open_spiel::Action action_id,
