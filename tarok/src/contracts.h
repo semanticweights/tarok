@@ -31,7 +31,7 @@ std::ostream& operator<<(std::ostream& os, const Contract& contract);
 struct ContractInfo {
   ContractInfo(Contract contract, std::string name, int score,
                int num_talon_exchanges, bool needs_king_calling,
-               bool declarer_starts);
+               bool declarer_starts, bool is_negative);
 
   bool NeedsTalonExchange() const;
 
@@ -41,6 +41,7 @@ struct ContractInfo {
   const int num_talon_exchanges;
   const bool needs_king_calling;
   const bool declarer_starts;
+  const bool is_negative;
 };
 
 const std::array<ContractInfo, 12> InitializeContracts();
