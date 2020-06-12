@@ -460,8 +460,7 @@ void TarokState::DoApplyActionInKingCalling(open_spiel::Action action_id) {
 }
 
 void TarokState::DoApplyActionInTalonExchange(open_spiel::Action action_id) {
-  std::vector<open_spiel::Action>& player_cards =
-      players_cards_.at(current_player_);
+  auto& player_cards = players_cards_.at(current_player_);
 
   if (talon_.size() == 6) {
     // choosing one of the talon card sets
@@ -507,15 +506,15 @@ void TarokState::DoApplyActionInTricksPlaying(open_spiel::Action action_id) {
 
 void TarokState::ResolveTrick() {
   open_spiel::Player trick_winner = ResolveTrickWinner();
-  std::vector<open_spiel::Action>& trick_winners_collected_cards =
+  auto& trick_winner_collected_cards =
       players_collected_cards_.at(trick_winner);
 
   for (auto const& action : trick_cards_) {
-    trick_winners_collected_cards.push_back(action);
+    trick_winner_collected_cards.push_back(action);
   }
   if (selected_contract_->contract == Contract::kKlop && talon_.size() > 0) {
     // add the "gift" talon card
-    trick_winners_collected_cards.push_back(talon_.front());
+    trick_winner_collected_cards.push_back(talon_.front());
     talon_.erase(talon_.begin());
   }
   trick_cards_.clear();
