@@ -114,8 +114,7 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInTalonExchange()
   // discarding the cards
   std::vector<open_spiel::Action> actions;
   for (auto const& action : players_cards_.at(current_player_)) {
-    const TarokCard& card = ActionToCard(action);
-    if (card.points != 5) actions.push_back(action);
+    if (ActionToCard(action).points != 5) actions.push_back(action);
   }
   return actions;
 }
@@ -140,8 +139,7 @@ TarokState::LegalActionsInTricksPlayingFollowing() const {
 
   CardSuit take_suit;
   if (can_follow_suit) {
-    const TarokCard& opening_card = ActionToCard(trick_cards_.front());
-    take_suit = opening_card.suit;
+    take_suit = ActionToCard(trick_cards_.front()).suit;
   } else if (cant_follow_suit_but_has_tarok) {
     take_suit = CardSuit::kTaroks;
   } else {
@@ -189,8 +187,7 @@ std::vector<open_spiel::Action>
 TarokState::TakeSuitFromPlayerCardsInPositiveContracts(CardSuit suit) const {
   std::vector<open_spiel::Action> actions;
   for (auto const& action : players_cards_.at(current_player_)) {
-    const TarokCard& card = ActionToCard(action);
-    if (card.suit == suit) actions.push_back(action);
+    if (ActionToCard(action).suit == suit) actions.push_back(action);
   }
   return actions;
 }
@@ -246,8 +243,7 @@ const TarokCard* TarokState::CardToBeatInNegativeContracts(
   // we are forced to play a tarok and there are no taroks in trick_cards_
   bool tarok_in_trick_cards = false;
   for (auto const& action : trick_cards_) {
-    const TarokCard& card = ActionToCard(action);
-    if (card.suit == CardSuit::kTaroks) {
+    if (ActionToCard(action).suit == CardSuit::kTaroks) {
       tarok_in_trick_cards = true;
       break;
     }
@@ -358,8 +354,7 @@ std::vector<open_spiel::Action> TarokState::TrickCards() const {
 }
 
 std::string TarokState::CardActionToString(open_spiel::Action action_id) const {
-  const TarokCard& card = ActionToCard(action_id);
-  return card.ToString();
+  return ActionToCard(action_id).ToString();
 }
 
 Contract TarokState::SelectedContract() const {
@@ -522,13 +517,12 @@ void TarokState::ResolveTrick() {
 }
 
 open_spiel::Player TarokState::ResolveTrickWinner() const {
-  const TarokCard& opening_card = ActionToCard(trick_cards_.front());
   // compute the winning action index within trick_cards_
   int winning_action_i;
   if ((ActionInActions(0, trick_cards_) && ActionInActions(20, trick_cards_) &&
        ActionInActions(21, trick_cards_)) &&
       (selected_contract_->contract != Contract::kColourValatWithout ||
-       opening_card.suit == CardSuit::kTaroks)) {
+       ActionToCard(trick_cards_.front()).suit == CardSuit::kTaroks)) {
     // the emperor trick, i.e. pagat wins in all cases but in
     // Contract::kColourValatWithout when a non-trump is led
     winning_action_i = std::find(trick_cards_.begin(), trick_cards_.end(), 0) -
