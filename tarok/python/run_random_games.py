@@ -6,7 +6,7 @@ import pytarok as ta
 
 
 if __name__ == '__main__':
-    game = sp.load_game('tarok(num_players=3,seed=0)')
+    game = ta.TarokGame({})
     start_time = time.time()
 
     for i in range(10000):
