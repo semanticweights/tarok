@@ -16,14 +16,14 @@ references:
   restore_cache: &restore_cache
     restore_cache:
       name: Restore python cache
-      key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
+      key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements-dev.txt" }}
 
   install_dependencies: &install_dependencies
     run:
       name: Install dependencies
       command: |
         python3 -m pip install --upgrade pip setuptools
-        python3 -m pip install -r tarok/python/requirements.txt
+        python3 -m pip install -r tarok/python/requirements-dev.txt
 
   run_linter: &run_linter
     run:
@@ -43,7 +43,7 @@ references:
   save_cache: &save_cache
     save_cache:
       name: Save python cache
-      key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements.txt" }}
+      key: py-cache-{{ .Branch }}-{{ checksum "tarok/libs/open_spiel/requirements-dev.txt" }}
       paths:
         - /usr/local/lib/python3.7/dist-packages
 
