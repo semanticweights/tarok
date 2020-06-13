@@ -16,7 +16,7 @@ This repository provides a C++ game environment for the [OpenSpiel framework](ht
 
 ### Running in Docker
 The easiest way to run Python scripts that use Tarok and OpenSpiel is via docker:
-1. Clone the repository and `cd` into it
+1. Run `git clone https://github.com/semanticweights/tarok.git` and `cd` into the repository
 2. Run
 ```bash
 docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-ee2835a /src/play_game.py
@@ -24,7 +24,7 @@ docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-ee2835a
 Note that hash values after the *run-* part correspond to commits from the *stable* branch.
 
 ### Local Development
-1. Clone this repository and `cd` into it
+1. Run `git clone --recurse-submodules https://github.com/semanticweights/tarok.git` and `cd` into the repository
 2. Ensure you have the following installed:
     - a compiler that supports the C++17 standard (tested with Clang)
     - `cmake` (version 3.13.4 or above)
