@@ -6,14 +6,17 @@ BUILD_DIR="${SCRIPT_DIR}/../build"
 
 echo "Downloading open spiel dependencies"
 cd ${SCRIPT_DIR}/libs/open_spiel
-# this needs to be in sync with the current open spiel version's install.sh script
+# this needs to be in sync with libs/open_spiel/open_spiel/scripts/install.sh
+# pybind
 [[ -d "./pybind11" ]] || git clone -b 'v2.2.4' --single-branch --depth 1 https://github.com/pybind/pybind11.git
+# bridge
 [[ -d open_spiel/games/bridge/double_dummy_solver ]] || \
   git clone -b 'develop' --single-branch --depth 1 https://github.com/jblespiau/dds.git  \
   open_spiel/games/bridge/double_dummy_solver
-[[ -d open_spiel/abseil-cpp ]] || \
-  git clone -b 'master' --single-branch --depth 1 https://github.com/abseil/abseil-cpp.git \
-  open_spiel/abseil-cpp
+# abseil
+if [[ ! -d open_spiel/abseil-cpp ]]; then
+  git clone -b '20200225.1' --single-branch --depth 1 https://github.com/abseil/abseil-cpp.git open_spiel/abseil-cpp
+fi
 cd ${SCRIPT_DIR}
 
 echo "Building the tarok project"
