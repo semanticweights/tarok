@@ -1,4 +1,4 @@
-# Slovenian Tarok Card Game OpenSpiel Environment
+# Slovenian Tarok Card Game
 <a href="https://circleci.com/gh/semanticweights/tarok">
   <img src="https://img.shields.io/circleci/build/github/semanticweights/tarok?style=flat-square" alt="build info"/>
 </a>
