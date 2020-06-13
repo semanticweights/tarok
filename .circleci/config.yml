@@ -56,9 +56,9 @@ references:
     run:
       name: Build docker image
       command: |
+        cp tarok/python/requirements.txt .
         cp build/src/pytarok.cpython-37m-x86_64-linux-gnu.so .
         cp build/libs/open_spiel/open_spiel/python/pyspiel.so .
-        cp tarok/python/requirements.txt .
         docker build -t tarok-run -f .docker/run.Dockerfile .
 
   push_docker_image: &push_docker_image
@@ -83,6 +83,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - tarok/python/requirements.txt
             - build/src/pytarok.cpython-37m-x86_64-linux-gnu.so
             - build/libs/open_spiel/open_spiel/python/pyspiel.so
             - .docker/run.Dockerfile
