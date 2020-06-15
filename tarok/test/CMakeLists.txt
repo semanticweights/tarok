@@ -1,9 +1,11 @@
 set(SRC_TEST_FILES
+  tarok_utils.cpp
   cards_tests.cpp
   game_tests.cpp
   state_card_dealing_phase_tests.cpp
   state_bidding_phase_tests.cpp
   state_talon_exchange_phase_tests.cpp
+  state_tricks_playing_phase_tests.cpp
 )
 
 # build the test runner binary
