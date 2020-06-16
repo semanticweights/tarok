@@ -34,4 +34,8 @@ using DealtCards = std::tuple<std::vector<open_spiel::Action>,
                               std::vector<std::vector<open_spiel::Action>>>;
 DealtCards DealCards(int num_players, int seed);
 
+// we use our own implementation since std::shuffle is non-deterministic across
+// different versions of the standard library implementation
+void Shuffle(std::vector<open_spiel::Action>* actions, std::mt19937&& rng);
+
 }  // namespace tarok

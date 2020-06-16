@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <random>
+#include <utility>
 
 namespace tarok {
 
@@ -84,11 +85,9 @@ const std::array<TarokCard, 54> InitializeCardDeck() {
 }
 
 DealtCards DealCards(int num_players, int seed) {
-  // create vector of card indices
   std::vector<open_spiel::Action> cards(54);
   std::iota(cards.begin(), cards.end(), 0);
-  // shuffle indices
-  std::shuffle(cards.begin(), cards.end(), std::mt19937(seed));
+  Shuffle(&cards, std::mt19937(seed));
 
   // first six cards are talon
   auto begin = cards.begin();
@@ -112,6 +111,12 @@ DealtCards DealCards(int num_players, int seed) {
   }
 
   return {talon, players_cards};
+}
+
+void Shuffle(std::vector<open_spiel::Action>* actions, std::mt19937&& rng) {
+  for (int i = actions->size() - 1; i > 0; i--) {
+    std::swap(actions->at(i), actions->at(rng() % (i + 1)));
+  }
 }
 
 }  // namespace tarok
