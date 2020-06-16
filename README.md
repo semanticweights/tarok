@@ -11,7 +11,9 @@
 
 ---
 
-<div style="text-align:center"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/6c/TarockTrull.jpg/640px-TarockTrull.jpg" alt="Tarok trull cards"/></div>
+<p align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/6c/TarockTrull.jpg/640px-TarockTrull.jpg" alt="Tarok trull cards"/>
+</p>
 
 [Slovenian Tarok](https://en.wikipedia.org/wiki/K%C3%B6nigrufen#Slovenia) is a variant of central European [Tarot card games](https://en.wikipedia.org/wiki/Tarot_card_games). It is essentially a three- or four-player, trick-taking, competitive game of skill with bidding. Computationally speaking, Tarok is moderately more complex than [Bridge](https://en.wikipedia.org/wiki/Contract_bridge) [[1]](#references). Detailed game rules are available [here](https://www.pagat.com/tarot/sltarok.html).
 
