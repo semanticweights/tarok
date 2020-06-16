@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -12,24 +11,10 @@ namespace tarok {
 
 std::unique_ptr<TarokState> StateAfterActions(
     const open_spiel::GameParameters& params,
-    const std::vector<open_spiel::Action>& actions) {
-  auto state = NewTarokGame(params)->NewInitialTarokState();
-  for (auto const& action : actions) {
-    state->ApplyAction(action);
-  }
-  return state;
-}
+    const std::vector<open_spiel::Action>& actions);
 
 bool AllActionsInOtherActions(
     const std::vector<open_spiel::Action>& actions,
-    const std::vector<open_spiel::Action>& other_actions) {
-  for (const auto& action : actions) {
-    if (std::find(other_actions.begin(), other_actions.end(), action) ==
-        other_actions.end()) {
-      return false;
-    }
-  }
-  return true;
-}
+    const std::vector<open_spiel::Action>& other_actions);
 
 }  // namespace tarok

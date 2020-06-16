@@ -29,8 +29,9 @@ TEST(TarokStateTests, TestCardDealingPhase) {
   EXPECT_NE(state->CurrentPlayer(), open_spiel::kChancePlayerId);
   EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
 
-  // talon is only visible in the talon exchange phase
+  // talon sets are only visible in the talon exchange phase
   EXPECT_TRUE(state->TalonSets().empty());
+  EXPECT_EQ(state->Talon().size(), 6);
   for (int i = 0; i < game->NumPlayers(); i++) {
     EXPECT_FALSE(state->PlayerCards(i).empty());
   }
