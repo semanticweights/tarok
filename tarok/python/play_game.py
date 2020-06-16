@@ -5,7 +5,7 @@ import pytarok as ta
 def play_game():
     game = ta.TarokGame({
         'num_players': sp.GameParameter(3),
-        # 'seed': sp.GameParameter(0),
+        # 'seed': sp.GameParameter(634317),
     })
     state = game.new_initial_state()
     while(not state.is_terminal()):
