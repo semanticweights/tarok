@@ -10,6 +10,9 @@
 </a>
 
 ---
+
+<div style="text-align:center"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/6c/TarockTrull.jpg/640px-TarockTrull.jpg" alt="Tarok trull cards"/></div>
+
 [Slovenian Tarok](https://en.wikipedia.org/wiki/K%C3%B6nigrufen#Slovenia) is a variant of central European [Tarot card games](https://en.wikipedia.org/wiki/Tarot_card_games). It is essentially a three- or four-player, trick-taking, competitive game of skill with bidding. Computationally speaking, Tarok is moderately more complex than [Bridge](https://en.wikipedia.org/wiki/Contract_bridge) [[1]](#references). Detailed game rules are available [here](https://www.pagat.com/tarot/sltarok.html).
 
 This repository provides a C++ game environment for the [OpenSpiel framework](https://github.com/deepmind/open_spiel) and custom Python bindings for `Game` and `State` objects [[2]](#references).
