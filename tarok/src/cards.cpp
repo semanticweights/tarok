@@ -88,7 +88,7 @@ DealtCards DealCards(int num_players, int seed) {
   std::vector<open_spiel::Action> cards(54);
   std::iota(cards.begin(), cards.end(), 0);
   // shuffle indices
-  std::shuffle(cards.begin(), cards.end(), std::default_random_engine(seed));
+  std::shuffle(cards.begin(), cards.end(), std::mt19937(seed));
 
   // first six cards are talon
   auto begin = cards.begin();
