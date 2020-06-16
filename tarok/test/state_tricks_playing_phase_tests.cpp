@@ -35,7 +35,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase1) {
   EXPECT_EQ(state->SelectedContract(), Contract::kKlop);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(state->LegalActions(),
               testing::ElementsAre(4, 6, 9, 11, 20, 25, 32, 33, 34, 36, 38, 40,
                                    41, 43, 46, 53));
@@ -53,7 +53,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase1) {
   state->ApplyAction(0);
   // pagat won the trick
   EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
 }
 
 TEST(TarokStateTests, TestTricksPlayingPhase2) {
@@ -63,7 +63,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase2) {
   EXPECT_EQ(state->SelectedContract(), Contract::kKlop);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(state->LegalActions(),
               testing::ElementsAre(4, 6, 9, 11, 20, 25, 32, 33, 34, 36, 38, 40,
                                    41, 43, 46, 53));
@@ -80,7 +80,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase2) {
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(3, 5, 7, 10, 19));
   state->ApplyAction(19);
   EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
 }
 
 TEST(TarokStateTests, TestTricksPlayingPhase3) {
@@ -90,7 +90,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase3) {
   EXPECT_EQ(state->SelectedContract(), Contract::kKlop);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(state->LegalActions(),
               testing::ElementsAre(4, 6, 9, 11, 20, 25, 32, 33, 34, 36, 38, 40,
                                    41, 43, 46, 53));
@@ -108,7 +108,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase3) {
   state->ApplyAction(10);
 
   EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(state->LegalActions(),
               testing::ElementsAre(3, 5, 7, 19, 23, 26, 31, 37, 39, 44, 47, 48,
                                    49, 51));
@@ -121,7 +121,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase4) {
   EXPECT_EQ(state->SelectedContract(), Contract::kKlop);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(state->LegalActions(),
               testing::ElementsAre(4, 6, 9, 11, 20, 25, 32, 33, 34, 36, 38, 40,
                                    41, 43, 46, 53));
@@ -137,7 +137,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase4) {
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(19));
   state->ApplyAction(19);
   EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
 }
 
 TEST(TarokStateTests, TestTricksPlayingPhase5) {
@@ -147,7 +147,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase5) {
   EXPECT_EQ(state->SelectedContract(), Contract::kKlop);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(state->LegalActions(),
               testing::ElementsAre(4, 6, 9, 11, 20, 25, 32, 33, 34, 36, 38, 40,
                                    41, 43, 46, 53));
@@ -163,7 +163,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase5) {
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(37));
   state->ApplyAction(37);
   EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
 }
 
 TEST(TarokStateTests, TestTricksPlayingPhase6) {
@@ -173,7 +173,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase6) {
   EXPECT_EQ(state->SelectedContract(), Contract::kKlop);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(state->LegalActions(),
               testing::ElementsAre(4, 6, 9, 11, 20, 25, 32, 33, 34, 36, 38, 40,
                                    41, 43, 46, 53));
@@ -190,7 +190,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase6) {
   state->ApplyAction(26);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(state->LegalActions(),
               testing::ElementsAre(1, 2, 8, 12, 13, 15, 17, 21, 22, 24, 30, 35,
                                    42, 50, 52));
@@ -207,7 +207,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase6) {
   state->ApplyAction(43);
 
   EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(
       state->LegalActions(),
       testing::ElementsAre(3, 5, 7, 10, 19, 23, 31, 37, 39, 47, 48, 49, 51));
@@ -226,7 +226,7 @@ TEST(TarokStateTests, TestTricksPlayingPhase6) {
   state->ApplyAction(22);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_EQ(state->TrickCards().size(), 0);
+  EXPECT_TRUE(state->TrickCards().empty());
 }
 
 }  // namespace tarok
