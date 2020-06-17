@@ -11,7 +11,15 @@ namespace tarok {
 // state definition
 TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
     : open_spiel::State(game),
-      tarok_parent_game_(std::static_pointer_cast<const TarokGame>(game)) {}
+      tarok_parent_game_(std::static_pointer_cast<const TarokGame>(game)) {
+  players_bids_.reserve(num_players_);
+  players_bids_.insert(players_bids_.end(), num_players_, -1);
+  players_collected_cards_.reserve(num_players_);
+  players_collected_cards_.insert(players_collected_cards_.end(), num_players_,
+                                  std::vector<open_spiel::Action>());
+  players_scores_.reserve(num_players_);
+  players_scores_.insert(players_scores_.end(), num_players_, 0);
+}
 
 open_spiel::Player TarokState::CurrentPlayer() const {
   switch (current_game_phase_) {
@@ -399,11 +407,7 @@ void TarokState::DoApplyActionInCardDealing() {
   // todo: deal again if any player without taroks
   std::tie(talon_, players_cards_) =
       DealCards(num_players_, tarok_parent_game_->RNG());
-
   current_game_phase_ = GamePhase::kBidding;
-  players_bids_.reserve(num_players_);
-  players_bids_.insert(players_bids_.end(), num_players_, -1);
-
   // lower player indices correspond to higher bidding priority,
   // i.e. 0 is the forehand, num_players - 1 is the dealer
   current_player_ = 1;
@@ -438,13 +442,6 @@ void TarokState::FinishBiddingPhase(open_spiel::Action action_id) {
     current_game_phase_ = GamePhase::kTalonExchange;
   else
     StartTricksPlayingPhase();
-
-  players_collected_cards_.reserve(num_players_);
-  players_scores_.reserve(num_players_);
-  for (int i = 0; i < num_players_; i++) {
-    players_collected_cards_.push_back(std::vector<open_spiel::Action>());
-    players_scores_.push_back(0);
-  }
 }
 
 void TarokState::DoApplyActionInKingCalling(open_spiel::Action action_id) {
@@ -519,6 +516,7 @@ void TarokState::ResolveTrick() {
   for (auto const& action : trick_cards_) {
     trick_winner_collected_cards.push_back(action);
   }
+  trick_cards_.clear();
 
   if (selected_contract_info_->contract == Contract::kKlop &&
       talon_.size() > 0) {
@@ -535,7 +533,6 @@ void TarokState::ResolveTrick() {
     }
     talon_.clear();
   }
-  trick_cards_.clear();
   current_player_ = trick_winner;
 }
 
