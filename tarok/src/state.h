@@ -36,8 +36,6 @@ class TarokState : public open_spiel::State {
   std::string ActionToString(open_spiel::Player player,
                              open_spiel::Action action_id) const override;
   std::string CardActionToString(open_spiel::Action action_id) const;
-  open_spiel::Action StringToAction(
-      open_spiel::Player player, const std::string& action_str) const override;
   std::string ToString() const override;
   bool IsTerminal() const override;
   std::vector<double> Returns() const override;

@@ -295,12 +295,6 @@ std::string TarokState::CardActionToString(open_spiel::Action action_id) const {
   return ActionToCard(action_id).ToString();
 }
 
-open_spiel::Action TarokState::StringToAction(
-    open_spiel::Player player, const std::string& action_str) const {
-  // todo: implement
-  return 0;
-}
-
 std::string TarokState::ToString() const {
   // todo: implement
   return "";
@@ -499,7 +493,6 @@ void TarokState::DoApplyActionInTricksPlaying(open_spiel::Action action_id) {
   if (trick_cards_.size() == num_players_) {
     ResolveTrick();
     if (players_cards_.at(current_player_).empty()) {
-      // todo: compute rewards
       current_game_phase_ = GamePhase::kFinished;
     }
   } else {
