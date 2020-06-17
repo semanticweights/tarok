@@ -16,10 +16,6 @@ TarokCard::TarokCard(CardSuit suit, int rank, int points,
       short_name(short_name),
       long_name(long_name) {}
 
-bool TarokCard::IsTrula() const {
-  return suit == CardSuit::kTaroks && points == 5;
-}
-
 const std::string TarokCard::ToString() const { return long_name; }
 
 const std::array<TarokCard, 54> InitializeCardDeck() {

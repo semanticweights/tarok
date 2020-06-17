@@ -17,7 +17,6 @@ struct TarokCard {
   TarokCard(CardSuit suit, int rank, int points, std::string short_name,
             std::string long_name);
 
-  bool IsTrula() const;
   const std::string ToString() const;
 
   const CardSuit suit;
