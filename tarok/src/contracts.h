@@ -26,8 +26,6 @@ enum class Contract {
   kNotSelected
 };
 
-std::ostream& operator<<(std::ostream& os, const Contract& contract);
-
 struct ContractInfo {
   ContractInfo(Contract contract, std::string name, int score,
                int num_talon_exchanges, bool needs_king_calling,
@@ -45,5 +43,9 @@ struct ContractInfo {
 };
 
 const std::array<ContractInfo, 12> InitializeContracts();
+
+std::ostream& operator<<(std::ostream& os, const Contract& contract);
+
+std::string ContractToString(const Contract& contract);
 
 }  // namespace tarok

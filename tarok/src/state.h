@@ -23,8 +23,6 @@ enum class GamePhase {
   kFinished
 };
 
-std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase);
-
 class TarokGame;
 
 class TarokState : public open_spiel::State {
@@ -105,5 +103,9 @@ class TarokState : public open_spiel::State {
   std::vector<std::vector<open_spiel::Action>> players_collected_cards_;
   std::vector<open_spiel::Action> trick_cards_;
 };
+
+std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase);
+
+std::string GamePhaseToString(const GamePhase& game_phase);
 
 }  // namespace tarok

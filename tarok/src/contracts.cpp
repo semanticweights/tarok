@@ -4,51 +4,6 @@
 
 namespace tarok {
 
-std::ostream& operator<<(std::ostream& os, const Contract& contract) {
-  os << "Contract::";
-  switch (contract) {
-    case Contract::kKlop:
-      os << "Klop";
-      break;
-    case Contract::kThree:
-      os << "Three";
-      break;
-    case Contract::kTwo:
-      os << "Two";
-      break;
-    case Contract::kOne:
-      os << "One";
-      break;
-    case Contract::kSoloThree:
-      os << "SoloThree";
-      break;
-    case Contract::kSoloTwo:
-      os << "SoloTwo";
-      break;
-    case Contract::kSoloOne:
-      os << "SoloOne";
-      break;
-    case Contract::kBeggar:
-      os << "Beggar";
-      break;
-    case Contract::kSoloWithout:
-      os << "SoloWithout";
-      break;
-    case Contract::kOpenBeggar:
-      os << "OpenBeggar";
-      break;
-    case Contract::kColourValatWithout:
-      os << "ColourValatWithout";
-      break;
-    case Contract::kValatWithout:
-      os << "ValatWithout";
-      break;
-    case Contract::kNotSelected:
-      os << "NotSelected";
-  }
-  return os;
-}
-
 ContractInfo::ContractInfo(Contract contract, std::string name, int score,
                            int num_talon_exchanges, bool needs_king_calling,
                            bool declarer_starts, bool is_negative)
@@ -83,6 +38,56 @@ const std::array<ContractInfo, 12> InitializeContracts() {
                    0, false, true, false),
       ContractInfo(Contract::kValatWithout, "Valat without", 500, 0, false,
                    true, false)};
+}
+
+std::ostream& operator<<(std::ostream& os, const Contract& contract) {
+  os << ContractToString(contract);
+  return os;
+}
+
+std::string ContractToString(const Contract& contract) {
+  std::string str = "Contract::";
+  switch (contract) {
+    case Contract::kKlop:
+      absl::StrAppend(&str, "Klop");
+      break;
+    case Contract::kThree:
+      absl::StrAppend(&str, "Three");
+      break;
+    case Contract::kTwo:
+      absl::StrAppend(&str, "Two");
+      break;
+    case Contract::kOne:
+      absl::StrAppend(&str, "One");
+      break;
+    case Contract::kSoloThree:
+      absl::StrAppend(&str, "SoloThree");
+      break;
+    case Contract::kSoloTwo:
+      absl::StrAppend(&str, "SoloTwo");
+      break;
+    case Contract::kSoloOne:
+      absl::StrAppend(&str, "SoloOne");
+      break;
+    case Contract::kBeggar:
+      absl::StrAppend(&str, "Beggar");
+      break;
+    case Contract::kSoloWithout:
+      absl::StrAppend(&str, "SoloWithout");
+      break;
+    case Contract::kOpenBeggar:
+      absl::StrAppend(&str, "OpenBeggar");
+      break;
+    case Contract::kColourValatWithout:
+      absl::StrAppend(&str, "ColourValatWithout");
+      break;
+    case Contract::kValatWithout:
+      absl::StrAppend(&str, "ValatWithout");
+      break;
+    case Contract::kNotSelected:
+      absl::StrAppend(&str, "NotSelected");
+  }
+  return str;
 }
 
 }  // namespace tarok

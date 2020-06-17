@@ -8,30 +8,6 @@
 
 namespace tarok {
 
-std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase) {
-  os << "GamePhase::";
-  switch (game_phase) {
-    case GamePhase::kCardDealing:
-      os << "CardDealing";
-      break;
-    case GamePhase::kBidding:
-      os << "Bidding";
-      break;
-    case GamePhase::kKingCalling:
-      os << "KingCalling:";
-      break;
-    case GamePhase::kTalonExchange:
-      os << "TalonExchange";
-      break;
-    case GamePhase::kTricksPlaying:
-      os << "TricksPlaying";
-      break;
-    case GamePhase::kFinished:
-      os << "Finished";
-  }
-  return os;
-}
-
 // state definition
 TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
     : open_spiel::State(game),
@@ -296,8 +272,28 @@ std::string TarokState::CardActionToString(open_spiel::Action action_id) const {
 }
 
 std::string TarokState::ToString() const {
-  // todo: implement
-  return "";
+  std::string str = "";
+  GamePhase current_game_phase = CurrentGamePhase();
+  open_spiel::Player current_player = CurrentPlayer();
+  absl::StrAppend(&str, GamePhaseToString(current_game_phase), "\n");
+  absl::StrAppend(&str, ContractToString(SelectedContract()), "\n");
+  absl::StrAppend(&str, "Current player: ", current_player, "\n");
+  absl::StrAppend(&str, "Player cards: ",
+                  absl::StrJoin(PlayerCards(current_player), ","), "\n");
+  if (current_game_phase == GamePhase::kTalonExchange) {
+    auto talon_sets = TalonSets();
+    std::vector<std::string> talon_sets_strings;
+    talon_sets_strings.reserve(talon_sets.size());
+    for (auto const& set : talon_sets) {
+      talon_sets_strings.push_back(absl::StrJoin(set, ","));
+    }
+    absl::StrAppend(
+        &str, "Talon sets: ", absl::StrJoin(talon_sets_strings, ";"), "\n");
+  } else if (current_game_phase == GamePhase::kTricksPlaying) {
+    absl::StrAppend(&str, "Trick cards: ", absl::StrJoin(TrickCards(), ","),
+                    "\n");
+  }
+  return str;
 }
 
 bool TarokState::IsTerminal() const {
@@ -577,6 +573,35 @@ void TarokState::MoveActionFromTo(open_spiel::Action action_id,
 
 const TarokCard& TarokState::ActionToCard(open_spiel::Action action_id) const {
   return tarok_parent_game_->card_deck_.at(action_id);
+}
+
+std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase) {
+  os << GamePhaseToString(game_phase);
+  return os;
+}
+
+std::string GamePhaseToString(const GamePhase& game_phase) {
+  std::string str = "GamePhase::";
+  switch (game_phase) {
+    case GamePhase::kCardDealing:
+      absl::StrAppend(&str, "CardDealing");
+      break;
+    case GamePhase::kBidding:
+      absl::StrAppend(&str, "Bidding");
+      break;
+    case GamePhase::kKingCalling:
+      absl::StrAppend(&str, "KingCalling");
+      break;
+    case GamePhase::kTalonExchange:
+      absl::StrAppend(&str, "TalonExchange");
+      break;
+    case GamePhase::kTricksPlaying:
+      absl::StrAppend(&str, "TricksPlaying");
+      break;
+    case GamePhase::kFinished:
+      absl::StrAppend(&str, "Finished");
+  }
+  return str;
 }
 
 }  // namespace tarok
