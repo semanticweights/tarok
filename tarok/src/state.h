@@ -77,7 +77,8 @@ class TarokState : public open_spiel::State {
   void StartTricksPlayingPhase();
   void DoApplyActionInTricksPlaying(open_spiel::Action action_id);
   void ResolveTrick();
-  open_spiel::Player ResolveTrickWinner() const;
+  std::tuple<open_spiel::Player, open_spiel::Action>
+  ResolveTrickWinnerAndWinningAction() const;
   // computes which player belongs to the trick_cards_ index as the player
   // who opens the trick always belongs to index 0 within trick_cards_
   open_spiel::Player TrickCardsIndexToPlayer(int index) const;
@@ -99,9 +100,12 @@ class TarokState : public open_spiel::State {
   open_spiel::Player declarer_ = open_spiel::kInvalidPlayer;
   // contract pointed to is managed by the game instance
   const ContractInfo* selected_contract_info_;
+  open_spiel::Action called_king_ = open_spiel::kInvalidAction;
+  bool called_king_in_talon_ = false;
   open_spiel::Player declarer_partner_ = open_spiel::kInvalidPlayer;
   std::vector<std::vector<open_spiel::Action>> players_collected_cards_;
   std::vector<open_spiel::Action> trick_cards_;
+  std::vector<int> players_scores_;
 };
 
 std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase);
