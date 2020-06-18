@@ -466,16 +466,24 @@ void TarokState::DoApplyActionInTalonExchange(open_spiel::Action action_id) {
 
   if (talon_.size() == 6) {
     // choosing one of the talon card sets
-    // todo: add negative score for the "captured mond" if in talon and not
-    // taken
     int num_talon_exchanges = selected_contract_info_->num_talon_exchanges;
-    int pos = action_id * num_talon_exchanges;
-    for (int i = pos; i < pos + num_talon_exchanges; i++) {
+    int set_begin = action_id * num_talon_exchanges;
+    int set_end = set_begin + num_talon_exchanges;
+
+    bool mond_in_talon = ActionInActions(20, talon_);
+    bool mond_in_selected_talon_set = false;
+    for (int i = set_begin; i < set_end; i++) {
       player_cards.push_back(talon_.at(i));
+      if (talon_.at(i) == 20) mond_in_selected_talon_set = true;
     }
+    if (mond_in_talon && !mond_in_selected_talon_set) {
+      // the captured mond penalty applies if mond is in talon and not part of
+      // the selected set
+      players_scores_.at(declarer_) -= 20;
+    }
+
     std::sort(player_cards.begin(), player_cards.end());
-    talon_.erase(talon_.begin() + pos,
-                 talon_.begin() + pos + num_talon_exchanges);
+    talon_.erase(talon_.begin() + set_begin, talon_.begin() + set_end);
   } else {
     // discarding the cards
     MoveActionFromTo(action_id, &player_cards,
@@ -508,7 +516,6 @@ void TarokState::DoApplyActionInTricksPlaying(open_spiel::Action action_id) {
 }
 
 void TarokState::ResolveTrick() {
-  // todo: add negative score for the "captured mond"
   auto [trick_winner, winning_action] = ResolveTrickWinnerAndWinningAction();
   auto& trick_winner_collected_cards =
       players_collected_cards_.at(trick_winner);
@@ -516,23 +523,42 @@ void TarokState::ResolveTrick() {
   for (auto const& action : trick_cards_) {
     trick_winner_collected_cards.push_back(action);
   }
-  trick_cards_.clear();
 
   if (selected_contract_info_->contract == Contract::kKlop &&
       talon_.size() > 0) {
     // add the "gift" talon card in klop
     trick_winner_collected_cards.push_back(talon_.front());
     talon_.erase(talon_.begin());
-  } else if (called_king_in_talon_ && trick_winner == declarer_ &&
-             winning_action == called_king_) {
+  } else if (winning_action == called_king_ && called_king_in_talon_) {
     // declearer won the trick with the called king that was in talon so all of
-    // the talon cards belong to the declearer
-    // todo: add positive score for the "captured mond" if in talon
+    // the talon cards belong to the declearer (this is only possible when talon
+    // exchange happened in the past)
+    bool mond_in_talon = false;
     for (auto const& action : talon_) {
       trick_winner_collected_cards.push_back(action);
+      if (action == 20) mond_in_talon = true;
+    }
+    if (mond_in_talon) {
+      // the called king and mond were in different parts of the talon and
+      // declearer selected the set with the king plus won the mond as
+      // part of the obtained talon remainder, negating the captured mond
+      // penalty obtained during DoApplyActionInTalonExchange()
+      players_scores_.at(declarer_) += 20;
     }
     talon_.clear();
+  } else if ((selected_contract_info_->NeedsTalonExchange() ||
+              selected_contract_info_->contract == Contract::kSoloWithout) &&
+             (winning_action == 21 || winning_action == 0)) {
+    // check if mond is captured by skis or pagat (emperor's trick) and penalise
+    // the player of the mond
+    for (int i = 0; i < trick_cards_.size(); i++) {
+      if (trick_cards_.at(i) == 20) {
+        players_scores_.at(TrickCardsIndexToPlayer(i)) -= 20;
+      }
+    }
   }
+
+  trick_cards_.clear();
   current_player_ = trick_winner;
 }
 
