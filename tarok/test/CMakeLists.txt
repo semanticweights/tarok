@@ -6,6 +6,7 @@ set(SRC_TEST_FILES
   state_bidding_phase_tests.cpp
   state_talon_exchange_phase_tests.cpp
   state_tricks_playing_phase_tests.cpp
+  state_captured_mond_tests.cpp
 )
 
 # build the test runner binary

@@ -36,7 +36,11 @@ class TarokState : public open_spiel::State {
   std::string CardActionToString(open_spiel::Action action_id) const;
   std::string ToString() const override;
   bool IsTerminal() const override;
+
+  // calculates the overall score for a finished game without radli, see
+  // comments above CapturedMondPenalties() for more details
   std::vector<double> Returns() const override;
+
   std::string InformationStateString(open_spiel::Player player) const override;
   std::unique_ptr<State> Clone() const override;
   open_spiel::ActionsAndProbs ChanceOutcomes() const override;
@@ -47,6 +51,16 @@ class TarokState : public open_spiel::State {
   std::vector<std::vector<open_spiel::Action>> TalonSets() const;
   std::vector<open_spiel::Action> TrickCards() const;
 
+  // the following two methods are kept separately due to the captured mond
+  // penalty not being affected by any multipliers for kontras or radli, note
+  // that TarokState does not implement radli as they are, like cumulative
+  // players' score, part of the global state that would have to be kept between
+  // multiple NewInitialState() calls (i.e. TarokState only implements a single
+  // round of the game and radli implementation is left to the owner of the game
+  // instance who should keep track of multiple rounds if needed)
+  std::vector<double> CapturedMondPenalties() const;
+  std::vector<double> ScoresWithoutCapturedMondPenalties() const;
+
  protected:
   void DoApplyAction(open_spiel::Action action_id) override;
 
@@ -55,10 +69,12 @@ class TarokState : public open_spiel::State {
   std::vector<open_spiel::Action> LegalActionsInTalonExchange() const;
   std::vector<open_spiel::Action> LegalActionsInTricksPlaying() const;
   std::vector<open_spiel::Action> LegalActionsInTricksPlayingFollowing() const;
+
   // checks whether the current player can follow the opening card suit or
   // can't but still has at least one tarok, if the first value is true, the
   // second might be set incorrectly as it is irrelevant
   std::tuple<bool, bool> CanFollowSuitOrCantButHasTarok() const;
+
   std::vector<open_spiel::Action> TakeSuitFromPlayerCardsInNegativeContracts(
       CardSuit suit) const;
   std::optional<open_spiel::Action> ActionToBeatInNegativeContracts(
@@ -77,7 +93,9 @@ class TarokState : public open_spiel::State {
   void StartTricksPlayingPhase();
   void DoApplyActionInTricksPlaying(open_spiel::Action action_id);
   void ResolveTrick();
-  open_spiel::Player ResolveTrickWinner() const;
+  std::tuple<open_spiel::Player, open_spiel::Action>
+  ResolveTrickWinnerAndWinningAction() const;
+
   // computes which player belongs to the trick_cards_ index as the player
   // who opens the trick always belongs to index 0 within trick_cards_
   open_spiel::Player TrickCardsIndexToPlayer(int index) const;
@@ -99,9 +117,12 @@ class TarokState : public open_spiel::State {
   open_spiel::Player declarer_ = open_spiel::kInvalidPlayer;
   // contract pointed to is managed by the game instance
   const ContractInfo* selected_contract_info_;
+  open_spiel::Action called_king_ = open_spiel::kInvalidAction;
+  bool called_king_in_talon_ = false;
   open_spiel::Player declarer_partner_ = open_spiel::kInvalidPlayer;
   std::vector<std::vector<open_spiel::Action>> players_collected_cards_;
   std::vector<open_spiel::Action> trick_cards_;
+  open_spiel::Player captured_mond_player_ = open_spiel::kInvalidPlayer;
 };
 
 std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase);

@@ -32,6 +32,10 @@ PYBIND11_MODULE(pytarok, m) {
   tarok_state.def("talon", &TarokState::Talon);
   tarok_state.def("talon_sets", &TarokState::TalonSets);
   tarok_state.def("trick_cards", &TarokState::TrickCards);
+  tarok_state.def("captured_mond_penalties",
+                  &TarokState::CapturedMondPenalties);
+  tarok_state.def("scores_without_captured_mond_penalties",
+                  &TarokState::ScoresWithoutCapturedMondPenalties);
 
   // game phase object
   py::enum_<GamePhase> game_phase(m, "GamePhase");
