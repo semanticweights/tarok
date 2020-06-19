@@ -25,25 +25,16 @@ enum class GamePhase {
 
 class TarokGame;
 
+using TrickWinnerAndAction = std::tuple<open_spiel::Player, open_spiel::Action>;
+using CollectedCardsPerTeam = std::tuple<std::vector<open_spiel::Action>,
+                                         std::vector<open_spiel::Action>>;
+
 class TarokState : public open_spiel::State {
  public:
   explicit TarokState(std::shared_ptr<const open_spiel::Game> game);
 
   open_spiel::Player CurrentPlayer() const override;
-  std::vector<open_spiel::Action> LegalActions() const override;
-  std::string ActionToString(open_spiel::Player player,
-                             open_spiel::Action action_id) const override;
-  std::string CardActionToString(open_spiel::Action action_id) const;
-  std::string ToString() const override;
   bool IsTerminal() const override;
-
-  // calculates the overall score for a finished game without radli, see
-  // comments above CapturedMondPenalties() for more details
-  std::vector<double> Returns() const override;
-
-  std::string InformationStateString(open_spiel::Player player) const override;
-  std::unique_ptr<State> Clone() const override;
-  open_spiel::ActionsAndProbs ChanceOutcomes() const override;
   GamePhase CurrentGamePhase() const;
   std::vector<open_spiel::Action> PlayerCards(open_spiel::Player player) const;
   Contract SelectedContract() const;
@@ -51,6 +42,15 @@ class TarokState : public open_spiel::State {
   std::vector<std::vector<open_spiel::Action>> TalonSets() const;
   std::vector<open_spiel::Action> TrickCards() const;
 
+  std::vector<open_spiel::Action> LegalActions() const override;
+  std::string ActionToString(open_spiel::Player player,
+                             open_spiel::Action action_id) const override;
+  std::string CardActionToString(open_spiel::Action action_id) const;
+  open_spiel::ActionsAndProbs ChanceOutcomes() const override;
+
+  // calculates the overall score for a finished game without radli, see
+  // comments above CapturedMondPenalties() for more details
+  std::vector<double> Returns() const override;
   // the following two methods are kept separately due to the captured mond
   // penalty not being affected by any multipliers for kontras or radli, note
   // that TarokState does not implement radli as they are, like cumulative
@@ -58,8 +58,12 @@ class TarokState : public open_spiel::State {
   // multiple NewInitialState() calls (i.e. TarokState only implements a single
   // round of the game and radli implementation is left to the owner of the game
   // instance who should keep track of multiple rounds if needed)
-  std::vector<double> CapturedMondPenalties() const;
-  std::vector<double> ScoresWithoutCapturedMondPenalties() const;
+  std::vector<int> CapturedMondPenalties() const;
+  std::vector<int> ScoresWithoutCapturedMondPenalties() const;
+
+  std::string InformationStateString(open_spiel::Player player) const override;
+  std::string ToString() const override;
+  std::unique_ptr<State> Clone() const override;
 
  protected:
   void DoApplyAction(open_spiel::Action action_id) override;
@@ -93,12 +97,21 @@ class TarokState : public open_spiel::State {
   void StartTricksPlayingPhase();
   void DoApplyActionInTricksPlaying(open_spiel::Action action_id);
   void ResolveTrick();
-  std::tuple<open_spiel::Player, open_spiel::Action>
-  ResolveTrickWinnerAndWinningAction() const;
+  TrickWinnerAndAction ResolveTrickWinnerAndWinningAction() const;
 
   // computes which player belongs to the trick_cards_ index as the player
   // who opens the trick always belongs to index 0 within trick_cards_
   open_spiel::Player TrickCardsIndexToPlayer(int index) const;
+
+  std::vector<int> ScoresInKlop() const;
+  std::vector<int> ScoresInNormalContracts() const;
+  CollectedCardsPerTeam SplitCollectedCardsPerTeams() const;
+  int NonValatBonuses(
+      const std::vector<open_spiel::Action>& collected_cards,
+      const std::vector<open_spiel::Action>& opposite_collected_cards) const;
+  std::tuple<bool, bool> CollectedKingsAndOrTrula(
+      const std::vector<open_spiel::Action>& collected_cards) const;
+  std::vector<int> ScoresInHigherContracts() const;
 
   void NextPlayer();
   static bool ActionInActions(open_spiel::Action action_id,

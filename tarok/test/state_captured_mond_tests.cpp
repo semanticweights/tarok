@@ -25,8 +25,7 @@ TEST(TarokStateTests, TestCapturedMond1) {
   state->ApplyAction(5);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_THAT(state->CapturedMondPenalties(),
-              testing::ElementsAre(-20.0, 0.0, 0.0));
+  EXPECT_THAT(state->CapturedMondPenalties(), testing::ElementsAre(-20, 0, 0));
 }
 
 TEST(TarokStateTests, TestCapturedMond2) {
@@ -48,8 +47,7 @@ TEST(TarokStateTests, TestCapturedMond2) {
   state->ApplyAction(0);
 
   EXPECT_EQ(state->CurrentPlayer(), 2);
-  EXPECT_THAT(state->CapturedMondPenalties(),
-              testing::ElementsAre(-20.0, 0.0, 0.0));
+  EXPECT_THAT(state->CapturedMondPenalties(), testing::ElementsAre(-20, 0, 0));
 }
 
 TEST(TarokStateTests, TestCapturedMond3) {
@@ -61,8 +59,7 @@ TEST(TarokStateTests, TestCapturedMond3) {
   EXPECT_EQ(state->SelectedContract(), Contract::kOne);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->CapturedMondPenalties(),
-              testing::ElementsAre(0.0, 0.0, 0.0));
+  EXPECT_THAT(state->CapturedMondPenalties(), testing::ElementsAre(0, 0, 0));
 }
 
 TEST(TarokStateTests, TestCapturedMond4) {
@@ -74,8 +71,7 @@ TEST(TarokStateTests, TestCapturedMond4) {
   EXPECT_EQ(state->SelectedContract(), Contract::kOne);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->CapturedMondPenalties(),
-              testing::ElementsAre(-20.0, 0.0, 0.0));
+  EXPECT_THAT(state->CapturedMondPenalties(), testing::ElementsAre(-20, 0, 0));
 }
 
 TEST(TarokStateTests, TestCapturedMond5) {
@@ -90,7 +86,7 @@ TEST(TarokStateTests, TestCapturedMond5) {
   // play the called king and win the trick
   EXPECT_EQ(state->CurrentPlayer(), 0);
   EXPECT_THAT(state->CapturedMondPenalties(),
-              testing::ElementsAre(-20.0, 0.0, 0.0, 0.0));
+              testing::ElementsAre(-20, 0, 0, 0));
   state->ApplyAction(45);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
@@ -101,8 +97,7 @@ TEST(TarokStateTests, TestCapturedMond5) {
   state->ApplyAction(38);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->CapturedMondPenalties(),
-              testing::ElementsAre(0.0, 0.0, 0.0, 0.0));
+  EXPECT_THAT(state->CapturedMondPenalties(), testing::ElementsAre(0, 0, 0, 0));
 }
 
 }  // namespace tarok
