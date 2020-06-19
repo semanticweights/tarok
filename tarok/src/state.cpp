@@ -419,7 +419,6 @@ std::vector<int> TarokState::ScoresInKlop() const {
       scores.push_back(-points);
     }
   }
-
   if (any_player_won_or_lost) {
     // only the winners and losers score
     for (int i = 0; i < num_players_; i++) {
@@ -430,23 +429,9 @@ std::vector<int> TarokState::ScoresInKlop() const {
 }
 
 std::vector<int> TarokState::ScoresInNormalContracts() const {
-  // split the cards for the two teams
-  std::vector<open_spiel::Action> collected_cards =
-      players_collected_cards_.at(declarer_);
-  std::vector<open_spiel::Action> opposite_collected_cards;
-  for (open_spiel::Player p = 0; p < num_players_; p++) {
-    if (p != declarer_ && p != declarer_partner_) {
-      opposite_collected_cards.insert(opposite_collected_cards.end(),
-                                      players_collected_cards_.at(p).begin(),
-                                      players_collected_cards_.at(p).end());
-    } else if (p == declarer_partner_) {
-      collected_cards.insert(collected_cards.end(),
-                             players_collected_cards_.at(p).begin(),
-                             players_collected_cards_.at(p).end());
-    }
-  }
-
-  // calculate possible bonuses
+  auto [collected_cards, opposite_collected_cards] =
+      SplitCollectedCardsPerTeams();
+  // calculate bonuses
   int bonuses;
   if (collected_cards.size() == 48) {
     // valat won
@@ -458,7 +443,7 @@ std::vector<int> TarokState::ScoresInNormalContracts() const {
     // other bonuses that could be positive, negative or 0
     bonuses = NonValatBonuses(collected_cards, opposite_collected_cards);
   }
-
+  // calculate final scores
   int card_points = CardPoints(collected_cards, tarok_parent_game_->card_deck_);
   int score = card_points - 35;
   if (card_points > 35)
@@ -495,6 +480,25 @@ std::vector<int> TarokState::ScoresInHigherContracts() const {
   else
     scores.at(declarer_) = -selected_contract_info_->score;
   return scores;
+}
+
+std::tuple<std::vector<open_spiel::Action>, std::vector<open_spiel::Action>>
+TarokState::SplitCollectedCardsPerTeams() const {
+  std::vector<open_spiel::Action> collected_cards =
+      players_collected_cards_.at(declarer_);
+  std::vector<open_spiel::Action> opposite_collected_cards;
+  for (open_spiel::Player p = 0; p < num_players_; p++) {
+    if (p != declarer_ && p != declarer_partner_) {
+      opposite_collected_cards.insert(opposite_collected_cards.end(),
+                                      players_collected_cards_.at(p).begin(),
+                                      players_collected_cards_.at(p).end());
+    } else if (p == declarer_partner_) {
+      collected_cards.insert(collected_cards.end(),
+                             players_collected_cards_.at(p).begin(),
+                             players_collected_cards_.at(p).end());
+    }
+  }
+  return {collected_cards, opposite_collected_cards};
 }
 
 int TarokState::NonValatBonuses(

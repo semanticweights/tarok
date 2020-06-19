@@ -106,6 +106,8 @@ class TarokState : public open_spiel::State {
   std::vector<int> ScoresInNormalContracts() const;
   std::vector<int> ScoresInHigherContracts() const;
 
+  std::tuple<std::vector<open_spiel::Action>, std::vector<open_spiel::Action>>
+  SplitCollectedCardsPerTeams() const;
   int NonValatBonuses(
       const std::vector<open_spiel::Action>& collected_cards,
       const std::vector<open_spiel::Action>& opposite_collected_cards) const;
