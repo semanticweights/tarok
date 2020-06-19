@@ -37,7 +37,7 @@ DealtCards DealCards(int num_players, int seed);
 // different versions of the standard library implementation
 void Shuffle(std::vector<open_spiel::Action>* actions, std::mt19937&& rng);
 
-double CardPoints(const std::vector<open_spiel::Action>& actions,
-                  const std::array<TarokCard, 54>& deck);
+int CardPoints(const std::vector<open_spiel::Action>& actions,
+               const std::array<TarokCard, 54>& deck);
 
 }  // namespace tarok

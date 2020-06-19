@@ -13,6 +13,7 @@ def play_game():
         state.apply_action(int(input("Enter action: ")))
         print("-" * 70, "\n")
     print(state.current_game_phase())
+    print("Players' scores: {}".format(state.rewards()))
 
 
 def print_info(game, state):

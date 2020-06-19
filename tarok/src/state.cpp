@@ -3,6 +3,7 @@
 #include "src/state.h"
 
 #include <algorithm>
+#include <cmath>
 
 #include "src/game.h"
 
@@ -307,13 +308,15 @@ bool TarokState::IsTerminal() const {
 }
 
 std::vector<double> TarokState::Returns() const {
-  if (!IsTerminal()) return std::vector<double>(num_players_, 0.0);
-  std::vector<double> penalties = CapturedMondPenalties();
-  std::vector<double> scores = ScoresWithoutCapturedMondPenalties();
+  std::vector<double> returns(num_players_, 0.0);
+  if (!IsTerminal()) return returns;
+
+  std::vector<int> penalties = CapturedMondPenalties();
+  std::vector<int> scores = ScoresWithoutCapturedMondPenalties();
   for (int i = 0; i < num_players_; i++) {
-    scores.at(i) += penalties.at(i);
+    returns.at(i) = penalties.at(i) + scores.at(i);
   }
-  return scores;
+  return returns;
 }
 
 std::string TarokState::InformationStateString(
@@ -374,21 +377,181 @@ std::vector<open_spiel::Action> TarokState::TrickCards() const {
   return trick_cards_;
 }
 
-std::vector<double> TarokState::CapturedMondPenalties() const {
-  std::vector<double> penalties;
+std::vector<int> TarokState::CapturedMondPenalties() const {
+  std::vector<int> penalties;
   penalties.reserve(num_players_);
   for (open_spiel::Player p = 0; p < num_players_; p++) {
     if (p == captured_mond_player_)
-      penalties.push_back(-20.0);
+      penalties.push_back(-20);
     else
-      penalties.push_back(0.0);
+      penalties.push_back(0);
   }
   return penalties;
 }
 
-std::vector<double> TarokState::ScoresWithoutCapturedMondPenalties() const {
-  if (!IsTerminal()) return std::vector<double>(num_players_, 0.0);
-  // todo: implement
+std::vector<int> TarokState::ScoresWithoutCapturedMondPenalties() const {
+  if (!IsTerminal()) return std::vector<int>(num_players_, 0);
+  if (selected_contract_info_->contract == Contract::kKlop) {
+    return ScoresInKlop();
+  } else if (selected_contract_info_->NeedsTalonExchange()) {
+    return ScoresInNormalContracts();
+  } else {
+    // beggar and above
+    return ScoresInHigherContracts();
+  }
+}
+
+std::vector<int> TarokState::ScoresInKlop() const {
+  std::vector<int> scores;
+  scores.reserve(num_players_);
+
+  bool any_player_won_or_lost = false;
+  for (int i = 0; i < num_players_; i++) {
+    int points = CardPoints(players_collected_cards_.at(i),
+                            tarok_parent_game_->card_deck_);
+    if (points > 35) {
+      any_player_won_or_lost = true;
+      scores.push_back(-70);
+    } else if (points == 0) {
+      any_player_won_or_lost = true;
+      scores.push_back(70);
+    } else {
+      scores.push_back(-points);
+    }
+  }
+
+  if (any_player_won_or_lost) {
+    // only the winners and losers score
+    for (int i = 0; i < num_players_; i++) {
+      if (std::abs(scores.at(i)) != 70) scores.at(i) = 0;
+    }
+  }
+  return scores;
+}
+
+std::vector<int> TarokState::ScoresInNormalContracts() const {
+  // split the cards for the two teams
+  std::vector<open_spiel::Action> collected_cards =
+      players_collected_cards_.at(declarer_);
+  std::vector<open_spiel::Action> opposite_collected_cards;
+  for (open_spiel::Player p = 0; p < num_players_; p++) {
+    if (p != declarer_ && p != declarer_partner_) {
+      opposite_collected_cards.insert(opposite_collected_cards.end(),
+                                      players_collected_cards_.at(p).begin(),
+                                      players_collected_cards_.at(p).end());
+    } else if (p == declarer_partner_) {
+      collected_cards.insert(collected_cards.end(),
+                             players_collected_cards_.at(p).begin(),
+                             players_collected_cards_.at(p).end());
+    }
+  }
+
+  // calculate possible bonuses
+  int bonuses;
+  if (collected_cards.size() == 48) {
+    // valat won
+    bonuses = 250;
+  } else if (opposite_collected_cards.size() == 48) {
+    // valat lost
+    bonuses = -250;
+  } else {
+    // other bonuses that could be positive, negative or 0
+    bonuses = NonValatBonuses(collected_cards, opposite_collected_cards);
+  }
+
+  int card_points = CardPoints(collected_cards, tarok_parent_game_->card_deck_);
+  int score = card_points - 35;
+  if (card_points > 35)
+    score += selected_contract_info_->score;
+  else
+    score -= selected_contract_info_->score;
+  score += bonuses;
+
+  std::vector<int> scores(num_players_, 0);
+  scores.at(declarer_) = score;
+  if (declarer_partner_ != open_spiel::kInvalidPlayer)
+    scores.at(declarer_partner_) = score;
+  return scores;
+}
+
+std::vector<int> TarokState::ScoresInHigherContracts() const {
+  bool declarer_won;
+  if (selected_contract_info_->contract == Contract::kBeggar ||
+      selected_contract_info_->contract == Contract::kOpenBeggar) {
+    declarer_won = players_collected_cards_.at(declarer_).size() == 0;
+  } else if (selected_contract_info_->contract ==
+                 Contract::kColourValatWithout ||
+             selected_contract_info_->contract == Contract::kValatWithout) {
+    declarer_won = players_collected_cards_.at(declarer_).size() == 48;
+  } else {
+    // solo without
+    declarer_won = CardPoints(players_collected_cards_.at(declarer_),
+                              tarok_parent_game_->card_deck_) > 35;
+  }
+
+  std::vector<int> scores(num_players_, 0);
+  if (declarer_won)
+    scores.at(declarer_) = selected_contract_info_->score;
+  else
+    scores.at(declarer_) = -selected_contract_info_->score;
+  return scores;
+}
+
+int TarokState::NonValatBonuses(
+    const std::vector<open_spiel::Action>& collected_cards,
+    const std::vector<open_spiel::Action>& opposite_collected_cards) const {
+  int bonuses = 0;
+  // last trick winner is the current player
+  auto const& last_trick_winner_cards =
+      players_collected_cards_.at(current_player_);
+
+  // king ultimo and pagat ultimo
+  int ultimo_bonus = 0;
+  if (std::find(last_trick_winner_cards.end() - num_players_,
+                last_trick_winner_cards.end(),
+                called_king_) != last_trick_winner_cards.end()) {
+    // king ultimo
+    ultimo_bonus = 10;
+  } else if (std::find(last_trick_winner_cards.end() - num_players_,
+                       last_trick_winner_cards.end(),
+                       0) != last_trick_winner_cards.end()) {
+    // pagat ultimo
+    ultimo_bonus = 25;
+  }
+  if (ultimo_bonus > 0 &&
+      (current_player_ == declarer_ || current_player_ == declarer_partner_)) {
+    bonuses = ultimo_bonus;
+  } else if (ultimo_bonus > 0) {
+    bonuses = -ultimo_bonus;
+  }
+
+  // collected kings or trula
+  auto [collected_kings, collected_trula] =
+      CollectedKingsAndOrTrula(collected_cards);
+  auto [opposite_collected_kings, opposite_collected_trula] =
+      CollectedKingsAndOrTrula(opposite_collected_cards);
+  if (collected_kings)
+    bonuses += 10;
+  else if (opposite_collected_kings)
+    bonuses -= 10;
+  if (collected_trula)
+    bonuses += 10;
+  else if (opposite_collected_trula)
+    bonuses -= 10;
+  return bonuses;
+}
+
+std::tuple<bool, bool> TarokState::CollectedKingsAndOrTrula(
+    const std::vector<open_spiel::Action>& collected_cards) const {
+  int num_kings = 0, num_trula = 0;
+  for (auto const& action : collected_cards) {
+    if (action == 29 || action == 37 || action == 45 || action == 53) {
+      num_kings += 1;
+    } else if (action == 0 || action == 20 || action == 21) {
+      num_trula += 1;
+    }
+  }
+  return {num_kings == 4, num_trula == 3};
 }
 
 void TarokState::DoApplyAction(open_spiel::Action action_id) {
@@ -545,9 +708,9 @@ void TarokState::ResolveTrick() {
     trick_winner_collected_cards.push_back(talon_.front());
     talon_.erase(talon_.begin());
   } else if (winning_action == called_king_ && called_king_in_talon_) {
-    // declearer won the trick with the called king that was in talon so all of
-    // the talon cards belong to the declearer (note that this is only possible
-    // when talon exchange actually happened in the past)
+    // declearer won the trick with the called king that was in talon so all
+    // of the talon cards belong to the declearer (note that this is only
+    // possible when talon exchange actually happened in the past)
     bool mond_in_talon = false;
     for (auto const& action : talon_) {
       trick_winner_collected_cards.push_back(action);
@@ -564,8 +727,8 @@ void TarokState::ResolveTrick() {
   } else if ((selected_contract_info_->NeedsTalonExchange() ||
               selected_contract_info_->contract == Contract::kSoloWithout) &&
              (winning_action == 21 || winning_action == 0)) {
-    // check if mond is captured by skis or pagat (emperor's trick) and penalise
-    // the player of the mond in certain contracts
+    // check if mond is captured by skis or pagat (emperor's trick) and
+    // penalise the player of the mond in certain contracts
     for (int i = 0; i < trick_cards_.size(); i++) {
       if (trick_cards_.at(i) == 20) {
         captured_mond_player_ = TrickCardsIndexToPlayer(i);

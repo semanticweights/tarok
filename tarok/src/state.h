@@ -58,8 +58,8 @@ class TarokState : public open_spiel::State {
   // multiple NewInitialState() calls (i.e. TarokState only implements a single
   // round of the game and radli implementation is left to the owner of the game
   // instance who should keep track of multiple rounds if needed)
-  std::vector<double> CapturedMondPenalties() const;
-  std::vector<double> ScoresWithoutCapturedMondPenalties() const;
+  std::vector<int> CapturedMondPenalties() const;
+  std::vector<int> ScoresWithoutCapturedMondPenalties() const;
 
  protected:
   void DoApplyAction(open_spiel::Action action_id) override;
@@ -99,6 +99,18 @@ class TarokState : public open_spiel::State {
   // computes which player belongs to the trick_cards_ index as the player
   // who opens the trick always belongs to index 0 within trick_cards_
   open_spiel::Player TrickCardsIndexToPlayer(int index) const;
+
+  // the following methods return scores without captured mond penalties, see
+  // comments above CapturedMondPenalties() for more details
+  std::vector<int> ScoresInKlop() const;
+  std::vector<int> ScoresInNormalContracts() const;
+  std::vector<int> ScoresInHigherContracts() const;
+
+  int NonValatBonuses(
+      const std::vector<open_spiel::Action>& collected_cards,
+      const std::vector<open_spiel::Action>& opposite_collected_cards) const;
+  std::tuple<bool, bool> CollectedKingsAndOrTrula(
+      const std::vector<open_spiel::Action>& collected_cards) const;
 
   void NextPlayer();
   static bool ActionInActions(open_spiel::Action action_id,

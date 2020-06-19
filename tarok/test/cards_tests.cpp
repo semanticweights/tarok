@@ -51,11 +51,11 @@ TEST_F(TarokCardsTests, TestCountCards) {
   auto deck = tarok::InitializeCardDeck();
   std::vector<open_spiel::Action> all_card_actions(54);
   std::iota(all_card_actions.begin(), all_card_actions.end(), 0);
-  EXPECT_EQ(tarok::CardPoints(all_card_actions, deck), 70.0);
-  EXPECT_EQ(tarok::CardPoints({}, deck), 0.0);
-  EXPECT_EQ(tarok::CardPoints({13, 20, 34}, deck), 6.0);
-  EXPECT_EQ(tarok::CardPoints({13, 20, 34, 36}, deck), 9.0);
-  EXPECT_EQ(tarok::CardPoints({13, 20, 34, 36, 53}, deck), 14.0);
+  EXPECT_EQ(tarok::CardPoints(all_card_actions, deck), 70);
+  EXPECT_EQ(tarok::CardPoints({}, deck), 0);
+  EXPECT_EQ(tarok::CardPoints({13, 20, 34}, deck), 6);
+  EXPECT_EQ(tarok::CardPoints({13, 20, 34, 36}, deck), 9);
+  EXPECT_EQ(tarok::CardPoints({13, 20, 34, 36, 53}, deck), 14);
 }
 
 }  // namespace tarok
