@@ -115,4 +115,26 @@ void Shuffle(std::vector<open_spiel::Action>* actions, std::mt19937&& rng) {
   }
 }
 
+double CardPoints(const std::vector<open_spiel::Action>& actions,
+                  const std::array<TarokCard, 54>& deck) {
+  double points = 0.0;
+  // count cards in batches of three
+  for (int i = 0; i < actions.size() / 3 * 3; i += 3) {
+    points +=
+        (deck.at(actions.at(i)).points + deck.at(actions.at(i + 1)).points +
+         deck.at(actions.at(i + 2)).points) -
+        2.0;
+  }
+  // count the ramainder of the cards (0, 1 or 2 that are left at the end)
+  int cards_left = actions.size() % 3;
+  if (cards_left == 1) {
+    points += deck.at(actions.back()).points - 1.0;
+  } else if (cards_left == 2) {
+    points += (deck.at(actions.back()).points +
+               deck.at(actions.at(actions.size() - 2)).points) -
+              1.0;
+  }
+  return points;
+}
+
 }  // namespace tarok
