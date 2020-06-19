@@ -482,8 +482,7 @@ std::vector<int> TarokState::ScoresInHigherContracts() const {
   return scores;
 }
 
-std::tuple<std::vector<open_spiel::Action>, std::vector<open_spiel::Action>>
-TarokState::SplitCollectedCardsPerTeams() const {
+CollectedCardsPerTeam TarokState::SplitCollectedCardsPerTeams() const {
   std::vector<open_spiel::Action> collected_cards =
       players_collected_cards_.at(declarer_);
   std::vector<open_spiel::Action> opposite_collected_cards;
@@ -508,7 +507,6 @@ int TarokState::NonValatBonuses(
   // last trick winner is the current player
   auto const& last_trick_winner_cards =
       players_collected_cards_.at(current_player_);
-
   // king ultimo and pagat ultimo
   int ultimo_bonus = 0;
   if (std::find(last_trick_winner_cards.end() - num_players_,
@@ -744,8 +742,7 @@ void TarokState::ResolveTrick() {
   current_player_ = trick_winner;
 }
 
-std::tuple<open_spiel::Player, open_spiel::Action>
-TarokState::ResolveTrickWinnerAndWinningAction() const {
+TrickWinnerAndAction TarokState::ResolveTrickWinnerAndWinningAction() const {
   // compute the winning action index within trick_cards_
   int winning_action_i;
   if ((ActionInActions(0, trick_cards_) && ActionInActions(20, trick_cards_) &&

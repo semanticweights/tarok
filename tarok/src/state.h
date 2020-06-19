@@ -25,6 +25,10 @@ enum class GamePhase {
 
 class TarokGame;
 
+using TrickWinnerAndAction = std::tuple<open_spiel::Player, open_spiel::Action>;
+using CollectedCardsPerTeam = std::tuple<std::vector<open_spiel::Action>,
+                                         std::vector<open_spiel::Action>>;
+
 class TarokState : public open_spiel::State {
  public:
   explicit TarokState(std::shared_ptr<const open_spiel::Game> game);
@@ -93,8 +97,7 @@ class TarokState : public open_spiel::State {
   void StartTricksPlayingPhase();
   void DoApplyActionInTricksPlaying(open_spiel::Action action_id);
   void ResolveTrick();
-  std::tuple<open_spiel::Player, open_spiel::Action>
-  ResolveTrickWinnerAndWinningAction() const;
+  TrickWinnerAndAction ResolveTrickWinnerAndWinningAction() const;
 
   // computes which player belongs to the trick_cards_ index as the player
   // who opens the trick always belongs to index 0 within trick_cards_
@@ -106,8 +109,7 @@ class TarokState : public open_spiel::State {
   std::vector<int> ScoresInNormalContracts() const;
   std::vector<int> ScoresInHigherContracts() const;
 
-  std::tuple<std::vector<open_spiel::Action>, std::vector<open_spiel::Action>>
-  SplitCollectedCardsPerTeams() const;
+  CollectedCardsPerTeam SplitCollectedCardsPerTeams() const;
   int NonValatBonuses(
       const std::vector<open_spiel::Action>& collected_cards,
       const std::vector<open_spiel::Action>& opposite_collected_cards) const;
