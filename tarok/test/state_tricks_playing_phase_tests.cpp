@@ -201,45 +201,45 @@ TEST(TarokStateTests, TestTricksPlayingPhase5) {
 
 TEST(TarokStateTests, TestTricksPlayingPhase6) {
   // check taroks don't win in colour valat
-  auto state = StateAfterActions(kGameParams, {0, 0, 11, 0, 11});
+  auto state = StateAfterActions(kGameParams, {0, 11, 0, 0, 11});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
   EXPECT_EQ(state->SelectedContract(), Contract::kColourValatWithout);
 
-  EXPECT_EQ(state->CurrentPlayer(), 2);
+  EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(state->LegalActions(),
-              testing::ElementsAre(0, 5, 8, 9, 14, 15, 16, 17, 22, 32, 33, 34,
-                                   40, 41, 48, 53));
+              testing::ElementsAre(2, 6, 11, 12, 13, 19, 21, 25, 31, 35, 36, 37,
+                                   38, 43, 47, 52));
+  state->ApplyAction(35);
+
+  EXPECT_EQ(state->CurrentPlayer(), 2);
+  EXPECT_THAT(state->TrickCards(), testing::ElementsAre(35));
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(32, 33, 34));
   state->ApplyAction(32);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->TrickCards(), testing::ElementsAre(32));
+  EXPECT_THAT(state->TrickCards(), testing::ElementsAre(35, 32));
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(30));
   state->ApplyAction(30);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_THAT(state->TrickCards(), testing::ElementsAre(32, 30));
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(31, 35, 36, 37));
-  state->ApplyAction(31);
-
-  EXPECT_EQ(state->CurrentPlayer(), 2);
   EXPECT_TRUE(state->TrickCards().empty());
   EXPECT_THAT(state->LegalActions(),
-              testing::ElementsAre(0, 5, 8, 9, 14, 15, 16, 17, 22, 33, 34, 40,
-                                   41, 48, 53));
+              testing::ElementsAre(2, 6, 11, 12, 13, 19, 21, 25, 31, 36, 37, 38,
+                                   43, 47, 52));
+  state->ApplyAction(37);
+
+  EXPECT_EQ(state->CurrentPlayer(), 2);
+  EXPECT_THAT(state->TrickCards(), testing::ElementsAre(37));
+  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(33, 34));
   state->ApplyAction(33);
 
   // can't follow suit, i.e. forced to play tarok
   EXPECT_EQ(state->CurrentPlayer(), 0);
-  EXPECT_THAT(state->TrickCards(), testing::ElementsAre(33));
+  EXPECT_THAT(state->TrickCards(), testing::ElementsAre(37, 33));
   EXPECT_THAT(state->LegalActions(),
               testing::ElementsAre(1, 3, 4, 7, 10, 18, 20));
   state->ApplyAction(1);
-
-  EXPECT_EQ(state->CurrentPlayer(), 1);
-  EXPECT_THAT(state->TrickCards(), testing::ElementsAre(33, 1));
-  EXPECT_THAT(state->LegalActions(), testing::ElementsAre(35, 36, 37));
-  state->ApplyAction(35);
 
   // tarok didn't win the trick
   EXPECT_EQ(state->CurrentPlayer(), 1);
