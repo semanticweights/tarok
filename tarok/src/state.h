@@ -37,7 +37,7 @@ class TarokState : public open_spiel::State {
   bool IsTerminal() const override;
   GamePhase CurrentGamePhase() const;
   std::vector<open_spiel::Action> PlayerCards(open_spiel::Player player) const;
-  ContractName SelectedContract() const;
+  ContractName SelectedContractName() const;
   std::vector<open_spiel::Action> Talon() const;
   std::vector<std::vector<open_spiel::Action>> TalonSets() const;
   std::vector<open_spiel::Action> TrickCards() const;

@@ -43,7 +43,7 @@ std::vector<open_spiel::Action> TarokState::PlayerCards(
   return players_cards_.at(player);
 }
 
-ContractName TarokState::SelectedContract() const {
+ContractName TarokState::SelectedContractName() const {
   if (current_game_phase_ == GamePhase::kCardDealing ||
       current_game_phase_ == GamePhase::kBidding) {
     return ContractName::kNotSelected;
@@ -767,7 +767,7 @@ std::string TarokState::ToString() const {
   absl::StrAppend(&str, "Game phase: ", GamePhaseToString(current_game_phase),
                   "\n");
   absl::StrAppend(&str, "Selected contract: ",
-                  ContractNameToString(SelectedContract()), "\n");
+                  ContractNameToString(SelectedContractName()), "\n");
   absl::StrAppend(&str, "Current player: ", current_player, "\n");
   absl::StrAppend(&str, "Player cards: ",
                   absl::StrJoin(PlayerCards(current_player), ","), "\n");
