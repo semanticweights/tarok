@@ -467,11 +467,11 @@ void TarokState::DoApplyActionInTricksPlaying(open_spiel::Action action_id) {
   if (trick_cards_.size() == num_players_) {
     ResolveTrick();
     if (players_cards_.at(current_player_).empty() ||
-        ((selected_contract_info_->contract == Contract::kBeggar ||
-          selected_contract_info_->contract == Contract::kOpenBeggar) &&
+        ((selected_contract_->name == ContractName::kBeggar ||
+          selected_contract_->name == ContractName::kOpenBeggar) &&
          current_player_ == declarer_) ||
-        ((selected_contract_info_->contract == Contract::kColourValatWithout ||
-          selected_contract_info_->contract == Contract::kValatWithout) &&
+        ((selected_contract_->name == ContractName::kColourValatWithout ||
+          selected_contract_->name == ContractName::kValatWithout) &&
          current_player_ != declarer_)) {
       current_game_phase_ = GamePhase::kFinished;
     }
