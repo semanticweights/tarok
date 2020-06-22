@@ -22,7 +22,7 @@ The easiest way to run Python scripts that use Tarok and OpenSpiel is via docker
 1. Run `git clone https://github.com/semanticweights/tarok.git` and `cd` into the repository
 2. Run
 ```bash
-docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-8732cb8 /src/play_game.py
+docker run -v $(pwd)/tarok/python:/src -i --rm semanticweights/tarok:run-652e9b2 /src/play_game.py
 ```
 Note that hash values after the *run-* part correspond to commits from the *stable* branch.
 
