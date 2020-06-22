@@ -28,4 +28,13 @@ bool AllActionsInOtherActions(
   return true;
 }
 
+open_spiel::Action ActionFromCardName(std::string long_name,
+                                      const std::array<Card, 54>& deck) {
+  for (int i = 0; i < deck.size(); i++) {
+    if (deck.at(i).long_name == long_name) {
+      return i;
+    }
+  }
+  throw "Invalid long_name!";
+}
 }  // namespace tarok

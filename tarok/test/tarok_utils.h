@@ -17,4 +17,7 @@ bool AllActionsInOtherActions(
     const std::vector<open_spiel::Action>& actions,
     const std::vector<open_spiel::Action>& other_actions);
 
+open_spiel::Action ActionFromCardName(std::string short_name,
+                                      const std::array<Card, 54>& deck);
+
 }  // namespace tarok
