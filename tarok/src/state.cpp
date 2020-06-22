@@ -182,10 +182,10 @@ TarokState::LegalActionsInTricksPlayingFollowing() const {
 }
 
 std::tuple<bool, bool> TarokState::CanFollowSuitOrCantButHasTarok() const {
-  const TarokCard& opening_card = ActionToCard(trick_cards_.front());
+  const Card& opening_card = ActionToCard(trick_cards_.front());
   bool has_taroks = false;
   for (auto const& action : players_cards_.at(current_player_)) {
-    const TarokCard& current_card = ActionToCard(action);
+    const Card& current_card = ActionToCard(action);
     if (current_card.suit == opening_card.suit) {
       // note that the second return value is irrelevant in this case
       return {true, false};
@@ -213,13 +213,13 @@ TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
   std::vector<open_spiel::Action> actions;
 
   if (action_to_beat) {
-    const TarokCard& card_to_beat = ActionToCard(*action_to_beat);
+    const Card& card_to_beat = ActionToCard(*action_to_beat);
     auto const& player_cards = players_cards_.at(current_player_);
     // a higher card only has to be played when the player actually has a higher
     // card otherwise any card of the suit can be played
     bool has_higher_card = false;
     for (auto const& action : player_cards) {
-      const TarokCard& current_card = ActionToCard(action);
+      const Card& current_card = ActionToCard(action);
       if (current_card.suit == suit && current_card.rank > card_to_beat.rank) {
         has_higher_card = true;
         break;
@@ -227,7 +227,7 @@ TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
     }
     // collect the actual cards
     for (auto const& action : player_cards) {
-      const TarokCard& current_card = ActionToCard(action);
+      const Card& current_card = ActionToCard(action);
       if (current_card.suit == suit &&
           (!has_higher_card || current_card.rank > card_to_beat.rank)) {
         actions.push_back(action);
@@ -266,8 +266,8 @@ std::optional<open_spiel::Action> TarokState::ActionToBeatInNegativeContracts(
   // taroks in trick_cards_
   open_spiel::Action action_to_beat = trick_cards_.front();
   for (int i = 1; i < trick_cards_.size(); i++) {
-    const TarokCard& card_to_beat = ActionToCard(action_to_beat);
-    const TarokCard& current_card = ActionToCard(trick_cards_.at(i));
+    const Card& card_to_beat = ActionToCard(action_to_beat);
+    const Card& current_card = ActionToCard(trick_cards_.at(i));
     if (current_card.suit == suit && current_card.rank > card_to_beat.rank)
       action_to_beat = trick_cards_.at(i);
   }
@@ -529,9 +529,9 @@ TrickWinnerAndAction TarokState::ResolveTrickWinnerAndWinningAction() const {
   } else {
     winning_action_i = 0;
     for (int i = 1; i < trick_cards_.size(); i++) {
-      const TarokCard& winning_card =
+      const Card& winning_card =
           ActionToCard(trick_cards_.at(winning_action_i));
-      const TarokCard& current_card = ActionToCard(trick_cards_.at(i));
+      const Card& current_card = ActionToCard(trick_cards_.at(i));
 
       if (((current_card.suit == CardSuit::kTaroks &&
             selected_contract_info_->contract !=
@@ -800,7 +800,7 @@ void TarokState::MoveActionFromTo(open_spiel::Action action_id,
   to->push_back(action_id);
 }
 
-const TarokCard& TarokState::ActionToCard(open_spiel::Action action_id) const {
+const Card& TarokState::ActionToCard(open_spiel::Action action_id) const {
   return tarok_parent_game_->card_deck_.at(action_id);
 }
 

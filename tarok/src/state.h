@@ -119,7 +119,7 @@ class TarokState : public open_spiel::State {
   static void MoveActionFromTo(open_spiel::Action action_id,
                                std::vector<open_spiel::Action>* from,
                                std::vector<open_spiel::Action>* to);
-  const TarokCard& ActionToCard(open_spiel::Action action_id) const;
+  const Card& ActionToCard(open_spiel::Action action_id) const;
 
   std::shared_ptr<const TarokGame> tarok_parent_game_;
   GamePhase current_game_phase_ = GamePhase::kCardDealing;
