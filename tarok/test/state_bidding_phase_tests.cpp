@@ -13,7 +13,7 @@ TEST(TarokStateTests, TestBiddingPhase3Players1) {
   auto state = game->NewInitialTarokState();
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
-  EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kNotSelected);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_THAT(state->LegalActions(),
@@ -31,7 +31,7 @@ TEST(TarokStateTests, TestBiddingPhase3Players1) {
   state->ApplyAction(1);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kKlop);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kKlop);
   EXPECT_EQ(state->CurrentPlayer(), 0);
 }
 
@@ -42,7 +42,7 @@ TEST(TarokStateTests, TestBiddingPhase3Players2) {
   auto state = game->NewInitialTarokState();
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
-  EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kNotSelected);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_THAT(state->LegalActions(),
@@ -71,7 +71,7 @@ TEST(TarokStateTests, TestBiddingPhase3Players2) {
   state->ApplyAction(8);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kBeggar);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kBeggar);
   EXPECT_EQ(state->CurrentPlayer(), 1);
 }
 
@@ -81,7 +81,7 @@ TEST(TarokStateTests, TestBiddingPhase3Players3) {
   auto state = game->NewInitialTarokState();
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
-  EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kNotSelected);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_THAT(state->LegalActions(),
@@ -105,7 +105,7 @@ TEST(TarokStateTests, TestBiddingPhase3Players3) {
   state->ApplyAction(9);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kSoloWithout);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kSoloWithout);
   EXPECT_EQ(state->CurrentPlayer(), 2);
 }
 
@@ -117,7 +117,7 @@ TEST(TarokStateTests, TestBiddingPhase3Players4) {
   auto state = game->NewInitialTarokState();
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
-  EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kNotSelected);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_THAT(state->LegalActions(),
@@ -147,7 +147,7 @@ TEST(TarokStateTests, TestBiddingPhase3Players4) {
   state->ApplyAction(12);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kValatWithout);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kValatWithout);
   EXPECT_EQ(state->CurrentPlayer(), 0);
 }
 
@@ -159,7 +159,7 @@ TEST(TarokStateTests, TestBiddingPhase4Players1) {
   auto state = game->NewInitialTarokState();
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
-  EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kNotSelected);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_THAT(state->LegalActions(),
@@ -182,7 +182,7 @@ TEST(TarokStateTests, TestBiddingPhase4Players1) {
   state->ApplyAction(1);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kKlop);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kKlop);
   EXPECT_EQ(state->CurrentPlayer(), 0);
 }
 
@@ -193,7 +193,7 @@ TEST(TarokStateTests, TestBiddingPhase4Players2) {
   auto state = game->NewInitialTarokState();
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
-  EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kNotSelected);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_THAT(state->LegalActions(),
@@ -226,7 +226,7 @@ TEST(TarokStateTests, TestBiddingPhase4Players2) {
   state->ApplyAction(4);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kKingCalling);
-  EXPECT_EQ(state->SelectedContract(), Contract::kOne);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kOne);
   EXPECT_EQ(state->CurrentPlayer(), 0);
 }
 
@@ -238,7 +238,7 @@ TEST(TarokStateTests, TestBiddingPhase4Players3) {
   auto state = game->NewInitialTarokState();
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
-  EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kNotSelected);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_THAT(state->LegalActions(),
@@ -271,7 +271,7 @@ TEST(TarokStateTests, TestBiddingPhase4Players3) {
   state->ApplyAction(7);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
-  EXPECT_EQ(state->SelectedContract(), Contract::kSoloOne);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kSoloOne);
   EXPECT_EQ(state->CurrentPlayer(), 3);
 }
 
@@ -282,7 +282,7 @@ TEST(TarokStateTests, TestBiddingPhase4Players4) {
   auto state = game->NewInitialTarokState();
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
-  EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kNotSelected);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_THAT(state->LegalActions(),
@@ -307,7 +307,7 @@ TEST(TarokStateTests, TestBiddingPhase4Players4) {
   state->ApplyAction(8);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kBeggar);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kBeggar);
   EXPECT_EQ(state->CurrentPlayer(), 2);
 }
 
@@ -319,7 +319,7 @@ TEST(TarokStateTests, TestBiddingPhase4Players5) {
   auto state = game->NewInitialTarokState();
   state->ApplyAction(0);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
-  EXPECT_EQ(state->SelectedContract(), Contract::kNotSelected);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kNotSelected);
 
   EXPECT_EQ(state->CurrentPlayer(), 1);
   EXPECT_THAT(state->LegalActions(),
@@ -351,7 +351,7 @@ TEST(TarokStateTests, TestBiddingPhase4Players5) {
   state->ApplyAction(12);
 
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kValatWithout);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kValatWithout);
   EXPECT_EQ(state->CurrentPlayer(), 3);
 }
 

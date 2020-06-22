@@ -11,11 +11,21 @@
 
 namespace tarok {
 
+// a subset of cards actions that are used throughout the
+// codebase and add to readability
+static constexpr int kPagatAction = 0;
+static constexpr int kMondAction = 20;
+static constexpr int kSkisAction = 21;
+static constexpr int kKingOfHeartsAction = 29;
+static constexpr int kKingOfDiamondsAction = 37;
+static constexpr int kKingOfSpadesAction = 45;
+static constexpr int kKingOfClubsAction = 53;
+
 enum class CardSuit { kHearts, kDiamonds, kSpades, kClubs, kTaroks };
 
-struct TarokCard {
-  TarokCard(CardSuit suit, int rank, int points, std::string short_name,
-            std::string long_name);
+struct Card {
+  Card(CardSuit suit, int rank, int points, std::string short_name,
+       std::string long_name);
 
   const std::string ToString() const;
 
@@ -26,7 +36,7 @@ struct TarokCard {
   const std::string long_name;
 };
 
-const std::array<TarokCard, 54> InitializeCardDeck();
+const std::array<Card, 54> InitializeCardDeck();
 
 // a type for a pair holding talon and players' private cards
 using DealtCards = std::tuple<std::vector<open_spiel::Action>,
@@ -38,6 +48,6 @@ DealtCards DealCards(int num_players, int seed);
 void Shuffle(std::vector<open_spiel::Action>* actions, std::mt19937&& rng);
 
 int CardPoints(const std::vector<open_spiel::Action>& actions,
-               const std::array<TarokCard, 54>& deck);
+               const std::array<Card, 54>& deck);
 
 }  // namespace tarok

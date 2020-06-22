@@ -37,7 +37,7 @@ class TarokState : public open_spiel::State {
   bool IsTerminal() const override;
   GamePhase CurrentGamePhase() const;
   std::vector<open_spiel::Action> PlayerCards(open_spiel::Player player) const;
-  Contract SelectedContract() const;
+  ContractName SelectedContractName() const;
   std::vector<open_spiel::Action> Talon() const;
   std::vector<std::vector<open_spiel::Action>> TalonSets() const;
   std::vector<open_spiel::Action> TrickCards() const;
@@ -119,7 +119,7 @@ class TarokState : public open_spiel::State {
   static void MoveActionFromTo(open_spiel::Action action_id,
                                std::vector<open_spiel::Action>* from,
                                std::vector<open_spiel::Action>* to);
-  const TarokCard& ActionToCard(open_spiel::Action action_id) const;
+  const Card& ActionToCard(open_spiel::Action action_id) const;
 
   std::shared_ptr<const TarokGame> tarok_parent_game_;
   GamePhase current_game_phase_ = GamePhase::kCardDealing;
@@ -129,7 +129,7 @@ class TarokState : public open_spiel::State {
   std::vector<open_spiel::Action> players_bids_;
   open_spiel::Player declarer_ = open_spiel::kInvalidPlayer;
   // contract pointed to is managed by the game instance
-  const ContractInfo* selected_contract_info_;
+  const Contract* selected_contract_;
   open_spiel::Action called_king_ = open_spiel::kInvalidAction;
   bool called_king_in_talon_ = false;
   open_spiel::Player declarer_partner_ = open_spiel::kInvalidPlayer;

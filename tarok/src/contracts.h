@@ -10,7 +10,16 @@
 
 namespace tarok {
 
-enum class Contract {
+// a subset of bidding actions that are used throughout the
+// codebase and add to readability
+static constexpr int kInvalidContractBid = -1;
+static constexpr int kBidPass = 0;
+static constexpr int kBidKlop = 1;
+static constexpr int kBidThree = 2;
+static constexpr int kBidSoloThree = 5;
+static constexpr int kBidSoloOne = 7;
+
+enum class ContractName {
   kKlop,
   kThree,
   kTwo,
@@ -26,15 +35,13 @@ enum class Contract {
   kNotSelected
 };
 
-struct ContractInfo {
-  ContractInfo(Contract contract, std::string name, int score,
-               int num_talon_exchanges, bool needs_king_calling,
-               bool declarer_starts, bool is_negative);
+struct Contract {
+  Contract(ContractName name, int score, int num_talon_exchanges,
+           bool needs_king_calling, bool declarer_starts, bool is_negative);
 
   bool NeedsTalonExchange() const;
 
-  const Contract contract;
-  const std::string name;
+  const ContractName name;
   const int score;
   const int num_talon_exchanges;
   const bool needs_king_calling;
@@ -42,10 +49,10 @@ struct ContractInfo {
   const bool is_negative;
 };
 
-const std::array<ContractInfo, 12> InitializeContracts();
+const std::array<Contract, 12> InitializeContracts();
 
-std::ostream& operator<<(std::ostream& os, const Contract& contract);
+std::ostream& operator<<(std::ostream& os, const ContractName& contract_name);
 
-std::string ContractToString(const Contract& contract);
+std::string ContractNameToString(const ContractName& contract_name);
 
 }  // namespace tarok
