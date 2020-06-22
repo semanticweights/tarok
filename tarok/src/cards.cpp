@@ -119,9 +119,9 @@ int CardPoints(const std::vector<open_spiel::Action>& actions,
                const std::array<Card, 54>& deck) {
   float points = 0;
   for (int i = 0; i < actions.size(); i++) {
-    points += (float)(deck.at(actions.at(i)).points) - 0.666;
+    points += static_cast<float>(deck.at(actions.at(i)).points) - 0.666;
   }
-  return (int)round(points);
+  return static_cast<int>(round(points));
 }
 
 }  // namespace tarok
