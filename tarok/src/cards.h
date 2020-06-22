@@ -11,8 +11,8 @@
 
 namespace tarok {
 
-// a subset of card actions that are used throughout codebase and add to
-// readability
+// a subset of cards actions that are used throughout the
+// codebase and add to readability
 static constexpr int kPagatAction = 0;
 static constexpr int kMondAction = 20;
 static constexpr int kSkisAction = 21;

@@ -10,8 +10,8 @@
 
 namespace tarok {
 
-// a subset of bidding actions that are used throughout codebase and add to
-// readability
+// a subset of bidding actions that are used throughout the
+// codebase and add to readability
 static constexpr int kInvalidContractBid = -1;
 static constexpr int kBidPass = 0;
 static constexpr int kBidKlop = 1;
