@@ -11,6 +11,16 @@
 
 namespace tarok {
 
+// a subset of card actions that are used throughout codebase and add to
+// readability
+static constexpr int kPagatAction = 0;
+static constexpr int kMondAction = 20;
+static constexpr int kSkisAction = 21;
+static constexpr int kKingOfHeartsAction = 29;
+static constexpr int kKingOfDiamondsAction = 37;
+static constexpr int kKingOfSpadesAction = 45;
+static constexpr int kKingOfClubsAction = 53;
+
 enum class CardSuit { kHearts, kDiamonds, kSpades, kClubs, kTaroks };
 
 struct Card {

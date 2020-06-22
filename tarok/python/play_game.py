@@ -17,8 +17,8 @@ def play_game():
 
 
 def print_info(game, state):
-    print(state.current_game_phase())
-    print(state.selected_contract())
+    print("Game phase: {}".format(state.current_game_phase()))
+    print("Selected contract: {}".format(state.selected_contract()))
     print("Current player: {}".format(state.current_player()))
     player_cards = state.player_cards(state.current_player())
     action_names = [state.card_action_to_string(a) for a in player_cards]

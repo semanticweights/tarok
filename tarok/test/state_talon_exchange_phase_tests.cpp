@@ -10,7 +10,7 @@ TEST(TarokStateTests, TestTalonExchangePhase1) {
   // 3 talon exchanges, select the first set
   auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 2});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
-  EXPECT_EQ(state->SelectedContract(), Contract::kThree);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kThree);
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 2);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1));
@@ -40,7 +40,7 @@ TEST(TarokStateTests, TestTalonExchangePhase2) {
   // 3 talon exchanges, select the second set
   auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 2});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
-  EXPECT_EQ(state->SelectedContract(), Contract::kThree);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kThree);
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 2);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1));
@@ -70,7 +70,7 @@ TEST(TarokStateTests, TestTalonExchangePhase3) {
   // 2 talon exchanges, select the middle set
   auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 3});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
-  EXPECT_EQ(state->SelectedContract(), Contract::kTwo);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kTwo);
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 3);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1, 2));
@@ -101,7 +101,7 @@ TEST(TarokStateTests, TestTalonExchangePhase4) {
   // 1 talon exchange, select the first set
   auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 4});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
-  EXPECT_EQ(state->SelectedContract(), Contract::kOne);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kOne);
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 6);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1, 2, 3, 4, 5));
@@ -132,7 +132,7 @@ TEST(TarokStateTests, TestTalonExchangePhase5) {
   // 1 talon exchange, select the fourth set
   auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 4});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
-  EXPECT_EQ(state->SelectedContract(), Contract::kOne);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kOne);
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 6);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1, 2, 3, 4, 5));
@@ -165,7 +165,7 @@ TEST(TarokStateTests, TestTalonExchangePhase6) {
   // 1 talon exchange, select the last set
   auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 4});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
-  EXPECT_EQ(state->SelectedContract(), Contract::kOne);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kOne);
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 6);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1, 2, 3, 4, 5));

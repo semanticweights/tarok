@@ -46,21 +46,21 @@ PYBIND11_MODULE(pytarok, m) {
   game_phase.value("TRICKS_PLAYING", GamePhase::kTricksPlaying);
   game_phase.value("FINISHED", GamePhase::kFinished);
 
-  // contract object
-  py::enum_<Contract> contract(m, "Contract");
-  contract.value("KLOP", Contract::kKlop);
-  contract.value("THREE", Contract::kThree);
-  contract.value("TWO", Contract::kTwo);
-  contract.value("ONE", Contract::kOne);
-  contract.value("SOLO_THREE", Contract::kSoloThree);
-  contract.value("SOLO_TWO", Contract::kSoloTwo);
-  contract.value("SOLO_ONE", Contract::kSoloOne);
-  contract.value("BEGGAR", Contract::kBeggar);
-  contract.value("SOLO_WITHOUT", Contract::kSoloWithout);
-  contract.value("OPEN_BEGGAR", Contract::kOpenBeggar);
-  contract.value("COLOUR_VALAT_WITHOUT", Contract::kColourValatWithout);
-  contract.value("VALAT_WITHOUT", Contract::kValatWithout);
-  contract.value("NOT_SELECTED", Contract::kNotSelected);
+  // contract name object
+  py::enum_<ContractName> contract(m, "Contract");
+  contract.value("KLOP", ContractName::kKlop);
+  contract.value("THREE", ContractName::kThree);
+  contract.value("TWO", ContractName::kTwo);
+  contract.value("ONE", ContractName::kOne);
+  contract.value("SOLO_THREE", ContractName::kSoloThree);
+  contract.value("SOLO_TWO", ContractName::kSoloTwo);
+  contract.value("SOLO_ONE", ContractName::kSoloOne);
+  contract.value("BEGGAR", ContractName::kBeggar);
+  contract.value("SOLO_WITHOUT", ContractName::kSoloWithout);
+  contract.value("OPEN_BEGGAR", ContractName::kOpenBeggar);
+  contract.value("COLOUR_VALAT_WITHOUT", ContractName::kColourValatWithout);
+  contract.value("VALAT_WITHOUT", ContractName::kValatWithout);
+  contract.value("NOT_SELECTED", ContractName::kNotSelected);
 }
 
 }  // namespace tarok

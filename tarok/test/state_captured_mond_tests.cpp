@@ -12,7 +12,7 @@ TEST(TarokStateTests, TestCapturedMond1) {
       open_spiel::GameParameters({{"seed", open_spiel::GameParameter(634317)}}),
       {0, 0, 0, 4, 0, 49});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kOne);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kOne);
 
   // play mond
   EXPECT_EQ(state->CurrentPlayer(), 0);
@@ -34,7 +34,7 @@ TEST(TarokStateTests, TestCapturedMond2) {
       open_spiel::GameParameters({{"seed", open_spiel::GameParameter(634317)}}),
       {0, 0, 0, 4, 0, 49});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kOne);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kOne);
 
   // play mond
   EXPECT_EQ(state->CurrentPlayer(), 0);
@@ -56,7 +56,7 @@ TEST(TarokStateTests, TestCapturedMond3) {
       open_spiel::GameParameters({{"seed", open_spiel::GameParameter(497200)}}),
       {0, 0, 0, 4, 3, 49});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kOne);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kOne);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
   EXPECT_THAT(state->CapturedMondPenalties(), testing::ElementsAre(0, 0, 0));
@@ -68,7 +68,7 @@ TEST(TarokStateTests, TestCapturedMond4) {
       open_spiel::GameParameters({{"seed", open_spiel::GameParameter(497200)}}),
       {0, 0, 0, 4, 0, 49});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kOne);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kOne);
 
   EXPECT_EQ(state->CurrentPlayer(), 0);
   EXPECT_THAT(state->CapturedMondPenalties(), testing::ElementsAre(-20, 0, 0));
@@ -81,7 +81,7 @@ TEST(TarokStateTests, TestCapturedMond5) {
                                   {"seed", open_spiel::GameParameter(297029)}}),
       {0, 0, 0, 0, 4, 45, 2, 49});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
-  EXPECT_EQ(state->SelectedContract(), Contract::kOne);
+  EXPECT_EQ(state->SelectedContract(), ContractName::kOne);
 
   // play the called king and win the trick
   EXPECT_EQ(state->CurrentPlayer(), 0);

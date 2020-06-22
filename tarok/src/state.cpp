@@ -14,7 +14,7 @@ TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
     : open_spiel::State(game),
       tarok_parent_game_(std::static_pointer_cast<const TarokGame>(game)) {
   players_bids_.reserve(num_players_);
-  players_bids_.insert(players_bids_.end(), num_players_, -1);
+  players_bids_.insert(players_bids_.end(), num_players_, kInvalidContractBid);
   players_collected_cards_.reserve(num_players_);
   players_collected_cards_.insert(players_collected_cards_.end(), num_players_,
                                   std::vector<open_spiel::Action>());
@@ -43,12 +43,12 @@ std::vector<open_spiel::Action> TarokState::PlayerCards(
   return players_cards_.at(player);
 }
 
-Contract TarokState::SelectedContract() const {
+ContractName TarokState::SelectedContract() const {
   if (current_game_phase_ == GamePhase::kCardDealing ||
       current_game_phase_ == GamePhase::kBidding) {
-    return Contract::kNotSelected;
+    return ContractName::kNotSelected;
   }
-  return selected_contract_info_->contract;
+  return selected_contract_->name;
 }
 
 std::vector<open_spiel::Action> TarokState::Talon() const { return talon_; }
@@ -56,16 +56,15 @@ std::vector<open_spiel::Action> TarokState::Talon() const { return talon_; }
 std::vector<std::vector<open_spiel::Action>> TarokState::TalonSets() const {
   if (current_game_phase_ != GamePhase::kTalonExchange) return {};
 
-  int num_talon_sets =
-      talon_.size() / selected_contract_info_->num_talon_exchanges;
+  int num_talon_sets = talon_.size() / selected_contract_->num_talon_exchanges;
   std::vector<std::vector<open_spiel::Action>> talon_sets;
   talon_sets.reserve(num_talon_sets);
 
   auto begin = talon_.begin();
   for (int i = 0; i < num_talon_sets; i++) {
     talon_sets.push_back(std::vector<open_spiel::Action>(
-        begin, begin + selected_contract_info_->num_talon_exchanges));
-    std::advance(begin, selected_contract_info_->num_talon_exchanges);
+        begin, begin + selected_contract_->num_talon_exchanges));
+    std::advance(begin, selected_contract_->num_talon_exchanges);
   }
   return talon_sets;
 }
@@ -88,7 +87,8 @@ std::vector<open_spiel::Action> TarokState::LegalActions() const {
     case GamePhase::kBidding:
       return LegalActionsInBidding();
     case GamePhase::kKingCalling:
-      return {29, 37, 45, 53};
+      return {kKingOfHeartsAction, kKingOfDiamondsAction, kKingOfSpadesAction,
+              kKingOfClubsAction};
     case GamePhase::kTalonExchange:
       return LegalActionsInTalonExchange();
     case GamePhase::kTricksPlaying:
@@ -106,19 +106,25 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInBidding() const {
   int max_bid_player = it - players_bids_.begin();
 
   std::vector<open_spiel::Action> actions;
-  if (current_player_ == 0 && players_bids_.at(current_player_) == -1 &&
+  if (current_player_ == 0 &&
+      players_bids_.at(current_player_) == kInvalidContractBid &&
       AllButCurrentPlayerPassedBidding()) {
     // no bidding has happened before so forehand can
     // bid any contract but can't pass
-    actions.insert(actions.end(), {1, 2});
+    actions.insert(actions.end(), {kBidKlop, kBidThree});
   } else if (!AllButCurrentPlayerPassedBidding()) {
     // other players still playing
-    actions.push_back(0);
+    actions.push_back(kBidPass);
   }
 
   for (int action = 3; action <= 12; action++) {
-    if (num_players_ == 3 && action >= 5 && action <= 7) continue;
-    if (action < max_bid) continue;
+    if (num_players_ == 3 && action >= kBidSoloThree && action <= kBidSoloOne) {
+      // skip solo contracts for three players
+      continue;
+    }
+    if (action < max_bid) {
+      continue;
+    }
     if ((action > max_bid) ||
         (action == max_bid && current_player_ <= max_bid_player)) {
       actions.push_back(action);
@@ -134,7 +140,7 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInTalonExchange()
     // 0, 1, 2, etc. from left to right, i.e. 0 is the leftmost talon set
     // as returned by TalonSets()
     std::vector<open_spiel::Action> actions(
-        6 / selected_contract_info_->num_talon_exchanges);
+        6 / selected_contract_->num_talon_exchanges);
     std::iota(actions.begin(), actions.end(), 0);
     return actions;
   }
@@ -151,7 +157,7 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInTricksPlaying()
   if (trick_cards_.empty()) {
     // trick opening, i.e. the current player is choosing
     // the first card for this trick
-    if (selected_contract_info_->is_negative)
+    if (selected_contract_->is_negative)
       return RemovePagatIfNeeded(players_cards_.at(current_player_));
     return players_cards_.at(current_player_);
   } else {
@@ -175,7 +181,7 @@ TarokState::LegalActionsInTricksPlayingFollowing() const {
     return players_cards_.at(current_player_);
   }
 
-  if (selected_contract_info_->is_negative)
+  if (selected_contract_->is_negative)
     return TakeSuitFromPlayerCardsInNegativeContracts(take_suit);
   else
     return TakeSuitFromPlayerCardsInPositiveContracts(take_suit);
@@ -200,12 +206,12 @@ std::tuple<bool, bool> TarokState::CanFollowSuitOrCantButHasTarok() const {
 std::vector<open_spiel::Action>
 TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
   bool player_has_pagat =
-      ActionInActions(0, players_cards_.at(current_player_));
-  if (player_has_pagat && ActionInActions(20, trick_cards_) &&
-      ActionInActions(21, trick_cards_)) {
+      ActionInActions(kPagatAction, players_cards_.at(current_player_));
+  if (player_has_pagat && ActionInActions(kMondAction, trick_cards_) &&
+      ActionInActions(kSkisAction, trick_cards_)) {
     // the emperor trick, i.e. pagat has to be played as it is the only card
     // that will win the trick
-    return {0};
+    return {kPagatAction};
   }
 
   std::optional<open_spiel::Action> action_to_beat =
@@ -281,7 +287,7 @@ std::vector<open_spiel::Action> TarokState::RemovePagatIfNeeded(
     // can be all player's cards or a subset already filtered by the caller
     std::vector<open_spiel::Action> actions_no_pagat;
     for (auto const& action : actions) {
-      if (action != 0) actions_no_pagat.push_back(action);
+      if (action != kPagatAction) actions_no_pagat.push_back(action);
     }
     return actions_no_pagat;
   }
@@ -305,7 +311,8 @@ std::string TarokState::ActionToString(open_spiel::Player player,
       return "Deal";
     case GamePhase::kBidding:
       if (action_id == 0) return "Pass";
-      return tarok_parent_game_->contracts_.at(action_id - 1).name;
+      return ContractNameToString(
+          tarok_parent_game_->contracts_.at(action_id - 1).name);
     case GamePhase::kKingCalling:
     case GamePhase::kTricksPlaying:
       return CardActionToString(action_id);
@@ -373,25 +380,25 @@ void TarokState::DoApplyActionInBidding(open_spiel::Action action_id) {
   } else {
     do {
       NextPlayer();
-    } while (players_bids_.at(current_player_) == 0);
+    } while (players_bids_.at(current_player_) == kBidPass);
   }
 }
 
 bool TarokState::AllButCurrentPlayerPassedBidding() const {
   for (int i = 0; i < num_players_; i++) {
     if (i == current_player_) continue;
-    if (players_bids_.at(i) != 0) return false;
+    if (players_bids_.at(i) != kBidPass) return false;
   }
   return true;
 }
 
 void TarokState::FinishBiddingPhase(open_spiel::Action action_id) {
   declarer_ = current_player_;
-  selected_contract_info_ = &tarok_parent_game_->contracts_.at(action_id - 1);
+  selected_contract_ = &tarok_parent_game_->contracts_.at(action_id - 1);
 
-  if (num_players_ == 4 && selected_contract_info_->needs_king_calling)
+  if (num_players_ == 4 && selected_contract_->needs_king_calling)
     current_game_phase_ = GamePhase::kKingCalling;
-  else if (selected_contract_info_->NeedsTalonExchange())
+  else if (selected_contract_->NeedsTalonExchange())
     current_game_phase_ = GamePhase::kTalonExchange;
   else
     StartTricksPlayingPhase();
@@ -419,15 +426,14 @@ void TarokState::DoApplyActionInTalonExchange(open_spiel::Action action_id) {
 
   if (talon_.size() == 6) {
     // choosing one of the talon card sets
-    int num_talon_exchanges = selected_contract_info_->num_talon_exchanges;
-    int set_begin = action_id * num_talon_exchanges;
-    int set_end = set_begin + num_talon_exchanges;
+    int set_begin = action_id * selected_contract_->num_talon_exchanges;
+    int set_end = set_begin + selected_contract_->num_talon_exchanges;
 
-    bool mond_in_talon = ActionInActions(20, talon_);
+    bool mond_in_talon = ActionInActions(kMondAction, talon_);
     bool mond_in_selected_talon_set = false;
     for (int i = set_begin; i < set_end; i++) {
       player_cards.push_back(talon_.at(i));
-      if (talon_.at(i) == 20) mond_in_selected_talon_set = true;
+      if (talon_.at(i) == kMondAction) mond_in_selected_talon_set = true;
     }
     if (mond_in_talon && !mond_in_selected_talon_set) {
       // the captured mond penalty applies if mond is in talon and not part of
@@ -449,7 +455,7 @@ void TarokState::DoApplyActionInTalonExchange(open_spiel::Action action_id) {
 
 void TarokState::StartTricksPlayingPhase() {
   current_game_phase_ = GamePhase::kTricksPlaying;
-  if (selected_contract_info_->declarer_starts)
+  if (selected_contract_->declarer_starts)
     current_player_ = declarer_;
   else
     current_player_ = 0;
@@ -477,8 +483,7 @@ void TarokState::ResolveTrick() {
     trick_winner_collected_cards.push_back(action);
   }
 
-  if (selected_contract_info_->contract == Contract::kKlop &&
-      talon_.size() > 0) {
+  if (selected_contract_->name == ContractName::kKlop && talon_.size() > 0) {
     // add the "gift" talon card in klop
     trick_winner_collected_cards.push_back(talon_.front());
     talon_.erase(talon_.begin());
@@ -489,7 +494,7 @@ void TarokState::ResolveTrick() {
     bool mond_in_talon = false;
     for (auto const& action : talon_) {
       trick_winner_collected_cards.push_back(action);
-      if (action == 20) mond_in_talon = true;
+      if (action == kMondAction) mond_in_talon = true;
     }
     if (mond_in_talon) {
       // the called king and mond were in different parts of the talon and
@@ -499,13 +504,14 @@ void TarokState::ResolveTrick() {
       captured_mond_player_ = open_spiel::kInvalidPlayer;
     }
     talon_.clear();
-  } else if ((selected_contract_info_->NeedsTalonExchange() ||
-              selected_contract_info_->contract == Contract::kSoloWithout) &&
-             (winning_action == 21 || winning_action == 0)) {
+  } else if ((selected_contract_->NeedsTalonExchange() ||
+              selected_contract_->name == ContractName::kSoloWithout) &&
+             (winning_action == kSkisAction ||
+              winning_action == kPagatAction)) {
     // check if mond is captured by skis or pagat (emperor's trick) and
     // penalise the player of the mond in certain contracts
     for (int i = 0; i < trick_cards_.size(); i++) {
-      if (trick_cards_.at(i) == 20) {
+      if (trick_cards_.at(i) == kMondAction) {
         captured_mond_player_ = TrickCardsIndexToPlayer(i);
       }
     }
@@ -518,14 +524,16 @@ void TarokState::ResolveTrick() {
 TrickWinnerAndAction TarokState::ResolveTrickWinnerAndWinningAction() const {
   // compute the winning action index within trick_cards_
   int winning_action_i;
-  if ((ActionInActions(0, trick_cards_) && ActionInActions(20, trick_cards_) &&
-       ActionInActions(21, trick_cards_)) &&
-      (selected_contract_info_->contract != Contract::kColourValatWithout ||
+  if ((ActionInActions(kPagatAction, trick_cards_) &&
+       ActionInActions(kMondAction, trick_cards_) &&
+       ActionInActions(kSkisAction, trick_cards_)) &&
+      (selected_contract_->name != ContractName::kColourValatWithout ||
        ActionToCard(trick_cards_.front()).suit == CardSuit::kTaroks)) {
     // the emperor trick, i.e. pagat wins over mond and skis in all cases but
     // not in Contract::kColourValatWithout when a non-trump is led
-    winning_action_i = std::find(trick_cards_.begin(), trick_cards_.end(), 0) -
-                       trick_cards_.begin();
+    winning_action_i =
+        std::find(trick_cards_.begin(), trick_cards_.end(), kPagatAction) -
+        trick_cards_.begin();
   } else {
     winning_action_i = 0;
     for (int i = 1; i < trick_cards_.size(); i++) {
@@ -534,8 +542,7 @@ TrickWinnerAndAction TarokState::ResolveTrickWinnerAndWinningAction() const {
       const Card& current_card = ActionToCard(trick_cards_.at(i));
 
       if (((current_card.suit == CardSuit::kTaroks &&
-            selected_contract_info_->contract !=
-                Contract::kColourValatWithout) ||
+            selected_contract_->name != ContractName::kColourValatWithout) ||
            current_card.suit == winning_card.suit) &&
           current_card.rank > winning_card.rank) {
         winning_action_i = i;
@@ -581,9 +588,9 @@ std::vector<int> TarokState::CapturedMondPenalties() const {
 
 std::vector<int> TarokState::ScoresWithoutCapturedMondPenalties() const {
   if (!IsTerminal()) return std::vector<int>(num_players_, 0);
-  if (selected_contract_info_->contract == Contract::kKlop) {
+  if (selected_contract_->name == ContractName::kKlop) {
     return ScoresInKlop();
-  } else if (selected_contract_info_->NeedsTalonExchange()) {
+  } else if (selected_contract_->NeedsTalonExchange()) {
     return ScoresInNormalContracts();
   } else {
     // beggar and above
@@ -637,9 +644,9 @@ std::vector<int> TarokState::ScoresInNormalContracts() const {
   int card_points = CardPoints(collected_cards, tarok_parent_game_->card_deck_);
   int score = card_points - 35;
   if (card_points > 35)
-    score += selected_contract_info_->score;
+    score += selected_contract_->score;
   else
-    score -= selected_contract_info_->score;
+    score -= selected_contract_->score;
   score += bonuses;
 
   std::vector<int> scores(num_players_, 0);
@@ -714,9 +721,11 @@ std::tuple<bool, bool> TarokState::CollectedKingsAndOrTrula(
     const std::vector<open_spiel::Action>& collected_cards) const {
   int num_kings = 0, num_trula = 0;
   for (auto const& action : collected_cards) {
-    if (action == 29 || action == 37 || action == 45 || action == 53) {
+    if (action == kKingOfHeartsAction || kKingOfDiamondsAction == 37 ||
+        action == kKingOfSpadesAction || kKingOfClubsAction == 53) {
       num_kings += 1;
-    } else if (action == 0 || action == 20 || action == 21) {
+    } else if (action == kPagatAction || action == kMondAction ||
+               action == kSkisAction) {
       num_trula += 1;
     }
   }
@@ -725,12 +734,11 @@ std::tuple<bool, bool> TarokState::CollectedKingsAndOrTrula(
 
 std::vector<int> TarokState::ScoresInHigherContracts() const {
   bool declarer_won;
-  if (selected_contract_info_->contract == Contract::kBeggar ||
-      selected_contract_info_->contract == Contract::kOpenBeggar) {
+  if (selected_contract_->name == ContractName::kBeggar ||
+      selected_contract_->name == ContractName::kOpenBeggar) {
     declarer_won = players_collected_cards_.at(declarer_).size() == 0;
-  } else if (selected_contract_info_->contract ==
-                 Contract::kColourValatWithout ||
-             selected_contract_info_->contract == Contract::kValatWithout) {
+  } else if (selected_contract_->name == ContractName::kColourValatWithout ||
+             selected_contract_->name == ContractName::kValatWithout) {
     declarer_won = players_collected_cards_.at(declarer_).size() == 48;
   } else {
     // solo without
@@ -740,9 +748,9 @@ std::vector<int> TarokState::ScoresInHigherContracts() const {
 
   std::vector<int> scores(num_players_, 0);
   if (declarer_won)
-    scores.at(declarer_) = selected_contract_info_->score;
+    scores.at(declarer_) = selected_contract_->score;
   else
-    scores.at(declarer_) = -selected_contract_info_->score;
+    scores.at(declarer_) = -selected_contract_->score;
   return scores;
 }
 
@@ -756,8 +764,10 @@ std::string TarokState::ToString() const {
   std::string str = "";
   GamePhase current_game_phase = CurrentGamePhase();
   open_spiel::Player current_player = CurrentPlayer();
-  absl::StrAppend(&str, GamePhaseToString(current_game_phase), "\n");
-  absl::StrAppend(&str, ContractToString(SelectedContract()), "\n");
+  absl::StrAppend(&str, "Game phase: ", GamePhaseToString(current_game_phase),
+                  "\n");
+  absl::StrAppend(&str, "Selected contract: ",
+                  ContractNameToString(SelectedContract()), "\n");
   absl::StrAppend(&str, "Current player: ", current_player, "\n");
   absl::StrAppend(&str, "Player cards: ",
                   absl::StrJoin(PlayerCards(current_player), ","), "\n");
@@ -810,27 +820,20 @@ std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase) {
 }
 
 std::string GamePhaseToString(const GamePhase& game_phase) {
-  std::string str = "GamePhase::";
   switch (game_phase) {
     case GamePhase::kCardDealing:
-      absl::StrAppend(&str, "CardDealing");
-      break;
+      return "Card dealing";
     case GamePhase::kBidding:
-      absl::StrAppend(&str, "Bidding");
-      break;
+      return "Bidding";
     case GamePhase::kKingCalling:
-      absl::StrAppend(&str, "KingCalling");
-      break;
+      return "King calling";
     case GamePhase::kTalonExchange:
-      absl::StrAppend(&str, "TalonExchange");
-      break;
+      return "Talon exchange";
     case GamePhase::kTricksPlaying:
-      absl::StrAppend(&str, "TricksPlaying");
-      break;
+      return "Tricks playing";
     case GamePhase::kFinished:
-      absl::StrAppend(&str, "Finished");
+      return "Finished";
   }
-  return str;
 }
 
 }  // namespace tarok

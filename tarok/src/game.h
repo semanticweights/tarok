@@ -59,7 +59,7 @@ class TarokGame : public open_spiel::Game {
   int RNG() const;
 
   static inline const std::array<Card, 54> card_deck_ = InitializeCardDeck();
-  static inline const std::array<ContractInfo, 12> contracts_ =
+  static inline const std::array<Contract, 12> contracts_ =
       InitializeContracts();
 
   const int num_players_;
