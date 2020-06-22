@@ -14,7 +14,7 @@ TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
     : open_spiel::State(game),
       tarok_parent_game_(std::static_pointer_cast<const TarokGame>(game)) {
   players_bids_.reserve(num_players_);
-  players_bids_.insert(players_bids_.end(), num_players_, kInvalidContractBid);
+  players_bids_.insert(players_bids_.end(), num_players_, kInvalidBidAction);
   players_collected_cards_.reserve(num_players_);
   players_collected_cards_.insert(players_collected_cards_.end(), num_players_,
                                   std::vector<open_spiel::Action>());
@@ -107,18 +107,19 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInBidding() const {
 
   std::vector<open_spiel::Action> actions;
   if (current_player_ == 0 &&
-      players_bids_.at(current_player_) == kInvalidContractBid &&
+      players_bids_.at(current_player_) == kInvalidBidAction &&
       AllButCurrentPlayerPassedBidding()) {
     // no bidding has happened before so forehand can
     // bid any contract but can't pass
-    actions.insert(actions.end(), {kBidKlop, kBidThree});
+    actions.insert(actions.end(), {kBidKlopAction, kBidThreeAction});
   } else if (!AllButCurrentPlayerPassedBidding()) {
     // other players still playing
-    actions.push_back(kBidPass);
+    actions.push_back(kBidPassAction);
   }
 
   for (int action = 3; action <= 12; action++) {
-    if (num_players_ == 3 && action >= kBidSoloThree && action <= kBidSoloOne) {
+    if (num_players_ == 3 && action >= kBidSoloThreeAction &&
+        action <= kBidSoloOneAction) {
       // skip solo contracts for three players
       continue;
     }
@@ -380,14 +381,14 @@ void TarokState::DoApplyActionInBidding(open_spiel::Action action_id) {
   } else {
     do {
       NextPlayer();
-    } while (players_bids_.at(current_player_) == kBidPass);
+    } while (players_bids_.at(current_player_) == kBidPassAction);
   }
 }
 
 bool TarokState::AllButCurrentPlayerPassedBidding() const {
   for (int i = 0; i < num_players_; i++) {
     if (i == current_player_) continue;
-    if (players_bids_.at(i) != kBidPass) return false;
+    if (players_bids_.at(i) != kBidPassAction) return false;
   }
   return true;
 }
