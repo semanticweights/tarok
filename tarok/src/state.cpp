@@ -582,14 +582,9 @@ std::vector<double> TarokState::Returns() const {
 }
 
 std::vector<int> TarokState::CapturedMondPenalties() const {
-  std::vector<int> penalties;
-  penalties.reserve(num_players_);
-  for (open_spiel::Player p = 0; p < num_players_; p++) {
-    if (p == captured_mond_player_)
-      penalties.push_back(-20);
-    else
-      penalties.push_back(0);
-  }
+  std::vector<int> penalties(num_players_, 0);
+  if (captured_mond_player_ != open_spiel::kInvalidPlayer)
+    penalties.at(captured_mond_player_) = -20;
   return penalties;
 }
 
