@@ -28,13 +28,23 @@ bool AllActionsInOtherActions(
   return true;
 }
 
-open_spiel::Action ActionFromCardName(std::string long_name,
-                                      const std::array<Card, 54>& deck) {
+open_spiel::Action CardLongNameToAction(std::string long_name,
+                                        const std::array<Card, 54>& deck) {
   for (int i = 0; i < deck.size(); i++) {
-    if (deck.at(i).long_name == long_name) {
-      return i;
-    }
+    if (deck.at(i).long_name == long_name) return i;
   }
-  throw "Invalid long_name!";
+  open_spiel::SpielFatalError("Invalid long_name!");
+  return -1;
+}
+
+std::vector<open_spiel::Action> CardLongNamesToActions(
+    const std::vector<std::string>& long_names,
+    const std::array<Card, 54>& deck) {
+  std::vector<open_spiel::Action> actions;
+  actions.reserve(long_names.size());
+  for (auto const long_name : long_names) {
+    actions.push_back(CardLongNameToAction(long_name, deck));
+  }
+  return actions;
 }
 }  // namespace tarok

@@ -49,36 +49,26 @@ TEST_F(CardsTests, TestPlayersCardsSorted) {
 }
 
 TEST_F(CardsTests, TestCountCards) {
-  auto deck = tarok::InitializeCardDeck();
+  auto deck = InitializeCardDeck();
   std::vector<open_spiel::Action> all_card_actions(54);
   std::iota(all_card_actions.begin(), all_card_actions.end(), 0);
-  EXPECT_EQ(tarok::CardPoints(all_card_actions, deck), 70);
-  EXPECT_EQ(tarok::CardPoints({}, deck), 0);
+  EXPECT_EQ(CardPoints(all_card_actions, deck), 70);
+  EXPECT_EQ(CardPoints({}, deck), 0);
+  EXPECT_EQ(CardPoints(CardLongNamesToActions({"II"}, deck), deck), 0);
+  EXPECT_EQ(CardPoints(CardLongNamesToActions({"II", "III"}, deck), deck), 1);
+  EXPECT_EQ(CardPoints(CardLongNamesToActions({"Mond"}, deck), deck), 4);
 
-  auto cards = {ActionFromCardName("XIV", deck)};
-  EXPECT_EQ(tarok::CardPoints(cards, deck), 0);
+  std::vector<std::string> cards{"Mond", "Jack of Diamonds"};
+  EXPECT_EQ(CardPoints(CardLongNamesToActions(cards, deck), deck), 6);
 
-  cards = {ActionFromCardName("Mond", deck)};
-  EXPECT_EQ(tarok::CardPoints(cards, deck), 4);
+  cards = {"XIV", "Mond", "Jack of Diamonds"};
+  EXPECT_EQ(CardPoints(CardLongNamesToActions(cards, deck), deck), 6);
 
-  cards = {ActionFromCardName("Mond", deck),
-           ActionFromCardName("Jack of Diamonds", deck)};
-  EXPECT_EQ(tarok::CardPoints(cards, deck), 6);
+  cards = {"XIV", "Mond", "Jack of Diamonds", "Queen of Diamonds"};
+  EXPECT_EQ(CardPoints(CardLongNamesToActions(cards, deck), deck), 9);
 
-  cards = {ActionFromCardName("XIV", deck), ActionFromCardName("Mond", deck),
-           ActionFromCardName("Jack of Diamonds", deck)};
-  EXPECT_EQ(tarok::CardPoints(cards, deck), 6);
-
-  cards = {ActionFromCardName("XIV", deck), ActionFromCardName("Mond", deck),
-           ActionFromCardName("Jack of Diamonds", deck),
-           ActionFromCardName("Queen of Diamonds", deck)};
-  EXPECT_EQ(tarok::CardPoints(cards, deck), 9);
-
-  cards = {ActionFromCardName("XIV", deck), ActionFromCardName("Mond", deck),
-           ActionFromCardName("Jack of Diamonds", deck),
-           ActionFromCardName("Queen of Diamonds", deck),
-           ActionFromCardName("King of Clubs", deck)};
-  EXPECT_EQ(tarok::CardPoints(cards, deck), 14);
+  cards = {"II", "Jack of Clubs", "Queen of Clubs", "Mond", "King of Clubs"};
+  EXPECT_EQ(CardPoints(CardLongNamesToActions(cards, deck), deck), 14);
 }
 
 }  // namespace tarok
