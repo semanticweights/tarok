@@ -24,4 +24,5 @@ open_spiel::Action CardLongNameToAction(const std::string& long_name,
 std::vector<open_spiel::Action> CardLongNamesToActions(
     const std::vector<std::string>& long_names,
     const std::array<Card, 54>& deck);
+    
 }  // namespace tarok
