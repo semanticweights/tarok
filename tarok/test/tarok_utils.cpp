@@ -28,7 +28,7 @@ bool AllActionsInOtherActions(
   return true;
 }
 
-open_spiel::Action CardLongNameToAction(std::string long_name,
+open_spiel::Action CardLongNameToAction(const std::string& long_name,
                                         const std::array<Card, 54>& deck) {
   for (int i = 0; i < deck.size(); i++) {
     if (deck.at(i).long_name == long_name) return i;
@@ -47,4 +47,5 @@ std::vector<open_spiel::Action> CardLongNamesToActions(
   }
   return actions;
 }
+
 }  // namespace tarok
