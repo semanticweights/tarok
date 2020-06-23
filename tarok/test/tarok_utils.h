@@ -3,6 +3,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "src/game.h"
@@ -16,5 +17,12 @@ std::unique_ptr<TarokState> StateAfterActions(
 bool AllActionsInOtherActions(
     const std::vector<open_spiel::Action>& actions,
     const std::vector<open_spiel::Action>& other_actions);
+
+open_spiel::Action CardLongNameToAction(const std::string& long_name,
+                                        const std::array<Card, 54>& deck);
+
+std::vector<open_spiel::Action> CardLongNamesToActions(
+    const std::vector<std::string>& long_names,
+    const std::array<Card, 54>& deck);
 
 }  // namespace tarok

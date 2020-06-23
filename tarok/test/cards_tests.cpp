@@ -4,6 +4,7 @@
 
 #include "gtest/gtest.h"
 #include "src/cards.h"
+#include "test/tarok_utils.h"
 
 namespace tarok {
 
@@ -48,14 +49,26 @@ TEST_F(CardsTests, TestPlayersCardsSorted) {
 }
 
 TEST_F(CardsTests, TestCountCards) {
-  auto deck = tarok::InitializeCardDeck();
+  auto deck = InitializeCardDeck();
   std::vector<open_spiel::Action> all_card_actions(54);
   std::iota(all_card_actions.begin(), all_card_actions.end(), 0);
-  EXPECT_EQ(tarok::CardPoints(all_card_actions, deck), 70);
-  EXPECT_EQ(tarok::CardPoints({}, deck), 0);
-  EXPECT_EQ(tarok::CardPoints({13, 20, 34}, deck), 6);
-  EXPECT_EQ(tarok::CardPoints({13, 20, 34, 36}, deck), 9);
-  EXPECT_EQ(tarok::CardPoints({13, 20, 34, 36, 53}, deck), 14);
+  EXPECT_EQ(CardPoints(all_card_actions, deck), 70);
+  EXPECT_EQ(CardPoints({}, deck), 0);
+  EXPECT_EQ(CardPoints(CardLongNamesToActions({"II"}, deck), deck), 0);
+  EXPECT_EQ(CardPoints(CardLongNamesToActions({"II", "III"}, deck), deck), 1);
+  EXPECT_EQ(CardPoints(CardLongNamesToActions({"Mond"}, deck), deck), 4);
+
+  std::vector<std::string> cards{"Mond", "Jack of Diamonds"};
+  EXPECT_EQ(CardPoints(CardLongNamesToActions(cards, deck), deck), 6);
+
+  cards = {"XIV", "Mond", "Jack of Diamonds"};
+  EXPECT_EQ(CardPoints(CardLongNamesToActions(cards, deck), deck), 6);
+
+  cards = {"XIV", "Mond", "Jack of Diamonds", "Queen of Diamonds"};
+  EXPECT_EQ(CardPoints(CardLongNamesToActions(cards, deck), deck), 9);
+
+  cards = {"II", "Jack of Clubs", "Queen of Clubs", "Mond", "King of Clubs"};
+  EXPECT_EQ(CardPoints(CardLongNamesToActions(cards, deck), deck), 14);
 }
 
 }  // namespace tarok
