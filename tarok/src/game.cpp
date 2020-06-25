@@ -42,10 +42,15 @@ std::shared_ptr<const open_spiel::Game> TarokGame::Clone() const {
 }
 
 int TarokGame::MaxGameLength() const {
-  // the longest round is when players bid the lowest possible contract each
-  // time (18 or 14 moves, depending on num_players_) and then each has to play
-  // the 12 or 16 cards in hand
-  return 30;
+  // see tarok/python/max_game_length.py for an additional explanation about the
+  // number of actions
+  if (num_players_ == 3) {
+    // 17 actions + 16 cards each
+    return 33;
+  } else {
+    // 24 actions + 12 cards each
+    return 36;
+  }
 }
 
 int TarokGame::RNG() const { return rng_(); }
