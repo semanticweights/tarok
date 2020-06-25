@@ -8,7 +8,7 @@ def play_game():
         # 'seed': sp.GameParameter(0),
     })
     state = game.new_initial_state()
-    while(not state.is_terminal()):
+    while not state.is_terminal():
         print_info(game, state)
         state.apply_action(int(input("Enter action: ")))
         print("-" * 70, "\n")
@@ -26,9 +26,9 @@ def print_info(game, state):
         [x for x in zip(action_names, player_cards)]
     ))
 
-    if (state.current_game_phase() == ta.GamePhase.TALON_EXCHANGE):
+    if state.current_game_phase() == ta.GamePhase.TALON_EXCHANGE:
         print_talon_exchange_info(state)
-    elif (state.current_game_phase() == ta.GamePhase.TRICKS_PLAYING):
+    elif state.current_game_phase() == ta.GamePhase.TRICKS_PLAYING:
         print_tricks_playing_info(state)
     else:
         print()
