@@ -365,13 +365,25 @@ void TarokState::DoApplyAction(open_spiel::Action action_id) {
 
 void TarokState::DoApplyActionInCardDealing() {
   // do the actual sampling here due to implicit stochasticity
-  // todo: deal again if any player without taroks
-  std::tie(talon_, players_cards_) =
-      DealCards(num_players_, tarok_parent_game_->RNG());
+  do {
+    // hands without taroks are illegal
+    std::tie(talon_, players_cards_) =
+        DealCards(num_players_, tarok_parent_game_->RNG());
+  } while (AnyPlayerWithoutTaroks());
   current_game_phase_ = GamePhase::kBidding;
   // lower player indices correspond to higher bidding priority,
   // i.e. 0 is the forehand, num_players - 1 is the dealer
   current_player_ = 1;
+}
+
+bool TarokState::AnyPlayerWithoutTaroks() const {
+  // actions are sorted, i.e. taroks are always at the beginning
+  for (int i = 0; i < num_players_; i++) {
+    if (ActionToCard(players_cards_.at(i).front()).suit != CardSuit::kTaroks) {
+      return true;
+    }
+  }
+  return false;
 }
 
 void TarokState::DoApplyActionInBidding(open_spiel::Action action_id) {

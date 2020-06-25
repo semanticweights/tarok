@@ -89,6 +89,7 @@ class TarokState : public open_spiel::State {
       CardSuit suit) const;
 
   void DoApplyActionInCardDealing();
+  bool AnyPlayerWithoutTaroks() const;
   void DoApplyActionInBidding(open_spiel::Action action_id);
   bool AllButCurrentPlayerPassedBidding() const;
   void FinishBiddingPhase(open_spiel::Action action_id);
