@@ -215,7 +215,7 @@ TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
     return {kPagatAction};
   }
 
-  std::optional<open_spiel::Action> action_to_beat =
+  absl::optional<open_spiel::Action> action_to_beat =
       ActionToBeatInNegativeContracts(suit);
   std::vector<open_spiel::Action> actions;
 
@@ -251,7 +251,7 @@ TarokState::TakeSuitFromPlayerCardsInNegativeContracts(CardSuit suit) const {
     return actions;
 }
 
-std::optional<open_spiel::Action> TarokState::ActionToBeatInNegativeContracts(
+absl::optional<open_spiel::Action> TarokState::ActionToBeatInNegativeContracts(
     CardSuit suit) const {
   // there are two cases where no card has to be beaten; the player is following
   // a colour suit and there is already at least one tarok in trick_cards_ or

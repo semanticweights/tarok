@@ -117,10 +117,10 @@ void Shuffle(std::vector<open_spiel::Action>* actions, std::mt19937&& rng) {
 
 int CardPoints(const std::vector<open_spiel::Action>& actions,
                const std::array<Card, 54>& deck) {
-  // count cards is done in batches of three. for every batch we sum up points
-  // from all three cards and subtract 2. if the last batch doesn't have three
-  // cards then subtract only 1.
-  // mathematically this is equevalent to subtracting 2/3 from each card.
+  // counting is done in batches of three (for every batch we sum up points from
+  // three cards and subtract 2 points, if the last batch has less than three
+  // cards we subtract 1 point), mathematically, this is equevalent to
+  // subtracting 2/3 from each card
   float points = 0;
   for (auto const& action : actions) {
     points += deck.at(action).points;
