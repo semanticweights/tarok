@@ -38,7 +38,6 @@ static inline const open_spiel::GameType kGameType{
 class TarokGame : public open_spiel::Game {
  public:
   explicit TarokGame(const open_spiel::GameParameters& params);
-  explicit TarokGame(const TarokGame& other);
 
   int NumDistinctActions() const override;
   std::unique_ptr<open_spiel::State> NewInitialState() const override;

@@ -16,11 +16,6 @@ TarokGame::TarokGame(const open_spiel::GameParameters& params)
   SPIEL_CHECK_LE(num_players_, kGameType.max_num_players);
 }
 
-TarokGame::TarokGame(const TarokGame& other)
-    : Game(other),
-      num_players_(other.num_players_),
-      rng_(std::mt19937(other.rng_)) {}
-
 int TarokGame::NumDistinctActions() const { return 54; }
 
 std::unique_ptr<open_spiel::State> TarokGame::NewInitialState() const {
@@ -47,8 +42,8 @@ std::shared_ptr<const open_spiel::Game> TarokGame::Clone() const {
 }
 
 int TarokGame::MaxGameLength() const {
-  // the longest round is when 4 players bid the lowest possible contract each
-  // time (18 moves) and then each has to play the 12 cards in hand
+  // the longest round is when players bid the lowest possible contract each
+  // time (18 or 14 moves) and then each has to play the 12 or 16 cards in hand
   return 30;
 }
 
