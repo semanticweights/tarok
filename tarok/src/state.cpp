@@ -758,6 +758,8 @@ std::vector<int> TarokState::ScoresInHigherContracts() const {
 
 std::string TarokState::InformationStateString(
     open_spiel::Player player) const {
+  SPIEL_CHECK_GE(player, 0);
+  SPIEL_CHECK_LT(player, num_players_);
   // todo: implement
   return "";
 }
@@ -790,8 +792,7 @@ std::string TarokState::ToString() const {
 }
 
 std::unique_ptr<open_spiel::State> TarokState::Clone() const {
-  // todo: implement
-  return nullptr;
+  return std::unique_ptr<open_spiel::State>(new TarokState(*this));
 }
 
 void TarokState::NextPlayer() {
