@@ -2,13 +2,16 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "test/state_tests.h"
 #include "test/tarok_utils.h"
 
 namespace tarok {
 
-TEST(TarokStateTests, TestTalonExchangePhase1) {
+TEST_F(TarokStateTests, TestTalonExchangePhase1) {
   // 3 talon exchanges, select the first set
-  auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 2});
+  auto state = StateAfterActions(
+      open_spiel::GameParameters(),
+      {kDealCardsAction, kBidPassAction, kBidPassAction, kBidThreeAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kThree);
   auto talon_initial = state->TalonSets();
@@ -36,9 +39,11 @@ TEST(TarokStateTests, TestTalonExchangePhase1) {
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
 }
 
-TEST(TarokStateTests, TestTalonExchangePhase2) {
+TEST_F(TarokStateTests, TestTalonExchangePhase2) {
   // 3 talon exchanges, select the second set
-  auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 2});
+  auto state = StateAfterActions(
+      open_spiel::GameParameters(),
+      {kDealCardsAction, kBidPassAction, kBidPassAction, kBidThreeAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kThree);
   auto talon_initial = state->TalonSets();
@@ -66,9 +71,11 @@ TEST(TarokStateTests, TestTalonExchangePhase2) {
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
 }
 
-TEST(TarokStateTests, TestTalonExchangePhase3) {
+TEST_F(TarokStateTests, TestTalonExchangePhase3) {
   // 2 talon exchanges, select the middle set
-  auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 3});
+  auto state = StateAfterActions(
+      open_spiel::GameParameters(),
+      {kDealCardsAction, kBidPassAction, kBidPassAction, kBidTwoAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kTwo);
   auto talon_initial = state->TalonSets();
@@ -97,9 +104,11 @@ TEST(TarokStateTests, TestTalonExchangePhase3) {
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
 }
 
-TEST(TarokStateTests, TestTalonExchangePhase4) {
+TEST_F(TarokStateTests, TestTalonExchangePhase4) {
   // 1 talon exchange, select the first set
-  auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 4});
+  auto state = StateAfterActions(
+      open_spiel::GameParameters(),
+      {kDealCardsAction, kBidPassAction, kBidPassAction, kBidOneAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kOne);
   auto talon_initial = state->TalonSets();
@@ -128,9 +137,11 @@ TEST(TarokStateTests, TestTalonExchangePhase4) {
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
 }
 
-TEST(TarokStateTests, TestTalonExchangePhase5) {
+TEST_F(TarokStateTests, TestTalonExchangePhase5) {
   // 1 talon exchange, select the fourth set
-  auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 4});
+  auto state = StateAfterActions(
+      open_spiel::GameParameters(),
+      {kDealCardsAction, kBidPassAction, kBidPassAction, kBidOneAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kOne);
   auto talon_initial = state->TalonSets();
@@ -161,9 +172,11 @@ TEST(TarokStateTests, TestTalonExchangePhase5) {
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
 }
 
-TEST(TarokStateTests, TestTalonExchangePhase6) {
+TEST_F(TarokStateTests, TestTalonExchangePhase6) {
   // 1 talon exchange, select the last set
-  auto state = StateAfterActions(open_spiel::GameParameters(), {0, 0, 0, 4});
+  auto state = StateAfterActions(
+      open_spiel::GameParameters(),
+      {kDealCardsAction, kBidPassAction, kBidPassAction, kBidOneAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kOne);
   auto talon_initial = state->TalonSets();

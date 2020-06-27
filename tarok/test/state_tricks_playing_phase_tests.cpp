@@ -2,6 +2,7 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "test/state_tests.h"
 #include "test/tarok_utils.h"
 
 namespace tarok {
@@ -29,9 +30,10 @@ static inline const open_spiel::GameParameters kGameParams =
 // of Diamonds', 33), ('Jack of Diamonds', 34), ('9 of Spades', 40), ('10 of
 // Spades', 41), ('9 of Clubs', 48), ('King of Clubs', 53)
 
-TEST(TarokStateTests, TestTricksPlayingPhase1) {
+TEST_F(TarokStateTests, TestTricksPlayingPhase1) {
   // check forced pagat in klop
-  auto state = StateAfterActions(kGameParams, {0, 0, 0, 1});
+  auto state = StateAfterActions(kGameParams, {kDealCardsAction, kBidPassAction,
+                                               kBidPassAction, kBidKlopAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kKlop);
 
@@ -57,9 +59,10 @@ TEST(TarokStateTests, TestTricksPlayingPhase1) {
   EXPECT_TRUE(state->TrickCards().empty());
 }
 
-TEST(TarokStateTests, TestTricksPlayingPhase2) {
+TEST_F(TarokStateTests, TestTricksPlayingPhase2) {
   // check pagat not a legal action in klop when following and all taroks lower
-  auto state = StateAfterActions(kGameParams, {0, 0, 0, 1});
+  auto state = StateAfterActions(kGameParams, {kDealCardsAction, kBidPassAction,
+                                               kBidPassAction, kBidKlopAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kKlop);
 
@@ -85,9 +88,10 @@ TEST(TarokStateTests, TestTricksPlayingPhase2) {
   EXPECT_TRUE(state->TrickCards().empty());
 }
 
-TEST(TarokStateTests, TestTricksPlayingPhase3) {
+TEST_F(TarokStateTests, TestTricksPlayingPhase3) {
   // check pagat not a legal action in klop when opening
-  auto state = StateAfterActions(kGameParams, {0, 0, 0, 1});
+  auto state = StateAfterActions(kGameParams, {kDealCardsAction, kBidPassAction,
+                                               kBidPassAction, kBidKlopAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kKlop);
 
@@ -117,9 +121,10 @@ TEST(TarokStateTests, TestTricksPlayingPhase3) {
                                    48, 53));
 }
 
-TEST(TarokStateTests, TestTricksPlayingPhase4) {
+TEST_F(TarokStateTests, TestTricksPlayingPhase4) {
   // check legal non-tarok cards in klop
-  auto state = StateAfterActions(kGameParams, {0, 0, 0, 1});
+  auto state = StateAfterActions(kGameParams, {kDealCardsAction, kBidPassAction,
+                                               kBidPassAction, kBidKlopAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kKlop);
 
@@ -143,9 +148,10 @@ TEST(TarokStateTests, TestTricksPlayingPhase4) {
   EXPECT_TRUE(state->TrickCards().empty());
 }
 
-TEST(TarokStateTests, TestTricksPlayingPhase5) {
+TEST_F(TarokStateTests, TestTricksPlayingPhase5) {
   // check scenarios where no card has to be beaten in klop
-  auto state = StateAfterActions(kGameParams, {0, 0, 0, 1});
+  auto state = StateAfterActions(kGameParams, {kDealCardsAction, kBidPassAction,
+                                               kBidPassAction, kBidKlopAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kKlop);
 
@@ -199,9 +205,11 @@ TEST(TarokStateTests, TestTricksPlayingPhase5) {
   EXPECT_TRUE(state->TrickCards().empty());
 }
 
-TEST(TarokStateTests, TestTricksPlayingPhase6) {
+TEST_F(TarokStateTests, TestTricksPlayingPhase6) {
   // check taroks don't win in colour valat
-  auto state = StateAfterActions(kGameParams, {0, 11, 0, 0, 11});
+  auto state = StateAfterActions(
+      kGameParams, {kDealCardsAction, kBidColourValatAction, kBidPassAction,
+                    kBidPassAction, kBidColourValatAction});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kColourValatWithout);
 
@@ -246,9 +254,11 @@ TEST(TarokStateTests, TestTricksPlayingPhase6) {
   EXPECT_TRUE(state->TrickCards().empty());
 }
 
-TEST(TarokStateTests, TestTricksPlayingPhase7) {
+TEST_F(TarokStateTests, TestTricksPlayingPhase7) {
   // check positive contracts scenarios
-  auto state = StateAfterActions(kGameParams, {0, 0, 3, 0, 3, 0, 40, 41});
+  auto state = StateAfterActions(
+      kGameParams, {kDealCardsAction, kBidPassAction, kBidTwoAction,
+                    kBidPassAction, kBidTwoAction, 0, 40, 41});
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kTwo);
 
