@@ -46,10 +46,10 @@ int TarokGame::MaxGameLength() const {
   // number of actions
   if (num_players_ == 3) {
     // 17 actions + 16 cards each
-    return 33;
+    return 65;
   } else {
     // 24 actions + 12 cards each
-    return 36;
+    return 72;
   }
 }
 
