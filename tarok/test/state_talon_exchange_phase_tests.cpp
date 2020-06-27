@@ -204,4 +204,56 @@ TEST_F(TarokStateTests, TestTalonExchangePhase6) {
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
 }
 
+TEST_F(TarokStateTests, TestTalonExchangePhase7) {
+  // check that taroks and kings cannot be exchanged
+  auto state = StateAfterActions(
+      open_spiel::GameParameters({{"seed", open_spiel::GameParameter(42)}}),
+      {kDealCardsAction, kBidPassAction, kBidOneAction, kBidPassAction,
+       kBidOneAction, 1});
+  EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kOne);
+
+  // check taroks and kings are not in legal actions
+  for (const auto& action : state->LegalActions()) {
+    auto card = deck_.at(action);
+    EXPECT_NE(card.suit, CardSuit::kTaroks);
+    EXPECT_NE(card.points, 5);
+  }
+}
+
+TEST_F(TarokStateTests, TestTalonExchangePhase8) {
+  // check that tarok can be exchanged if player has no other choice
+  auto state = StateAfterActions(
+      open_spiel::GameParameters({{"num_players", open_spiel::GameParameter(4)},
+                                  {"seed", open_spiel::GameParameter(141750)}}),
+      {kDealCardsAction, kBidPassAction, kBidPassAction, kBidPassAction,
+       kBidSoloTwoAction});
+  EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
+  EXPECT_EQ(state->SelectedContractName(), ContractName::kSoloTwo);
+
+  // select first set from talon
+  state->ApplyAction(0);
+  EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
+
+  // first the player must exchange non-tarok or non-king card
+  // check taroks and kings are not in legal actions
+  for (const auto& action : state->LegalActions()) {
+    auto card = deck_.at(action);
+    EXPECT_NE(card.suit, CardSuit::kTaroks);
+    EXPECT_NE(card.points, 5);
+  }
+  state->ApplyAction(state->LegalActions().at(0));
+  EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTalonExchange);
+
+  // at this point the player has only taroks and kings in his hand but still
+  // needs to exchange one card
+  // check only taroks (no trula or kings) are in legal actions
+  for (const auto& action : state->LegalActions()) {
+    auto card = deck_.at(action);
+    EXPECT_EQ(card.suit, CardSuit::kTaroks);
+    EXPECT_NE(card.points, 5);
+  }
+  state->ApplyAction(state->LegalActions().at(0));
+  EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
+}
 }  // namespace tarok
