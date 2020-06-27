@@ -3,10 +3,11 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "src/game.h"
+#include "test/state_tests.h"
 
 namespace tarok {
 
-TEST(TarokStateTests, TestCardDealingPhase) {
+TEST_F(TarokStateTests, TestCardDealingPhase) {
   auto game = NewTarokGame(open_spiel::GameParameters());
   auto state = game->NewInitialTarokState();
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kCardDealing);
@@ -24,7 +25,7 @@ TEST(TarokStateTests, TestCardDealingPhase) {
       testing::ElementsAreArray<open_spiel::ActionsAndProbs>({{0, 1.0}}));
 
   // deal the cards
-  state->ApplyAction(0);
+  state->ApplyAction(kDealCardsAction);
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kBidding);
   EXPECT_NE(state->CurrentPlayer(), open_spiel::kChancePlayerId);
   EXPECT_EQ(state->SelectedContractName(), ContractName::kNotSelected);
