@@ -11,7 +11,7 @@ if __name__ == '__main__':
 
     for i in range(10000):
         state = game.new_initial_state()
-        while(not state.is_terminal()):
+        while not state.is_terminal():
             state.apply_action(np.random.choice(state.legal_actions()))
         print("Game {:d}, {}, rewards: {}".format(
             i + 1, state.selected_contract(), state.rewards()))

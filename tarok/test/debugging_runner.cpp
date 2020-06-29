@@ -2,13 +2,17 @@
 
 #include <iostream>
 
-#include "src/cards.h"
+#include "src/game.h"
 
 int main() {
-  auto deck = tarok::InitializeCardDeck();
-  std::vector<open_spiel::Action> card_actions(54);
-  std::iota(card_actions.begin(), card_actions.end(), 0);
-  double d = tarok::CardPoints(card_actions, deck);
+  auto game = tarok::NewTarokGame(open_spiel::GameParameters({}));
+  game->NewInitialTarokState()->ApplyAction(0);
+  auto cloned_game = game->Clone();
+
+  auto state0 = game->NewInitialTarokState();
+  state0->ApplyAction(0);
+  auto state1 = cloned_game->NewInitialState();
+  state1->ApplyAction(0);
 
   return 0;
 }
