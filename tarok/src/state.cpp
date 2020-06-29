@@ -148,7 +148,7 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInTalonExchange()
   // prevent exchange of taroks and kings
   std::vector<open_spiel::Action> actions;
   for (auto const& action : players_cards_.at(current_player_)) {
-    auto const& card = ActionToCard(action);
+    const Card& card = ActionToCard(action);
     if (card.suit != CardSuit::kTaroks && card.points != 5)
       actions.push_back(action);
   }

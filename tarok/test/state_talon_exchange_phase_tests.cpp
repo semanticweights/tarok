@@ -215,7 +215,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase7) {
 
   // check taroks and kings are not in legal actions
   for (const auto& action : state->LegalActions()) {
-    const auto& card = deck_.at(action);
+    const Card& card = deck_.at(action);
     EXPECT_NE(card.suit, CardSuit::kTaroks);
     EXPECT_NE(card.points, 5);
   }
@@ -238,7 +238,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase8) {
   // first the player must exchange non-tarok or non-king card
   // check taroks and kings are not in legal actions
   for (const auto& action : state->LegalActions()) {
-    const auto& card = deck_.at(action);
+    const Card& card = deck_.at(action);
     EXPECT_NE(card.suit, CardSuit::kTaroks);
     EXPECT_NE(card.points, 5);
   }
@@ -249,7 +249,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase8) {
   // needs to exchange one card
   // check only taroks (no trula or kings) are in legal actions
   for (const auto& action : state->LegalActions()) {
-    const auto& card = deck_.at(action);
+    const Card& card = deck_.at(action);
     EXPECT_EQ(card.suit, CardSuit::kTaroks);
     EXPECT_NE(card.points, 5);
   }
