@@ -17,7 +17,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase1) {
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 2);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1));
-  for (const auto& talon_set : talon_initial) {
+  for (auto const& talon_set : talon_initial) {
     EXPECT_EQ(talon_set.size(), 3);
   }
 
@@ -49,7 +49,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase2) {
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 2);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1));
-  for (const auto& talon_set : talon_initial) {
+  for (auto const& talon_set : talon_initial) {
     EXPECT_EQ(talon_set.size(), 3);
   }
 
@@ -81,7 +81,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase3) {
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 3);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1, 2));
-  for (const auto& talon_set : talon_initial) {
+  for (auto const& talon_set : talon_initial) {
     EXPECT_EQ(talon_set.size(), 2);
   }
 
@@ -114,7 +114,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase4) {
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 6);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1, 2, 3, 4, 5));
-  for (const auto& talon_set : talon_initial) {
+  for (auto const& talon_set : talon_initial) {
     EXPECT_EQ(talon_set.size(), 1);
   }
 
@@ -147,7 +147,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase5) {
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 6);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1, 2, 3, 4, 5));
-  for (const auto& talon_set : talon_initial) {
+  for (auto const& talon_set : talon_initial) {
     EXPECT_EQ(talon_set.size(), 1);
   }
 
@@ -182,7 +182,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase6) {
   auto talon_initial = state->TalonSets();
   EXPECT_EQ(talon_initial.size(), 6);
   EXPECT_THAT(state->LegalActions(), testing::ElementsAre(0, 1, 2, 3, 4, 5));
-  for (const auto& talon_set : talon_initial) {
+  for (auto const& talon_set : talon_initial) {
     EXPECT_EQ(talon_set.size(), 1);
   }
 
@@ -214,7 +214,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase7) {
   EXPECT_EQ(state->SelectedContractName(), ContractName::kOne);
 
   // check taroks and kings are not in legal actions
-  for (const auto& action : state->LegalActions()) {
+  for (auto const& action : state->LegalActions()) {
     const Card& card = deck_.at(action);
     EXPECT_NE(card.suit, CardSuit::kTaroks);
     EXPECT_NE(card.points, 5);
@@ -237,7 +237,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase8) {
 
   // first the player must exchange non-tarok or non-king card
   // check taroks and kings are not in legal actions
-  for (const auto& action : state->LegalActions()) {
+  for (auto const& action : state->LegalActions()) {
     const Card& card = deck_.at(action);
     EXPECT_NE(card.suit, CardSuit::kTaroks);
     EXPECT_NE(card.points, 5);
@@ -248,7 +248,7 @@ TEST_F(TarokStateTests, TestTalonExchangePhase8) {
   // at this point the player has only taroks and kings in his hand but still
   // needs to exchange one card
   // check only taroks (no trula or kings) are in legal actions
-  for (const auto& action : state->LegalActions()) {
+  for (auto const& action : state->LegalActions()) {
     const Card& card = deck_.at(action);
     EXPECT_EQ(card.suit, CardSuit::kTaroks);
     EXPECT_NE(card.points, 5);
