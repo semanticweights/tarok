@@ -19,7 +19,7 @@ std::unique_ptr<TarokState> StateAfterActions(
 bool AllActionsInOtherActions(
     const std::vector<open_spiel::Action>& actions,
     const std::vector<open_spiel::Action>& other_actions) {
-  for (const auto& action : actions) {
+  for (auto const& action : actions) {
     if (std::find(other_actions.begin(), other_actions.end(), action) ==
         other_actions.end()) {
       return false;
