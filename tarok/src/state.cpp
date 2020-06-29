@@ -153,7 +153,7 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInTalonExchange()
       actions.push_back(action);
   }
   // allow exchange of taroks (except of trula) if player has no other choice
-  if (actions.size() == 0) {
+  if (actions.empty()) {
     for (auto const& action : players_cards_.at(current_player_)) {
       if (ActionToCard(action).points != 5) actions.push_back(action);
     }
