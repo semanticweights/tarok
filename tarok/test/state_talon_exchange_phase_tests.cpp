@@ -256,4 +256,5 @@ TEST_F(TarokStateTests, TestTalonExchangePhase8) {
   state->ApplyAction(state->LegalActions().at(0));
   EXPECT_EQ(state->CurrentGamePhase(), GamePhase::kTricksPlaying);
 }
+
 }  // namespace tarok
