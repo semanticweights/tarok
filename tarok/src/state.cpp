@@ -18,6 +18,8 @@ TarokState::TarokState(std::shared_ptr<const open_spiel::Game> game)
   players_collected_cards_.reserve(num_players_);
   players_collected_cards_.insert(players_collected_cards_.end(), num_players_,
                                   std::vector<open_spiel::Action>());
+  players_info_states_.reserve(num_players_);
+  players_info_states_.insert(players_info_states_.end(), num_players_, "");
 }
 
 open_spiel::Player TarokState::CurrentPlayer() const {

@@ -137,6 +137,7 @@ class TarokState : public open_spiel::State {
   std::vector<std::vector<open_spiel::Action>> players_collected_cards_;
   std::vector<open_spiel::Action> trick_cards_;
   open_spiel::Player captured_mond_player_ = open_spiel::kInvalidPlayer;
+  std::vector<std::string> players_info_states_;
 };
 
 std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase);
