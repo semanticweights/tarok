@@ -147,14 +147,14 @@ std::vector<open_spiel::Action> TarokState::LegalActionsInTalonExchange()
     std::iota(actions.begin(), actions.end(), 0);
     return actions;
   }
-  // prevent exchange of taroks and kings
+  // prevent discarding of taroks and kings
   std::vector<open_spiel::Action> actions;
   for (auto const& action : players_cards_.at(current_player_)) {
     const Card& card = ActionToCard(action);
     if (card.suit != CardSuit::kTaroks && card.points != 5)
       actions.push_back(action);
   }
-  // allow exchange of taroks (except of trula) if player has no other choice
+  // allow discarding of taroks (except of trula) if player has no other choice
   if (actions.empty()) {
     for (auto const& action : players_cards_.at(current_player_)) {
       if (ActionToCard(action).points != 5) actions.push_back(action);
@@ -384,6 +384,12 @@ void TarokState::DoApplyActionInCardDealing() {
   // lower player indices correspond to higher bidding priority,
   // i.e. 0 is the forehand, num_players - 1 is the dealer
   current_player_ = 1;
+
+  // add private cards to info states
+  for (int i = 0; i < num_players_; i++) {
+    AppendToInformationState(
+        i, absl::StrCat(absl::StrJoin(players_cards_.at(i), ","), ";"));
+  }
 }
 
 bool TarokState::AnyPlayerWithoutTaroks() const {
@@ -398,12 +404,15 @@ bool TarokState::AnyPlayerWithoutTaroks() const {
 
 void TarokState::DoApplyActionInBidding(open_spiel::Action action_id) {
   players_bids_.at(current_player_) = action_id;
+  AppendToAllInformationStates(std::to_string(action_id));
   if (AllButCurrentPlayerPassedBidding()) {
     FinishBiddingPhase(action_id);
+    AppendToAllInformationStates(";");
   } else {
     do {
       NextPlayer();
     } while (players_bids_.at(current_player_) == kBidPassAction);
+    AppendToAllInformationStates(",");
   }
 }
 
@@ -418,7 +427,6 @@ bool TarokState::AllButCurrentPlayerPassedBidding() const {
 void TarokState::FinishBiddingPhase(open_spiel::Action action_id) {
   declarer_ = current_player_;
   selected_contract_ = &tarok_parent_game_->contracts_.at(action_id - 1);
-
   if (num_players_ == 4 && selected_contract_->needs_king_calling)
     current_game_phase_ = GamePhase::kKingCalling;
   else if (selected_contract_->NeedsTalonExchange())
@@ -442,12 +450,16 @@ void TarokState::DoApplyActionInKingCalling(open_spiel::Action action_id) {
     }
   }
   current_game_phase_ = GamePhase::kTalonExchange;
+  AppendToAllInformationStates(absl::StrCat(action_id, ";"));
 }
 
 void TarokState::DoApplyActionInTalonExchange(open_spiel::Action action_id) {
   auto& player_cards = players_cards_.at(current_player_);
 
   if (talon_.size() == 6) {
+    // add all talon cards to info states
+    AppendToAllInformationStates(absl::StrCat(absl::StrJoin(talon_, ","), ";"));
+
     // choosing one of the talon card sets
     int set_begin = action_id * selected_contract_->num_talon_exchanges;
     int set_end = set_begin + selected_contract_->num_talon_exchanges;
@@ -464,14 +476,31 @@ void TarokState::DoApplyActionInTalonExchange(open_spiel::Action action_id) {
       captured_mond_player_ = current_player_;
     }
 
+    // add the selected talon set to info states
+    AppendToAllInformationStates(absl::StrCat(action_id, ";"));
+
     std::sort(player_cards.begin(), player_cards.end());
     talon_.erase(talon_.begin() + set_begin, talon_.begin() + set_end);
   } else {
     // discarding the cards
     MoveActionFromTo(action_id, &player_cards,
                      &players_collected_cards_.at(current_player_));
+
+    // note that all players see discarded tarok cards but only the discarder
+    // knows about discarded non-taroks
     if (player_cards.size() == 48 / num_players_) {
+      // talon exchange phase is finished
+      if (ActionToCard(action_id).suit == CardSuit::kTaroks)
+        AppendToAllInformationStates(absl::StrCat(action_id, ";"));
+      else
+        AppendToInformationState(current_player_, absl::StrCat(action_id, ";"));
       StartTricksPlayingPhase();
+    } else {
+      // talon exchange phase will continue
+      if (ActionToCard(action_id).suit == CardSuit::kTaroks)
+        AppendToAllInformationStates(absl::StrCat(action_id, ","));
+      else
+        AppendToInformationState(current_player_, absl::StrCat(action_id, ","));
     }
   }
 }
@@ -487,6 +516,7 @@ void TarokState::StartTricksPlayingPhase() {
 void TarokState::DoApplyActionInTricksPlaying(open_spiel::Action action_id) {
   MoveActionFromTo(action_id, &players_cards_.at(current_player_),
                    &trick_cards_);
+  AppendToAllInformationStates(std::to_string(action_id));
   if (trick_cards_.size() == num_players_) {
     ResolveTrick();
     if (players_cards_.at(current_player_).empty() ||
@@ -497,9 +527,12 @@ void TarokState::DoApplyActionInTricksPlaying(open_spiel::Action action_id) {
           selected_contract_->name == ContractName::kValatWithout) &&
          current_player_ != declarer_)) {
       current_game_phase_ = GamePhase::kFinished;
+    } else {
+      AppendToAllInformationStates(";");
     }
   } else {
     NextPlayer();
+    AppendToAllInformationStates(",");
   }
 }
 
@@ -782,8 +815,7 @@ std::string TarokState::InformationStateString(
     open_spiel::Player player) const {
   SPIEL_CHECK_GE(player, 0);
   SPIEL_CHECK_LT(player, num_players_);
-  // todo: implement
-  return "";
+  return players_info_states_.at(player);
 }
 
 std::string TarokState::ToString() const {
@@ -837,6 +869,17 @@ void TarokState::MoveActionFromTo(open_spiel::Action action_id,
 
 const Card& TarokState::ActionToCard(open_spiel::Action action_id) const {
   return tarok_parent_game_->card_deck_.at(action_id);
+}
+
+void TarokState::AppendToAllInformationStates(const std::string& appendix) {
+  for (int i = 0; i < num_players_; i++) {
+    absl::StrAppend(&players_info_states_.at(i), appendix);
+  }
+}
+
+void TarokState::AppendToInformationState(open_spiel::Player player,
+                                          const std::string& appendix) {
+  absl::StrAppend(&players_info_states_.at(player), appendix);
 }
 
 std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase) {
