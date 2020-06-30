@@ -548,6 +548,7 @@ void TarokState::ResolveTrick() {
   if (selected_contract_->name == ContractName::kKlop && talon_.size() > 0) {
     // add the "gift" talon card in klop
     trick_winner_collected_cards.push_back(talon_.front());
+    AppendToAllInformationStates(absl::StrCat(",", talon_.front()));
     talon_.erase(talon_.begin());
   } else if (winning_action == called_king_ && called_king_in_talon_) {
     // declearer won the trick with the called king that was in talon so all

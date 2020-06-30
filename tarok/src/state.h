@@ -63,7 +63,8 @@ class TarokState : public open_spiel::State {
 
   // info state strings are of the following format (cards and actions are
   // delimited by a comma character, some parts of the string are omitted in
-  // states where corresponding gamne phases are not played):
+  // states where corresponding game phases are not played,
+  // single_trick_played_actions also contains the gift talon card in klop):
   //
   // each_players_private_cards;bidding_actions;king_calling_action;
   // talon_cards;choosing_talon_set_action;discarding_cards_actions;
