@@ -61,7 +61,16 @@ class TarokState : public open_spiel::State {
   std::vector<int> CapturedMondPenalties() const;
   std::vector<int> ScoresWithoutCapturedMondPenalties() const;
 
+  // info state strings are of the following format (cards and actions are
+  // delimited by a comma character, some parts of the string are omitted in
+  // states where corresponding game phases are not played,
+  // single_trick_played_actions also contains the gift talon card in klop):
+  //
+  // each_players_private_cards;bidding_actions;king_calling_action;
+  // talon_cards;choosing_talon_set_action;discarding_cards_actions;
+  // single_trick_played_actions;...;single_trick_played_actions
   std::string InformationStateString(open_spiel::Player player) const override;
+
   std::string ToString() const override;
   std::unique_ptr<State> Clone() const override;
 
@@ -121,6 +130,9 @@ class TarokState : public open_spiel::State {
                                std::vector<open_spiel::Action>* from,
                                std::vector<open_spiel::Action>* to);
   const Card& ActionToCard(open_spiel::Action action_id) const;
+  void AppendToAllInformationStates(const std::string& appendix);
+  void AppendToInformationState(open_spiel::Player player,
+                                const std::string& appendix);
 
   std::shared_ptr<const TarokGame> tarok_parent_game_;
   GamePhase current_game_phase_ = GamePhase::kCardDealing;
@@ -137,6 +149,7 @@ class TarokState : public open_spiel::State {
   std::vector<std::vector<open_spiel::Action>> players_collected_cards_;
   std::vector<open_spiel::Action> trick_cards_;
   open_spiel::Player captured_mond_player_ = open_spiel::kInvalidPlayer;
+  std::vector<std::string> players_info_states_;
 };
 
 std::ostream& operator<<(std::ostream& os, const GamePhase& game_phase);

@@ -6,13 +6,10 @@
 
 int main() {
   auto game = tarok::NewTarokGame(open_spiel::GameParameters({}));
-  game->NewInitialTarokState()->ApplyAction(0);
-  auto cloned_game = game->Clone();
-
-  auto state0 = game->NewInitialTarokState();
-  state0->ApplyAction(0);
-  auto state1 = cloned_game->NewInitialState();
-  state1->ApplyAction(0);
+  auto state = game->NewInitialTarokState();
+  state->ApplyAction(0);
+  state->ApplyAction(0);
+  state->ApplyAction(0);
 
   return 0;
 }
