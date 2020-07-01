@@ -822,14 +822,19 @@ std::string TarokState::InformationStateString(
 std::string TarokState::ToString() const {
   std::string str = "";
   GamePhase current_game_phase = CurrentGamePhase();
-  open_spiel::Player current_player = CurrentPlayer();
   absl::StrAppend(&str, "Game phase: ", GamePhaseToString(current_game_phase),
                   "\n");
   absl::StrAppend(&str, "Selected contract: ",
                   ContractNameToString(SelectedContractName()), "\n");
+
+  Player current_player = CurrentPlayer();
   absl::StrAppend(&str, "Current player: ", current_player, "\n");
-  absl::StrAppend(&str, "Player cards: ",
-                  absl::StrJoin(PlayerCards(current_player), ","), "\n");
+  if (current_game_phase != GamePhase::kCardDealing &&
+      current_game_phase != GamePhase::kFinished) {
+    absl::StrAppend(&str, "Player cards: ",
+                    absl::StrJoin(PlayerCards(current_player), ","), "\n");
+  }
+
   if (current_game_phase == GamePhase::kTalonExchange) {
     auto talon_sets = TalonSets();
     std::vector<std::string> talon_sets_strings;
