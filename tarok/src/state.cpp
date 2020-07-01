@@ -827,7 +827,7 @@ std::string TarokState::ToString() const {
   absl::StrAppend(&str, "Selected contract: ",
                   ContractNameToString(SelectedContractName()), "\n");
 
-  Player current_player = CurrentPlayer();
+  open_spiel::Player current_player = CurrentPlayer();
   absl::StrAppend(&str, "Current player: ", current_player, "\n");
   if (current_game_phase != GamePhase::kCardDealing &&
       current_game_phase != GamePhase::kFinished) {
